@@ -1,0 +1,141 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | Union</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen overflow-x-hidden bg-white text-gray-900">
+    <main class="grid min-h-screen w-full lg:h-screen lg:grid-cols-[0.92fr_1.08fr] lg:overflow-hidden">
+      <section class="flex min-h-screen flex-col justify-center px-6 py-8 sm:px-10 lg:h-screen lg:min-h-0 lg:overflow-y-auto lg:px-20 lg:py-8">
+        <div class="mb-7 flex justify-center lg:justify-start">
+          <a href="{% url 'hub:home' %}" class="flex flex-col items-center lg:items-start">
+            <img
+              src="{% static 'images/union-logo.png' %}"
+              alt="Union logo"
+              class="mb-1 h-12 w-12 rounded-xl object-contain"
+            />
+            <span class="text-lg font-bold tracking-wide text-purple-700">UNION</span>
+            <span class="-mt-1 text-[10px] text-gray-400">Community Platform</span>
+          </a>
+        </div>
+
+        <div class="mb-6 text-center lg:text-left">
+          <h1 class="mb-5 text-4xl font-bold text-purple-700 lg:text-5xl">Welcome!</h1>
+          <h2 class="mb-1 text-3xl font-bold text-purple-700">Login</h2>
+          <p class="text-sm text-gray-400">Enter your username and password to sign in</p>
+        </div>
+
+        {% if messages %}
+          <div class="mb-4 max-w-md space-y-2">
+            {% for message in messages %}
+              <div class="rounded-xl border px-4 py-3 text-sm {% if message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-700{% else %}border-red-200 bg-red-50 text-red-700{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form id="signinForm" method="post" action="{% url 'hub:signin' %}" class="max-w-md space-y-4">
+          {% csrf_token %}
+          {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" />
+          {% endif %}
+          <div>
+            <label for="username" class="mb-2 block text-sm font-medium text-gray-700">Username</label>
+            <input
+              id="username"
+              type="text"
+              autocomplete="username"
+              name="username"
+              placeholder="Username"
+              value="{{ form_data.username|default:'' }}"
+              required
+              class="w-full rounded-xl border border-gray-200 bg-[#f5f5f7] px-5 py-3.5 outline-none transition focus:border-purple-600 focus:bg-white"
+            />
+          </div>
+
+          <div>
+            <div class="mb-2 flex items-center justify-between gap-4">
+              <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+              <a href="{% url 'hub:forgot_password' %}" class="text-sm font-medium text-purple-700 hover:underline">
+                Forgot password?
+              </a>
+            </div>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+              class="w-full rounded-xl border border-gray-200 bg-[#f5f5f7] px-5 py-3.5 outline-none transition focus:border-purple-600 focus:bg-white"
+            />
+          </div>
+
+          <label class="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-600">
+            <span>
+              <span class="block font-medium text-gray-800">Keep me signed in</span>
+              <span class="block text-xs text-gray-400">Use a 14-day secure session on this device.</span>
+            </span>
+            <input
+              type="checkbox"
+              name="remember_me"
+              class="h-4 w-4 rounded border-gray-300 text-purple-700"
+            />
+          </label>
+
+          <button
+            type="submit"
+            class="w-full rounded-xl bg-purple-700 py-3.5 text-lg font-medium text-white transition hover:bg--800"
+          >
+            Login
+          </button>
+        </form>
+
+        <div class="mt-6 max-w-md text-center text-sm text-gray-400">
+          Don't have an account?
+          <a href="{% url 'hub:signup' %}{% if next %}?next={{ next|urlencode }}{% endif %}" class="ml-1 font-medium text-purple-700 hover:underline">
+            Sign up
+          </a>
+        </div>
+      </section>
+
+      <section class="relative hidden h-screen overflow-hidden bg-gradient-to-br from-purple-700 to-purple-600 lg:flex">
+        <div class="absolute left-16 top-52 h-44 w-[2px] bg-white/40"></div>
+        <div class="absolute bottom-14 left-16 h-[2px] w-24 bg-white/40"></div>
+
+        <div class="absolute left-16 top-24 z-10 max-w-lg">
+          <h1 class="text-5xl font-bold leading-tight text-white xl:text-6xl">
+            Very good works are
+            <br />
+            waiting for you
+            <br />
+            Sign up Now
+          </h1>
+        </div>
+
+        <img
+          src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&auto=format&fit=crop"
+          alt="person"
+          class="absolute bottom-0 right-0 h-[88%] object-contain"
+        />
+      </section>
+    </main>
+
+  </body>
+</html>

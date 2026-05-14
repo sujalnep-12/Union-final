@@ -1,0 +1,524 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Super Admin Dashboard | Union</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <style>
+      * {
+        font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen bg-[#f7f8fb] text-slate-900">
+    <div class="min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
+      <aside class="border-b border-slate-100 bg-white lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r">
+        <div class="flex items-center justify-between px-4 py-4 lg:block lg:px-4 lg:py-8">
+          <a href="{% url 'hub:dashboard' %}" class="flex items-center gap-3">
+            <img src="{% static 'images/union-logo.png' %}" alt="Union logo" class="h-10 w-10 rounded-xl object-contain" />
+            <div>
+              <span class="block text-xl font-bold tracking-tight">UNION</span>
+              <span class="block text-xs font-semibold uppercase tracking-wide text-purple-700">Super Admin</span>
+            </div>
+          </a>
+          <form method="post" action="{% url 'hub:logout' %}" class="lg:hidden">
+            {% csrf_token %}
+            <button type="submit" class="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600">
+              Logout
+            </button>
+          </form>
+        </div>
+
+        <nav class="flex flex-wrap gap-2 px-4 pb-4 text-sm lg:block lg:space-y-1 lg:pb-0">
+          <a href="{% url 'hub:dashboard' %}" class="flex min-w-max items-center gap-3 rounded-lg bg-slate-900 px-4 py-3 font-medium text-white">
+            <i class="fa-solid fa-table-cells-large w-5 text-center"></i>
+            Overview
+          </a>
+          <a href="#users" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-600 transition hover:bg-slate-50">
+            <i class="fa-solid fa-users-gear w-5 text-center"></i>
+            Users
+          </a>
+          <a href="#communities" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-600 transition hover:bg-slate-50">
+            <i class="fa-solid fa-layer-group w-5 text-center"></i>
+            Communities
+          </a>
+          <a href="#posts" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-600 transition hover:bg-slate-50">
+            <i class="fa-regular fa-file-lines w-5 text-center"></i>
+            Posts
+          </a>
+          <a href="#messages" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-600 transition hover:bg-slate-50">
+            <i class="fa-regular fa-envelope w-5 text-center"></i>
+            Messages
+          </a>
+          <a href="#moderation" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-600 transition hover:bg-slate-50">
+            <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+            Moderation
+          </a>
+          <a href="#subscriptions" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-600 transition hover:bg-slate-50">
+            <i class="fa-solid fa-credit-card w-5 text-center"></i>
+            Subscriptions
+          </a>
+          <a href="#system" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-slate-600 transition hover:bg-slate-50">
+            <i class="fa-solid fa-server w-5 text-center"></i>
+            System
+          </a>
+
+          <div class="hidden lg:block lg:pt-9">
+            <form method="post" action="{% url 'hub:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left font-medium text-slate-600 transition hover:bg-slate-50">
+                <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center"></i>
+                Logout
+              </button>
+            </form>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+        <header class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-purple-700">Administration</p>
+            <h1 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Welcome back, {{ display_name }}</h1>
+            <p class="mt-2 text-sm text-slate-500 sm:text-base">{{ today|date:"l, F j, Y" }}</p>
+            <p class="mt-2 text-xs font-semibold text-slate-400">Session expires: {{ session_info.expiry_label }}</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="#create-user" class="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-50">Create User</a>
+            <a href="#create-post" class="rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">Create Post</a>
+          </div>
+        </header>
+
+        {% if messages %}
+          <div class="mt-5 space-y-2">
+            {% for message in messages %}
+              <div class="rounded-xl border px-4 py-3 text-sm {% if message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-700{% else %}border-red-200 bg-red-50 text-red-700{% endif %}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <section class="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {% for stat in stats %}
+            <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100">
+              <div class="flex items-start justify-between gap-4">
+                <p class="max-w-[9rem] text-sm leading-6 text-slate-600">{{ stat.label }}</p>
+                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50 text-purple-700">
+                  <i class="fa-solid {{ stat.icon }}"></i>
+                </div>
+              </div>
+              <p class="mt-6 text-3xl font-bold tracking-tight">{{ stat.value }}</p>
+              <p class="mt-4 text-xs leading-5 text-slate-400">{{ stat.helper }}</p>
+            </article>
+          {% endfor %}
+        </section>
+
+        <section class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {% for stat in admin_activity %}
+            <article class="rounded-lg border border-slate-200 bg-white p-4">
+              <div class="flex items-center justify-between gap-3">
+                <div>
+                  <p class="text-sm font-semibold text-slate-700">{{ stat.label }}</p>
+                  <p class="mt-1 text-xs text-slate-400">{{ stat.helper }}</p>
+                </div>
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
+                  <i class="fa-solid {{ stat.icon }}"></i>
+                </div>
+              </div>
+              <p class="mt-4 text-2xl font-bold">{{ stat.value }}</p>
+            </article>
+          {% endfor %}
+        </section>
+
+        <section id="users" class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-7">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-bold">Users</h2>
+                <p class="mt-1 text-sm text-slate-500">Manage access and account status.</p>
+              </div>
+            </div>
+
+            <div class="mt-6 overflow-x-auto">
+              <table class="w-full min-w-[720px] text-left text-sm">
+                <thead class="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+                  <tr>
+                    <th class="py-3 pr-4 font-semibold">User</th>
+                    <th class="py-3 pr-4 font-semibold">Role</th>
+                    <th class="py-3 pr-4 font-semibold">Activity</th>
+                    <th class="py-3 pr-4 font-semibold">Status</th>
+                    <th class="py-3 text-right font-semibold">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  {% for managed_user in users %}
+                    <tr>
+                      <td class="py-4 pr-4">
+                        <p class="font-semibold text-slate-900">{{ managed_user.first_name|default:managed_user.username }}</p>
+                        <p class="mt-1 text-xs text-slate-400">{{ managed_user.email|default:managed_user.username }}</p>
+                      </td>
+                      <td class="py-4 pr-4">
+                        {% if managed_user.is_superuser %}
+                          <span class="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">Super admin</span>
+                        {% elif managed_user.is_staff %}
+                          <span class="rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">Staff</span>
+                        {% else %}
+                          <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">User</span>
+                        {% endif %}
+                      </td>
+                      <td class="py-4 pr-4 text-slate-500">{{ managed_user.community_count }} communities / {{ managed_user.post_count }} posts</td>
+                      <td class="py-4 pr-4">
+                        <span class="rounded-full px-3 py-1 text-xs font-semibold {% if managed_user.is_active %}bg-emerald-50 text-emerald-700{% else %}bg-red-50 text-red-700{% endif %}">
+                          {% if managed_user.is_active %}Active{% else %}Disabled{% endif %}
+                        </span>
+                      </td>
+                      <td class="py-4 text-right">
+                        <form method="post" action="{% url 'hub:dashboard' %}#users">
+                          {% csrf_token %}
+                          <input type="hidden" name="action" value="toggle_user_status" />
+                          <input type="hidden" name="user_id" value="{{ managed_user.id }}" />
+                          <button type="submit" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50">
+                            {% if managed_user.is_active %}Disable{% else %}Activate{% endif %}
+                          </button>
+                        </form>
+                        {% if not managed_user.is_superuser %}
+                          <form method="post" action="{% url 'hub:dashboard' %}#users" class="mt-2 flex flex-wrap justify-end gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update_user_role" />
+                            <input type="hidden" name="user_id" value="{{ managed_user.id }}" />
+                            <label class="flex items-center gap-1 text-xs text-slate-500">
+                              <input type="checkbox" name="is_staff" {% if managed_user.is_staff %}checked{% endif %} class="h-3 w-3 rounded border-slate-300" />
+                              Staff
+                            </label>
+                            <label class="flex items-center gap-1 text-xs text-slate-500">
+                              <input type="checkbox" name="is_active" {% if managed_user.is_active %}checked{% endif %} class="h-3 w-3 rounded border-slate-300" />
+                              Active
+                            </label>
+                            <button type="submit" class="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white">Save</button>
+                          </form>
+                          <form method="post" action="{% url 'hub:dashboard' %}#users" class="mt-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_user" />
+                            <input type="hidden" name="user_id" value="{{ managed_user.id }}" />
+                            <button type="submit" class="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50">Delete</button>
+                          </form>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <aside id="create-user" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+            <h2 class="text-lg font-bold">Create User</h2>
+            <p class="mt-1 text-sm text-slate-500">Add a member, staff user, or super admin.</p>
+            <form method="post" action="{% url 'hub:dashboard' %}#users" class="mt-5 space-y-4">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="create_user" />
+              {{ user_form.first_name }}
+              {{ user_form.username }}
+              {{ user_form.email }}
+              {{ user_form.password }}
+              <label class="flex items-center gap-3 text-sm font-medium text-slate-700">{{ user_form.is_active }} Active account</label>
+              <label class="flex items-center gap-3 text-sm font-medium text-slate-700">{{ user_form.is_staff }} Staff access</label>
+              {% for field in user_form %}
+                {% for error in field.errors %}
+                  <p class="text-xs text-red-500">{{ error }}</p>
+                {% endfor %}
+              {% endfor %}
+              <button type="submit" class="w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">Create User</button>
+            </form>
+          </aside>
+        </section>
+
+        <section id="communities" class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-7">
+            <h2 class="text-lg font-bold">Communities</h2>
+            <p class="mt-1 text-sm text-slate-500">Create spaces and control ownership.</p>
+            <div class="mt-6 grid gap-4 md:grid-cols-2">
+              {% for community in communities %}
+                <article class="rounded-lg border border-slate-100 p-4">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 class="font-semibold text-slate-900">{{ community.name }}</h3>
+                      <p class="mt-1 text-sm text-slate-500">{{ community.description|truncatewords:16 }}</p>
+                    </div>
+                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">{{ community.get_visibility_display }}</span>
+                  </div>
+                  <p class="mt-3 text-xs text-slate-400">Owner: {{ community.owner.first_name|default:community.owner.username }}</p>
+                  <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                    <span class="rounded-full bg-purple-50 px-3 py-1 text-purple-700">{{ community.topic }}</span>
+                    <span>{{ community.member_count }} member{{ community.member_count|pluralize }}</span>
+                    <span>{{ community.post_count }} post{{ community.post_count|pluralize }}</span>
+                  </div>
+                  <form method="post" action="{% url 'hub:dashboard' %}#communities" class="mt-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_community" />
+                    <input type="hidden" name="community_id" value="{{ community.id }}" />
+                    <button type="submit" class="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50">Delete</button>
+                  </form>
+                </article>
+              {% empty %}
+                <p class="rounded-lg border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500 md:col-span-2">No communities yet.</p>
+              {% endfor %}
+            </div>
+          </article>
+
+          <aside class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+            <h2 class="text-lg font-bold">Create Community</h2>
+            <form method="post" action="{% url 'hub:dashboard' %}#communities" class="mt-5 space-y-4">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="create_community" />
+              {{ community_form.name }}
+              {{ community_form.topic }}
+              {{ community_form.visibility }}
+              {{ community_form.owner }}
+              {{ community_form.description }}
+              {{ community_form.rules }}
+              <label class="flex items-center gap-3 text-sm font-medium text-slate-700">{{ community_form.allow_member_posts }} Members can post</label>
+              {% for field in community_form %}
+                {% for error in field.errors %}
+                  <p class="text-xs text-red-500">{{ error }}</p>
+                {% endfor %}
+              {% endfor %}
+              <button type="submit" class="w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">Create Community</button>
+            </form>
+          </aside>
+        </section>
+
+        <section id="posts" class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-7">
+            <h2 class="text-lg font-bold">Posts</h2>
+            <p class="mt-1 text-sm text-slate-500">Review and remove community activity.</p>
+            <div class="mt-6 divide-y divide-slate-100">
+              {% for post in posts %}
+                <article class="py-5 first:pt-0 last:pb-0">
+                  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h3 class="font-semibold leading-6 text-slate-900">{{ post.title }}</h3>
+                      <p class="mt-1 text-sm leading-6 text-slate-500">{{ post.body|truncatewords:24 }}</p>
+                      <p class="mt-3 text-xs text-slate-400">Posted in {{ post.community|default:"General" }} by {{ post.display_author }} on {{ post.created_at|date:"M j, Y" }}</p>
+                    </div>
+                    <form method="post" action="{% url 'hub:dashboard' %}#posts">
+                      {% csrf_token %}
+                      <input type="hidden" name="action" value="delete_post" />
+                      <input type="hidden" name="post_id" value="{{ post.id }}" />
+                      <button type="submit" class="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50">Delete</button>
+                    </form>
+                  </div>
+                </article>
+              {% empty %}
+                <p class="rounded-lg border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">No posts yet.</p>
+              {% endfor %}
+            </div>
+          </article>
+
+          <aside id="create-post" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+            <h2 class="text-lg font-bold">Create Post</h2>
+            <p class="mt-1 text-sm text-slate-500">Publish as any active user.</p>
+            <form method="post" action="{% url 'hub:dashboard' %}#posts" class="mt-5 space-y-4">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="create_post" />
+              {{ post_form.community }}
+              {{ post_form.author_user }}
+              {{ post_form.title }}
+              {{ post_form.category }}
+              {{ post_form.content_type }}
+              {{ post_form.body }}
+              {{ post_form.attachment_url }}
+              <label class="flex items-center gap-3 text-sm font-medium text-slate-700">{{ post_form.is_pinned }} Pin this post</label>
+              {% for field in post_form %}
+                {% for error in field.errors %}
+                  <p class="text-xs text-red-500">{{ error }}</p>
+                {% endfor %}
+              {% endfor %}
+              <button type="submit" class="w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">Publish Post</button>
+            </form>
+          </aside>
+        </section>
+
+        <section id="messages" class="mt-6 rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-7">
+          <h2 class="text-lg font-bold">Contact Messages</h2>
+          <p class="mt-1 text-sm text-slate-500">Latest requests from the public site.</p>
+          <div class="mt-6 grid gap-4 lg:grid-cols-2">
+            {% for message in contact_messages %}
+              <article class="rounded-lg border border-slate-100 p-4">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="font-semibold text-slate-900">{{ message.full_name }}</h3>
+                    <p class="mt-1 text-xs text-slate-400">{{ message.email }} / {{ message.created_at|date:"M j, Y" }}</p>
+                  </div>
+                </div>
+                <p class="mt-3 text-sm leading-6 text-slate-500">{{ message.message|truncatewords:28 }}</p>
+              </article>
+            {% empty %}
+              <p class="rounded-lg border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500 lg:col-span-2">No messages yet.</p>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section id="moderation" class="mt-6 rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-7">
+          <h2 class="text-lg font-bold">Moderation Queue</h2>
+          <div class="mt-6 grid gap-4 lg:grid-cols-2">
+            {% for report in reports %}
+              <article class="rounded-lg border border-slate-100 p-4">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 class="font-semibold text-slate-900">{{ report.get_reason_display }}</h3>
+                    <p class="mt-1 text-xs text-slate-400">{{ report.ai_category }} / priority {{ report.ai_priority }}</p>
+                  </div>
+                  <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">{{ report.get_status_display }}</span>
+                </div>
+                <p class="mt-3 text-sm leading-6 text-slate-500">{{ report.description }}</p>
+                {% if report.post %}
+                  <p class="mt-2 text-xs text-slate-400">Post: {{ report.post.title }}</p>
+                {% endif %}
+                <form method="post" action="{% url 'hub:dashboard' %}#moderation" class="mt-4 space-y-3">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="review_report" />
+                  <input type="hidden" name="report_id" value="{{ report.id }}" />
+                  <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-4 focus:ring-purple-100">
+                    {% for value,label in report_status_choices %}
+                      <option value="{{ value }}" {% if report.status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                  <textarea name="resolution_notes" rows="2" placeholder="Resolution notes" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-purple-400 focus:ring-4 focus:ring-purple-100">{{ report.resolution_notes }}</textarea>
+                  <button type="submit" class="rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white">Save Review</button>
+                </form>
+              </article>
+            {% empty %}
+              <p class="rounded-lg border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500 lg:col-span-2">No reports in the queue.</p>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section id="subscriptions" class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+          <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-7">
+            <h2 class="text-lg font-bold">Subscription Plans</h2>
+            <div class="mt-6 grid gap-4 md:grid-cols-3">
+              {% for plan in plans %}
+                <article class="rounded-lg border border-slate-100 p-4">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 class="font-semibold text-slate-900">{{ plan.name }}</h3>
+                      <p class="mt-1 text-xs text-slate-400">{{ plan.community_limit }} communities</p>
+                    </div>
+                    <span class="rounded-full px-3 py-1 text-xs font-semibold {% if plan.is_active %}bg-emerald-50 text-emerald-700{% else %}bg-slate-100 text-slate-500{% endif %}">
+                      {% if plan.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                  </div>
+                  <p class="mt-3 text-2xl font-bold">Rs. {{ plan.price }}</p>
+                  <p class="mt-2 text-sm leading-6 text-slate-500">{{ plan.feature_summary|linebreaksbr }}</p>
+                  <form method="post" action="{% url 'hub:dashboard' %}#subscriptions" class="mt-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle_plan" />
+                    <input type="hidden" name="plan_id" value="{{ plan.id }}" />
+                    <button type="submit" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50">
+                      {% if plan.is_active %}Deactivate{% else %}Activate{% endif %}
+                    </button>
+                  </form>
+                </article>
+              {% endfor %}
+            </div>
+
+            <h3 class="mt-8 text-sm font-bold uppercase tracking-wide text-slate-400">Transactions</h3>
+            <div class="mt-4 overflow-x-auto">
+              <table class="w-full min-w-[680px] text-left text-sm">
+                <thead class="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+                  <tr>
+                    <th class="py-3 pr-4 font-semibold">User</th>
+                    <th class="py-3 pr-4 font-semibold">Plan</th>
+                    <th class="py-3 pr-4 font-semibold">Gateway</th>
+                    <th class="py-3 pr-4 font-semibold">Amount</th>
+                    <th class="py-3 pr-4 font-semibold">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  {% for transaction in transactions %}
+                    <tr>
+                      <td class="py-4 pr-4">{{ transaction.user.username }}</td>
+                      <td class="py-4 pr-4">{{ transaction.plan|default:"-" }}</td>
+                      <td class="py-4 pr-4">{{ transaction.get_gateway_display }}</td>
+                      <td class="py-4 pr-4">Rs. {{ transaction.amount }}</td>
+                      <td class="py-4 pr-4">{{ transaction.get_status_display }}</td>
+                    </tr>
+                  {% empty %}
+                    <tr><td colspan="5" class="py-6 text-center text-slate-500">No transactions yet.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <aside class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+            <h2 class="text-lg font-bold">Create Plan</h2>
+            <form method="post" action="{% url 'hub:dashboard' %}#subscriptions" class="mt-5 space-y-4">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="create_plan" />
+              {{ plan_form.name }}
+              {{ plan_form.slug }}
+              {{ plan_form.price }}
+              {{ plan_form.community_limit }}
+              {{ plan_form.description }}
+              {{ plan_form.feature_summary }}
+              <label class="flex items-center gap-3 text-sm font-medium text-slate-700">{{ plan_form.is_active }} Active plan</label>
+              {% for field in plan_form %}
+                {% for error in field.errors %}
+                  <p class="text-xs text-red-500">{{ error }}</p>
+                {% endfor %}
+              {% endfor %}
+              <button type="submit" class="w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">Save Plan</button>
+            </form>
+          </aside>
+        </section>
+
+        <section id="system" class="mt-6 grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+          <aside class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-6">
+            <h2 class="text-lg font-bold">System</h2>
+            <form method="post" action="{% url 'hub:dashboard' %}#system" class="mt-5">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="mark_backup" />
+              <button type="submit" class="w-full rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800">Record Backup Checkpoint</button>
+            </form>
+          </aside>
+
+          <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-slate-100 sm:p-7">
+            <h2 class="text-lg font-bold">Audit Logs</h2>
+            <div class="mt-5 divide-y divide-slate-100">
+              {% for log in audit_logs %}
+                <article class="py-4 first:pt-0 last:pb-0">
+                  <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p class="font-semibold text-slate-900">{{ log.action }}</p>
+                      <p class="mt-1 text-sm text-slate-500">{{ log.target }} {{ log.details }}</p>
+                    </div>
+                    <p class="text-xs text-slate-400">{{ log.created_at|date:"M j, Y H:i" }} / {{ log.get_severity_display }}</p>
+                  </div>
+                </article>
+              {% empty %}
+                <p class="rounded-lg border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">No audit records yet.</p>
+              {% endfor %}
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,531 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Union | Modern Community Platform</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Swiper CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+  />
+
+  <!-- Google Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Font Awesome 6 -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  />
+
+  <style>
+    * {
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #ffffff;
+    }
+
+    /* Modern minimalistic utilities */
+    .glass-morphism {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hover-lift {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* gradient accent */
+    .gradient-primary {
+      background: linear-gradient(135deg, #6C2BD9 0%, #8B5CF6 100%);
+    }
+
+    .gradient-text-primary {
+      background: linear-gradient(135deg, #6C2BD9 0%, #8B5CF6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6C2BD9 0%, #8B5CF6 100%);
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px 0 rgba(107, 70, 193, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px -5px rgba(107, 70, 193, 0.4);
+    }
+
+    .border-light {
+      border: 1px solid #f1f1f1;
+    }
+
+    .card-minimal {
+      transition: all 0.25s ease;
+    }
+
+    .card-minimal:hover {
+      background-color: #fefefe;
+      border-color: #e9e9e9;
+    }
+
+    /* swiper bullet modern */
+    .swiper-pagination-bullet {
+      background: #cbd5e1;
+      opacity: 1;
+      width: 8px;
+      height: 8px;
+    }
+
+    .swiper-pagination-bullet-active {
+      background: #6C2BD9 !important;
+      width: 24px;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+  <!-- ========== NAVBAR - Minimalistic Glass ========== -->
+  <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100/80">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2.5">
+          <img src="{% static 'images/union-logo.png' %}" alt="Union logo" class="h-10 w-10 rounded-xl object-contain" />
+          <span class="text-xl md:text-2xl font-bold tracking-tight text-gray-900">Union</span>
+        </div>
+
+        <!-- Desktop Navigation - minimal -->
+        <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-600">
+          <a href="#features" class="hover:text-indigo-600 transition duration-200">Features</a>
+          <a href="#about" class="hover:text-indigo-600 transition duration-200">About</a>
+          <a href="#pricing" class="hover:text-indigo-600 transition duration-200">Pricing</a>
+          <a href="#contact" class="hover:text-indigo-600 transition duration-200">Contact</a>
+        </nav>
+
+        <!-- Header actions -->
+        <div class="hidden items-center gap-2 md:flex md:gap-3">
+          {% if request.user.is_authenticated %}
+            <a href="{% url 'hub:dashboard' %}" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-full hover:bg-gray-800 transition shadow-sm">
+              Dashboard
+            </a>
+            <form method="post" action="{% url 'hub:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 transition">
+                Logout
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'hub:signin' %}" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-gray-700 rounded-full border border-gray-200 hover:bg-gray-50 transition">
+              Login
+            </a>
+            <a href="{% url 'hub:signup' %}" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gray-900 rounded-full hover:bg-gray-800 transition shadow-sm">
+              Sign up
+              <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Mobile menu icon (minimal toggle) -->
+        <button
+          type="button"
+          id="mobileMenuButton"
+          class="md:hidden rounded-full border border-gray-200 px-3 py-2 text-gray-700 transition hover:bg-gray-50"
+          aria-controls="mobileMenu"
+          aria-expanded="false"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+
+      <div id="mobileMenu" class="hidden border-t border-gray-100 pb-4 pt-3 md:hidden">
+        <nav class="grid gap-1 text-sm font-medium text-gray-600">
+          <a href="#features" class="rounded-xl px-3 py-2 hover:bg-gray-50 hover:text-indigo-600 transition">Features</a>
+          <a href="#about" class="rounded-xl px-3 py-2 hover:bg-gray-50 hover:text-indigo-600 transition">About</a>
+          <a href="#pricing" class="rounded-xl px-3 py-2 hover:bg-gray-50 hover:text-indigo-600 transition">Pricing</a>
+          <a href="#contact" class="rounded-xl px-3 py-2 hover:bg-gray-50 hover:text-indigo-600 transition">Contact</a>
+        </nav>
+        <div class="mt-3 grid gap-2">
+          {% if request.user.is_authenticated %}
+            <a href="{% url 'hub:dashboard' %}" class="inline-flex items-center justify-center rounded-full bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800">
+              Dashboard
+            </a>
+            <form method="post" action="{% url 'hub:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="inline-flex w-full items-center justify-center rounded-full border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">
+                Logout
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'hub:signin' %}" class="inline-flex items-center justify-center rounded-full border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50">
+              Login
+            </a>
+            <a href="{% url 'hub:signup' %}" class="inline-flex items-center justify-center rounded-full bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800">
+              Sign up
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== HERO - Modern minimal ========== -->
+  <section class="relative min-h-screen flex items-center pt-28 pb-20 overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-purple-50/30">
+    
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-40 left-1/4 w-80 h-80 bg-indigo-200/30 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+        <!-- Left content -->
+        <div class="text-left">
+          <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm py-1.5 px-4 rounded-full border border-gray-200/80 shadow-xs mb-6">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+            <span class="text-xs font-medium text-gray-700">Community-first platform</span>
+          </div>
+
+          <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-[1.2] text-gray-900 mb-6">
+            Build, grow &<br>
+            monetize your<br>
+            <span class="gradient-text-primary">community</span>
+          </h1>
+
+          <p class="text-lg text-gray-500 max-w-xl leading-relaxed mb-8">
+            The minimalistic hub for creators and brands. Launch memberships, host events, and connect with your audience — beautifully simple.
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <a href="{% url 'hub:get_started' %}" class="px-7 py-3.5 bg-gray-900 text-white rounded-full font-semibold text-sm shadow-md hover:bg-gray-800 transition flex items-center gap-2">
+              Get started <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+            <a href="#features" class="px-7 py-3.5 bg-white border border-gray-200 rounded-full font-medium text-sm text-gray-700 hover:bg-gray-50 transition flex items-center gap-2">
+              <i class="fa-regular fa-circle-play"></i> Explore features
+            </a>
+          </div>
+
+          <!-- minimal stats row -->
+          <div class="flex flex-wrap items-center gap-8 mt-12 pt-4 border-t border-gray-100 w-full max-w-md">
+            <div><span class="text-2xl font-black text-gray-900">10K+</span><p class="text-xs text-gray-400 mt-0.5">Active creators</p></div>
+            <div><span class="text-2xl font-black text-gray-900">$3.2M</span><p class="text-xs text-gray-400 mt-0.5">Earned by members</p></div>
+            <div><span class="text-2xl font-black text-gray-900">99%</span><p class="text-xs text-gray-400 mt-0.5">Satisfied</p></div>
+          </div>
+        </div>
+
+        <!-- Right minimal dashboard card -->
+        <div class="relative mt-8 lg:mt-0">
+          <div class="bg-white rounded-3xl shadow-2xl border border-gray-100/80 p-5 md:p-7 backdrop-blur-sm">
+            <div class="flex justify-between items-center mb-6">
+              <div>
+                <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wide">Community insights</h3>
+                <p class="text-2xl font-bold text-gray-800">+42% growth</p>
+              </div>
+              <div class="w-10 h-10 rounded-full gradient-primary flex items-center justify-center text-white shadow-sm">
+                <i class="fa-regular fa-chart-line text-sm"></i>
+              </div>
+            </div>
+            <!-- minimal bars -->
+            <div class="space-y-4">
+              <div><div class="flex justify-between text-xs text-gray-500 mb-1"><span>Engagement</span><span>86%</span></div><div class="h-1.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full w-[86%] gradient-primary rounded-full"></div></div></div>
+              <div><div class="flex justify-between text-xs text-gray-500 mb-1"><span>Retention</span><span>74%</span></div><div class="h-1.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full w-[74%] gradient-primary rounded-full"></div></div></div>
+              <div><div class="flex justify-between text-xs text-gray-500 mb-1"><span>Revenue</span><span>93%</span></div><div class="h-1.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full w-[93%] gradient-primary rounded-full"></div></div></div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-8">
+              <div class="bg-gray-50 rounded-2xl p-4"><p class="text-gray-400 text-xs">Total members</p><p class="text-2xl font-bold text-gray-800">2,845</p></div>
+              <div class="bg-gray-50 rounded-2xl p-4"><p class="text-gray-400 text-xs">Monthly revenue</p><p class="text-2xl font-bold text-gray-800">$12.4k</p></div>
+            </div>
+          </div>
+          <!-- floating badge minimal -->
+          <div class="absolute -bottom-4 -left-8 hidden lg:block bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-sm border border-gray-100">
+            <div class="flex items-center gap-2 text-xs font-medium text-gray-600"><i class="fa-regular fa-heart text-indigo-500"></i> Used by leading creators</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FEATURES SECTION = Minimal & clean ========= -->
+  <section id="features" class="py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">Everything you need</h2>
+        <p class="text-gray-500 text-lg">Powerful, intuitive tools to nurture a thriving digital home.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="rounded-2xl bg-white border border-gray-100 p-7 hover:shadow-md transition-all duration-200 card-minimal">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl mb-5">
+            <i class="fa-regular fa-comments"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Engaged Spaces</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Create forums, group chats, and channels that spark real conversation.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="rounded-2xl bg-white border border-gray-100 p-7 hover:shadow-md transition-all duration-200 card-minimal">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl mb-5">
+            <i class="fa-regular fa-credit-card"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Monetization</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Paid memberships, subscriptions, and digital products — no hidden fees.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="rounded-2xl bg-white border border-gray-100 p-7 hover:shadow-md transition-all duration-200 card-minimal">
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-xl mb-5">
+            <i class="fa-regular fa-calendar-check"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-800 mb-2">Live Events</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Host webinars, streams, and Q&As with integrated ticketing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT - minimal statement ========= -->
+  <section id="about" class="py-24 bg-gray-50/60 border-y border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div class="order-2 lg:order-1">
+          <span class="text-indigo-600 text-sm font-semibold uppercase tracking-wider">The union difference</span>
+          <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mt-3 mb-6">Built for the modern creator</h2>
+          <p class="text-gray-500 text-lg leading-relaxed mb-6">We stripped away the noise. Union is designed to help you focus on what matters: authentic connection and sustainable growth.</p>
+          <div class="flex flex-col gap-4 text-gray-600 text-sm mb-8">
+            <div class="flex gap-3"><i class="fa-regular fa-circle-check text-indigo-500 mt-0.5"></i> <span>No spam, no ads — pure community experience</span></div>
+            <div class="flex gap-3"><i class="fa-regular fa-circle-check text-indigo-500 mt-0.5"></i> <span>Seamless integrations with your favorite tools</span></div>
+            <div class="flex gap-3"><i class="fa-regular fa-circle-check text-indigo-500 mt-0.5"></i> <span>Customizable branding and member journeys</span></div>
+          </div>
+          <a href="#features" class="inline-flex px-6 py-3 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-800 hover:bg-gray-50 transition shadow-sm">Explore the platform</a>
+        </div>
+        <div class="order-1 lg:order-2 relative">
+          <div class="aspect-square bg-gradient-to-tr from-indigo-100 to-purple-100 rounded-3xl flex items-center justify-center shadow-inner">
+            <div class="text-center">
+              <img src="{% static 'images/union-logo.png' %}" alt="Union logo" class="mx-auto h-28 w-28 object-contain opacity-80" />
+              <p class="text-gray-600 font-medium mt-4 text-sm">minimal • human • connected</p>
+            </div>
+          </div>
+          <div class="absolute -bottom-3 -right-3 w-28 h-28 bg-white rounded-2xl shadow-md flex items-center justify-center border border-gray-100">
+            <i class="fa-regular fa-message text-3xl text-indigo-500"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TESTIMONIALS (SWIPER) minimal ========= -->
+  <section class="py-28 bg-white">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 mb-3">Trusted by creators</h2>
+        <p class="text-gray-500 text-lg">Thousands use Union to power their community businesses.</p>
+      </div>
+
+      <div class="swiper mySwiper overflow-hidden">
+        <div class="swiper-wrapper pb-12">
+          <!-- slide 1 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-50/80 border border-gray-100 rounded-2xl p-7 transition-all">
+              <div class="flex items-center gap-1 text-amber-400 text-sm mb-5">★★★★★</div>
+              <p class="text-gray-600 text-base leading-relaxed mb-6">“The cleanest community platform I've ever used. My members love the simplicity, and I love the analytics.”</p>
+              <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i class="fa-regular fa-user text-sm"></i></div><div><h4 class="font-semibold text-gray-800">Emma Richards</h4><p class="text-xs text-gray-400">Creator Educator</p></div></div>
+            </div>
+          </div>
+          <!-- slide 2 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-50/80 border border-gray-100 rounded-2xl p-7 transition-all">
+              <div class="flex items-center gap-1 text-amber-400 text-sm mb-5">★★★★★</div>
+              <p class="text-gray-600 text-base leading-relaxed mb-6">“Union helped me 10x my paid membership in 3 months. Intuitive design and powerful tools.”</p>
+              <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i class="fa-regular fa-user text-sm"></i></div><div><h4 class="font-semibold text-gray-800">Marcus Chen</h4><p class="text-xs text-gray-400">Startup Founder</p></div></div>
+            </div>
+          </div>
+          <!-- slide 3 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-50/80 border border-gray-100 rounded-2xl p-7 transition-all">
+              <div class="flex items-center gap-1 text-amber-400 text-sm mb-5">★★★★★</div>
+              <p class="text-gray-600 text-base leading-relaxed mb-6">“Finally a modern community solution that feels premium and doesn't overwhelm.”</p>
+              <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i class="fa-regular fa-user text-sm"></i></div><div><h4 class="font-semibold text-gray-800">Sophia Laurent</h4><p class="text-xs text-gray-400">Digital Creator</p></div></div>
+            </div>
+          </div>
+          <!-- slide 4 -->
+          <div class="swiper-slide">
+            <div class="bg-gray-50/80 border border-gray-100 rounded-2xl p-7 transition-all">
+              <div class="flex items-center gap-1 text-amber-400 text-sm mb-5">★★★★★</div>
+              <p class="text-gray-600 text-base leading-relaxed mb-6">“Union’s sleek interface and support team are unmatched. Highly recommend for any creator.”</p>
+              <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i class="fa-regular fa-user text-sm"></i></div><div><h4 class="font-semibold text-gray-800">Jason Zhao</h4><p class="text-xs text-gray-400">Community Manager</p></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-pagination !bottom-0"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRICING - minimal cards ========= -->
+  <section id="pricing" class="py-28 bg-gray-50/40">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 mb-3">Simple, transparent plans</h2>
+        <p class="text-gray-500 text-lg">No hidden fees. Upgrade or cancel anytime.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- starter -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-7 shadow-sm hover:shadow-md transition">
+          <h3 class="text-2xl font-bold text-gray-800">Starter</h3>
+          <div class="mt-4 mb-5"><span class="text-5xl font-black text-gray-900">$19</span><span class="text-gray-400"> /month</span></div>
+          <ul class="space-y-3 text-sm text-gray-600 mb-8">
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500 text-sm mt-0.5"></i> Up to 500 members</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500 text-sm mt-0.5"></i> Community analytics</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500 text-sm mt-0.5"></i> 1 admin seat</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500 text-sm mt-0.5"></i> Basic support</li>
+          </ul>
+          <a href="{% url 'hub:get_started' %}" class="block w-full py-2.5 rounded-full border border-gray-300 text-center text-gray-700 font-medium text-sm hover:bg-gray-50 transition">Get Starter</a>
+        </div>
+
+        <!-- pro -->
+        <div class="bg-white rounded-2xl border-2 border-indigo-200 shadow-lg p-7 relative">
+          <div class="absolute top-0 right-6 transform -translate-y-1/2 bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full">Most popular</div>
+          <h3 class="text-2xl font-bold text-gray-800">Professional</h3>
+          <div class="mt-4 mb-5"><span class="text-5xl font-black text-gray-900">$49</span><span class="text-gray-400"> /month</span></div>
+          <ul class="space-y-3 text-sm text-gray-600 mb-8">
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> Unlimited members</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> Advanced monetization</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> 5 admin seats + roles</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> Priority support</li>
+          </ul>
+          <a href="{% url 'hub:get_started' %}" class="block w-full py-2.5 rounded-full gradient-primary text-center text-white font-medium text-sm shadow-sm hover:opacity-95 transition">Start free trial</a>
+        </div>
+
+        <!-- enterprise -->
+        <div class="bg-white rounded-2xl border border-gray-100 p-7 shadow-sm hover:shadow-md transition">
+          <h3 class="text-2xl font-bold text-gray-800">Enterprise</h3>
+          <div class="mt-4 mb-5"><span class="text-5xl font-black text-gray-900">$99</span><span class="text-gray-400"> /month</span></div>
+          <ul class="space-y-3 text-sm text-gray-600 mb-8">
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> Everything in Pro +</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> Dedicated success manager</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> API & webhooks</li>
+            <li class="flex gap-2"><i class="fa-regular fa-check-circle text-indigo-500"></i> SSO & custom contract</li>
+          </ul>
+          <a href="mailto:hello@union.community" class="block w-full py-2.5 rounded-full border border-gray-300 text-center text-gray-700 font-medium text-sm hover:bg-gray-50 transition">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT - minimal form ========= -->
+  <section id="contact" class="py-28 bg-white">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-6">Let's create together</h2>
+          <p class="text-gray-500 text-lg leading-relaxed mb-8">Got questions? Idea in mind? Our team is here to help you build the community you've envisioned.</p>
+          <div class="space-y-3 text-gray-500 text-sm border-l-4 border-indigo-200 pl-5">
+            <p><i class="fa-regular fa-envelope mr-3 text-indigo-400"></i> hello@union.community</p>
+            <p><i class="fa-regular fa-location-dot mr-3 text-indigo-400"></i> Remote-first / NYC / SF</p>
+            <p><i class="fa-regular fa-clock mr-3 text-indigo-400"></i> Response within 24h</p>
+          </div>
+        </div>
+        <div class="bg-gray-50/70 rounded-2xl p-7 border border-gray-100 shadow-sm">
+          {% if messages %}
+            <div class="mb-5 space-y-2">
+              {% for message in messages %}
+                <div class="rounded-xl border px-4 py-3 text-sm {% if message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-700{% else %}border-red-200 bg-red-50 text-red-700{% endif %}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <form method="post" action="{% url 'hub:home' %}#contact" class="space-y-5">
+            {% csrf_token %}
+            <div>
+              {{ contact_form.full_name }}
+              {% for error in contact_form.full_name.errors %}
+                <p class="mt-1 text-xs text-red-500">{{ error }}</p>
+              {% endfor %}
+            </div>
+            <div>
+              {{ contact_form.email }}
+              {% for error in contact_form.email.errors %}
+                <p class="mt-1 text-xs text-red-500">{{ error }}</p>
+              {% endfor %}
+            </div>
+            <div>
+              {{ contact_form.message }}
+              {% for error in contact_form.message.errors %}
+                <p class="mt-1 text-xs text-red-500">{{ error }}</p>
+              {% endfor %}
+            </div>
+            <button type="submit" class="w-full py-3.5 rounded-xl gradient-primary text-white font-semibold text-sm shadow-sm hover:shadow-md transition">Send message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER - minimal clean ========= -->
+  <footer class="bg-white border-t border-gray-100 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+        <div><div class="flex items-center gap-2 mb-4"><img src="{% static 'images/union-logo.png' %}" alt="Union logo" class="h-8 w-8 rounded-lg object-contain" /><span class="font-bold text-xl text-gray-800">Union</span></div><p class="text-xs text-gray-400 max-w-xs">Minimal community platform for creators.</p></div>
+        <div><h3 class="text-sm font-semibold text-gray-800 mb-4">Platform</h3><ul class="space-y-2 text-xs text-gray-500"><li>Features</li><li>Pricing</li><li>Integrations</li></ul></div>
+        <div><h3 class="text-sm font-semibold text-gray-800 mb-4">Resources</h3><ul class="space-y-2 text-xs text-gray-500"><li>Blog</li><li>Documentation</li><li>Support</li></ul></div>
+        <div><h3 class="text-sm font-semibold text-gray-800 mb-4">Legal</h3><ul class="space-y-2 text-xs text-gray-500"><li>Privacy</li><li>Terms</li><li>Cookies</li></ul></div>
+      </div>
+      <div class="flex flex-col md:flex-row justify-between items-center pt-6 border-t border-gray-100 text-xs text-gray-400">
+        <span>© 2026 Union — All rights reserved.</span>
+        <div class="flex gap-5 mt-4 md:mt-0"><i class="fab fa-twitter hover:text-indigo-500 cursor-pointer"></i><i class="fab fa-instagram hover:text-indigo-500 cursor-pointer"></i><i class="fab fa-github hover:text-indigo-500 cursor-pointer"></i></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Swiper JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <script>
+    const mobileMenuButton = document.getElementById("mobileMenuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+
+    mobileMenuButton?.addEventListener("click", () => {
+      const isOpen = !mobileMenu?.classList.contains("hidden");
+      mobileMenu?.classList.toggle("hidden", isOpen);
+      mobileMenuButton.setAttribute("aria-expanded", String(!isOpen));
+    });
+
+    const swiper = new Swiper(".mySwiper", {
+      slidesPerView: 1,
+      spaceBetween: 24,
+      loop: true,
+      autoplay: { delay: 4000, disableOnInteraction: false },
+      pagination: { el: ".swiper-pagination", clickable: true },
+      breakpoints: { 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } },
+    });
+  </script>
+</body>
+</html>
