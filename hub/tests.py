@@ -134,7 +134,116 @@ class HubViewTests(TestCase):
         self.assertEqual(user.profile.gender, UserProfile.OTHER)
         self.assertEqual(len(user.profile.otp_code), 6)
         self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, "ishantbhai11@gmail.com")
         self.assertIn(user.profile.otp_code, mail.outbox[0].body)
+
+    def test_notification_emails_verified_users_with_immediate_email_notifications(self):
+        from .views import _notify
+
+        user = self.create_member()
+        UserProfile.objects.create(
+            user=user,
+            email_verified=True,
+            personalization_preferences=UserProfile.PERSONALIZATION_DEFAULTS,
+        )
+
+        _notify(user, "Community joined", "You joined a community.")
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, "ishantbhai11@gmail.com")
+        self.assertEqual(mail.outbox[0].to, [user.email])
+        self.assertIn("You joined a community.", mail.outbox[0].body)
+
+    def test_notification_email_respects_email_preferences(self):
+        from .views import _notify
+
+        user = self.create_member()
+        UserProfile.objects.create(
+            user=user,
+            email_verified=True,
+            personalization_preferences={
+                **UserProfile.PERSONALIZATION_DEFAULTS,
+                "email_notifications": False,
+            },
+        )
+
+        _notify(user, "Community joined", "You joined a community.")
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_notification_emails_send_immediately_for_legacy_digest_frequencies(self):
+        from .views import _notify
+
+        user = self.create_member()
+        profile = UserProfile.objects.create(
+            user=user,
+            email_verified=True,
+            personalization_preferences=UserProfile.PERSONALIZATION_DEFAULTS,
+        )
+
+        for frequency in ("daily", "weekly"):
+            with self.subTest(frequency=frequency):
+                profile.personalization_preferences = {
+                    **UserProfile.PERSONALIZATION_DEFAULTS,
+                    "notification_frequency": frequency,
+                }
+                profile.save(update_fields=["personalization_preferences"])
+
+                _notify(user, "New activity", f"Activity with {frequency} preference.")
+
+                self.assertEqual(len(mail.outbox), 1)
+                self.assertIn(f"Activity with {frequency} preference.", mail.outbox[0].body)
+                mail.outbox.clear()
+
+    def test_notification_email_delivery_setting_off_suppresses_email(self):
+        from .views import _notify
+
+        user = self.create_member()
+        UserProfile.objects.create(
+            user=user,
+            email_verified=True,
+            personalization_preferences={
+                **UserProfile.PERSONALIZATION_DEFAULTS,
+                "notification_frequency": "off",
+            },
+        )
+
+        _notify(user, "New activity", "This notification remains in the bell.")
+
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_joining_community_sends_notification_email(self):
+        owner = get_user_model().objects.create_user(
+            username="community-owner@example.com",
+            email="community-owner@example.com",
+            password="StrongPass123!",
+        )
+        user = self.create_member()
+        UserProfile.objects.create(
+            user=user,
+            email_verified=True,
+            personalization_preferences=UserProfile.PERSONALIZATION_DEFAULTS,
+        )
+        community = Community.objects.create(
+            name="Email Updates Club",
+            topic="Technology",
+            visibility=Community.PUBLIC,
+            description="A public technology community.",
+            owner=owner,
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("hub:dashboard_section", kwargs={"section": "communities"}),
+            {"action": "join_community", "community_id": community.pk},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, "ishantbhai11@gmail.com")
+        self.assertEqual(mail.outbox[0].to, [user.email])
+        self.assertIn("Community joined", mail.outbox[0].subject)
+        self.assertIn("You joined Email Updates Club.", mail.outbox[0].body)
 
     def test_add_account_opens_signup_without_dropping_current_session(self):
         user = self.create_member()
@@ -1050,6 +1159,7 @@ class HubViewTests(TestCase):
         self.assertContains(response, "Members")
         self.assertContains(response, "Leaderboard")
         self.assertContains(response, "Create Post")
+        self.assertNotContains(response, "Leave community")
         self.assertContains(response, "Reply", count=1)
         self.assertContains(response, "Write a reply")
         self.assertContains(response, "Lighting tutorial")
@@ -1070,6 +1180,100 @@ class HubViewTests(TestCase):
         self.assertContains(settings_response, "Community settings")
         self.assertContains(settings_response, "Change banner image")
         self.assertNotContains(settings_response, "Lighting tutorial")
+
+    def test_community_member_sees_general_actions_and_can_leave_from_three_dot_menu(self):
+        owner = get_user_model().objects.create_user(
+            username="leave-community-owner@example.com",
+            email="leave-community-owner@example.com",
+            password="StrongPass123!",
+        )
+        user = self.create_member()
+        community = Community.objects.create(
+            name="Member Exit Club",
+            topic="Technology",
+            visibility=Community.PUBLIC,
+            description="A public technology community.",
+            owner=owner,
+        )
+        membership = CommunityMembership.objects.create(community=community, user=user)
+        self.client.force_login(user)
+
+        page = self.client.get(reverse("hub:community_detail", kwargs={"slug": community.slug}))
+
+        self.assertContains(page, "Manage communities")
+        self.assertContains(page, reverse("hub:dashboard_section", kwargs={"section": "communities"}))
+        self.assertContains(page, "Leave community")
+        self.assertContains(page, 'id="community-dropdown-menu"')
+        self.assertContains(page, '<input type="hidden" name="action" value="leave_community"')
+        self.assertNotContains(page, "Manage this community")
+
+        response = self.client.post(
+            reverse("hub:community_detail", kwargs={"slug": community.slug}),
+            {"action": "leave_community"},
+        )
+
+        self.assertRedirects(
+            response,
+            reverse("hub:dashboard_section", kwargs={"section": "communities"}),
+            fetch_redirect_response=False,
+        )
+        self.assertFalse(CommunityMembership.objects.filter(pk=membership.pk).exists())
+
+    def test_community_owner_does_not_see_leave_action_in_three_dot_menu(self):
+        user = self.create_member()
+        community = Community.objects.create(
+            name="Owner Controls Club",
+            topic="Technology",
+            visibility=Community.PUBLIC,
+            description="An owner-managed community.",
+            owner=user,
+        )
+        CommunityMembership.objects.create(
+            community=community,
+            user=user,
+            role=CommunityMembership.OWNER,
+        )
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("hub:community_detail", kwargs={"slug": community.slug}))
+
+        self.assertNotContains(response, "Leave community")
+        self.assertContains(response, "Manage communities")
+        self.assertContains(response, "Manage this community")
+
+    def test_joining_community_from_community_page_emails_verified_member(self):
+        owner = get_user_model().objects.create_user(
+            username="join-community-owner@example.com",
+            email="join-community-owner@example.com",
+            password="StrongPass123!",
+        )
+        user = self.create_member()
+        UserProfile.objects.create(
+            user=user,
+            email_verified=True,
+            personalization_preferences=UserProfile.PERSONALIZATION_DEFAULTS,
+        )
+        community = Community.objects.create(
+            name="Community Page Join Club",
+            topic="Technology",
+            visibility=Community.PUBLIC,
+            description="A public technology community.",
+            owner=owner,
+        )
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("hub:community_detail", kwargs={"slug": community.slug}),
+            {"action": "join_community"},
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(CommunityMembership.objects.filter(community=community, user=user).exists())
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].from_email, "ishantbhai11@gmail.com")
+        self.assertEqual(mail.outbox[0].to, [user.email])
+        self.assertIn("Community joined", mail.outbox[0].subject)
+        self.assertIn("You joined Community Page Join Club.", mail.outbox[0].body)
 
     def test_community_feed_does_not_render_trending_posts_panel(self):
         user = self.create_member()

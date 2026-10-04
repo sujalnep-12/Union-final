@@ -66,25 +66,36 @@ The routed pages live in `templates/`:
 
 Tailwind CSS is loaded through CDN scripts in the templates, so you can refresh the browser after editing.
 
-## OTP email locally
+## Platform email
 
 By default, OTP emails use Django's console backend. In local `DJANGO_DEBUG=True`,
 the OTP also appears on the verification page so local testing does not depend on
-an inbox. To send real email from `sujalnepaligaire2080@gmail.com`, set these
-values in `.env`:
+an inbox. Signup verification and password-reset OTPs, along with immediate
+notification emails, use `ishantbhai11@gmail.com` as the sender. Notification emails
+are sent immediately for each in-app notification to users with a verified email
+and email alerts enabled. Users can turn them off using the email-alert checkbox
+or delivery setting. Legacy daily/weekly settings are treated as immediate;
+scheduled digests are not implemented. Promotional email campaigns are not sent
+by this notification feature.
+
+To send real email locally, set these values in `.env`:
 
 ```powershell
 DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 DJANGO_EMAIL_HOST=smtp.gmail.com
 DJANGO_EMAIL_PORT=587
 DJANGO_EMAIL_USE_TLS=True
-DJANGO_EMAIL_HOST_USER=sujalnepaligaire2080@gmail.com
+DJANGO_EMAIL_HOST_USER=ishantbhai11@gmail.com
 DJANGO_EMAIL_HOST_PASSWORD=your-gmail-app-password
-DJANGO_DEFAULT_FROM_EMAIL=sujalnepaligaire2080@gmail.com
+DJANGO_DEFAULT_FROM_EMAIL=ishantbhai11@gmail.com
 DJANGO_EMAIL_TIMEOUT=10
 ```
 
-Use a Gmail app password rather than your normal Gmail password.
+Use a newly generated Gmail app password, not your normal Gmail password. Revoke
+any app password that has been shared or exposed, and never commit `.env` or put
+the app password in source code. For deployment, configure these same variables
+as private environment variables in the hosting provider; changing local `.env`
+does not configure the deployed app.
 
 ## Tests
 

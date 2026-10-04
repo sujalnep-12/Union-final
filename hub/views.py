@@ -1,6 +1,7 @@
 import json
 import logging
 import random
+import smtplib
 from datetime import timedelta
 from uuid import uuid4
 from urllib.parse import quote, urlencode, urlparse
@@ -1773,8 +1774,51 @@ def _record_audit(actor, action, *, target="", details="", severity=AuditLog.INF
     )
 
 
-def _notify(user, title, body, *, category=Notification.ACCOUNT):
-    Notification.objects.create(user=user, title=title, body=body, category=category)
+def _notify(
+    user,
+    title,
+    body,
+    *,
+    category=Notification.ACCOUNT,
+    actor=None,
+    notification_type=Notification.GENERAL,
+):
+    notification = Notification.objects.create(
+        user=user,
+        actor=actor,
+        title=title,
+        body=body,
+        category=category,
+        notification_type=notification_type,
+    )
+    profile = UserProfile.objects.filter(user=user).only(
+        "email_verified",
+        "personalization_preferences",
+    ).first()
+    preferences = profile.personalization if profile else {}
+    if (
+        not profile
+        or not profile.email_verified
+        or not user.email
+        or not preferences.get("email_notifications", True)
+        or preferences.get("notification_frequency", "immediate") == "off"
+    ):
+        return
+
+    try:
+        send_mail(
+            f"Union notification: {notification.title}",
+            f"{notification.body}\n\nManage email notifications in your Union account preferences.",
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False,
+        )
+    except (OSError, smtplib.SMTPException):
+        logger.exception(
+            "Failed to email notification %s to user %s",
+            notification.pk,
+            user.pk,
+        )
 
 
 def _process_mentions(text, actor, post=None, comment=None):
@@ -1786,11 +1830,13 @@ def _process_mentions(text, actor, post=None, comment=None):
             mentioned = User.objects.get(username__iexact=username)
             if mentioned == actor:
                 continue
-            Notification.objects.create(
-                user=mentioned,
-                title=f"@{actor.username} mentioned you",
-                body=f"You were mentioned in a post: {text[:80]}",
+            _notify(
+                mentioned,
+                f"@{actor.username} mentioned you",
+                f"You were mentioned in a post: {text[:80]}",
                 category=Notification.COMMUNITY,
+                actor=actor,
+                notification_type=Notification.MENTION,
             )
         except User.DoesNotExist:
             pass
@@ -4753,11 +4799,12 @@ def friend_request(request):
         follow, created = UserFollow.objects.get_or_create(follower=user, followed=target, defaults={"status": UserFollow.PENDING})
         if not created:
             return JsonResponse({"ok": False, "error": "Request already exists."}, status=400)
-        Notification.objects.create(
-            user=target, actor=user,
+        _notify(
+            target,
+            "Friend request",
+            f"{display_name} sent you a friend request.",
+            actor=user,
             notification_type=Notification.FOLLOW,
-            title="Friend request",
-            body=f"{display_name} sent you a friend request.",
         )
         return JsonResponse({"ok": True, "status": "pending"})
 
@@ -4766,11 +4813,12 @@ def friend_request(request):
         if not updated:
             return JsonResponse({"ok": False, "error": "No pending request."}, status=400)
         UserFollow.objects.get_or_create(follower=user, followed=target, defaults={"status": UserFollow.ACCEPTED})
-        Notification.objects.create(
-            user=target, actor=user,
+        _notify(
+            target,
+            "Friend request accepted",
+            f"{display_name} accepted your friend request.",
+            actor=user,
             notification_type=Notification.FOLLOW,
-            title="Friend request accepted",
-            body=f"{display_name} accepted your friend request.",
         )
         return JsonResponse({"ok": True, "status": "accepted"})
 

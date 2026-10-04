@@ -495,7 +495,7 @@ class PersonalizationForm(forms.Form):
     email_notifications = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={"class": CHECKBOX_CLASS}))
     push_notifications = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={"class": CHECKBOX_CLASS}))
     notification_frequency = forms.ChoiceField(
-        choices=[("immediate", "Immediately"), ("daily", "Daily summary"), ("weekly", "Weekly summary"), ("off", "Off")],
+        choices=[("immediate", "Immediately"), ("off", "Off")],
         widget=forms.Select(attrs={"class": SELECT_CLASS}),
     )
     quiet_hours_enabled = forms.BooleanField(required=False, widget=forms.CheckboxInput(attrs={"class": CHECKBOX_CLASS}))
@@ -551,6 +551,8 @@ class PersonalizationForm(forms.Form):
             initial = profile.personalization
             initial["quiet_hours_start"] = initial.get("quiet_hours_start", "21:00")
             initial["quiet_hours_end"] = initial.get("quiet_hours_end", "08:00")
+            if initial.get("notification_frequency") in {"daily", "weekly"}:
+                initial["notification_frequency"] = "immediate"
             self.initial.update(initial)
 
     def save(self):

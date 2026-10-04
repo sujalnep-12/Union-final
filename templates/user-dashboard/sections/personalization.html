@@ -104,14 +104,14 @@
         </label>
         <label class="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-3 transition hover:bg-gray-50">
           {{ personalization_form.email_notifications }}
-          <span><span class="block text-sm font-semibold text-gray-800">Email alerts</span><span class="block text-xs text-gray-500">Receive selected activity by email.</span></span>
+          <span><span class="block text-sm font-semibold text-gray-800">Email alerts</span><span class="block text-xs text-gray-500">Receive every bell notification by email.</span></span>
         </label>
         <label class="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-3 transition hover:bg-gray-50">
           {{ personalization_form.push_notifications }}
           <span><span class="block text-sm font-semibold text-gray-800">Push alerts</span><span class="block text-xs text-gray-500">Use browser/device notifications when available.</span></span>
         </label>
         <div>
-          <label for="{{ personalization_form.notification_frequency.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Delivery frequency</label>
+          <label for="{{ personalization_form.notification_frequency.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Email delivery</label>
           {{ personalization_form.notification_frequency }}
         </div>
         <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">

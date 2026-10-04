@@ -735,14 +735,33 @@
                   </button>
                   <div id="community-dropdown-menu" class="absolute right-0 top-full z-50 mt-2 hidden w-56">
                     <div class="rounded-xl border border-gray-200 bg-white p-1 shadow-xl ring-1 ring-black/5">
+                      <a href="{% url 'hub:dashboard' %}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+                        <i class="fa-solid fa-gauge w-5 text-center text-xs"></i> Dashboard
+                      </a>
+                      <a href="{% url 'hub:dashboard_section' 'communities' %}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+                        <i class="fa-solid fa-layer-group w-5 text-center text-xs"></i> Manage communities
+                      </a>
+                      {% if can_edit_community or is_member %}
+                        <div class="my-1 border-t border-gray-100"></div>
+                      {% endif %}
                       {% if can_edit_community %}
                         <a href="{% url 'hub:community_detail' community.slug %}?tab=settings" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950"><i class="fa-solid fa-gear w-5 text-center text-xs"></i> Settings</a>
                       {% endif %}
                       {% if can_manage_roles %}
-                        <a href="{% url 'hub:community_detail' community.slug %}?tab=manage" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950"><i class="fa-solid fa-sliders w-5 text-center text-xs"></i> Manage</a>
+                        <a href="{% url 'hub:community_detail' community.slug %}?tab=manage" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950"><i class="fa-solid fa-sliders w-5 text-center text-xs"></i> Manage this community</a>
                       {% endif %}
                       {% if is_manager %}
                         <a href="{% url 'hub:community_detail' community.slug %}?tab=moderation" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950"><i class="fa-solid fa-shield-halved w-5 text-center text-xs"></i> Content moderation</a>
+                      {% endif %}
+                      {% if is_member and not is_owner %}
+                        <div class="my-1 border-t border-gray-100"></div>
+                        <form method="post" action="{% url 'hub:community_detail' community.slug %}?tab=posts">
+                          {% csrf_token %}
+                          <input type="hidden" name="action" value="leave_community" />
+                          <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-semibold text-red-600 transition hover:bg-red-50">
+                            <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center text-xs"></i> Leave community
+                          </button>
+                        </form>
                       {% endif %}
                       {% if is_owner %}
                         <div class="my-1 border-t border-gray-100"></div>
