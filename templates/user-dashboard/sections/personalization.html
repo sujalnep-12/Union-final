@@ -1,0 +1,226 @@
+{% if active_page == "personalization" %}
+<section id="personalization" class="{% if embedded_settings %}w-full{% else %}mx-auto mt-6 max-w-5xl{% endif %} space-y-6">
+  {% if not embedded_settings %}
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-gray-400">Your experience</p>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight text-gray-900">Personalization</h1>
+      <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Control the way Union looks, what you see, and how the platform contacts you. Account details and security remain in Settings.</p>
+    </div>
+    <a href="{% url 'hub:dashboard' %}" class="inline-flex items-center gap-2 self-start rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 sm:self-auto">
+      <i class="fa-solid fa-arrow-left text-xs"></i> Back to home
+    </a>
+  </div>
+  {% endif %}
+
+  {% if personalization_form.non_field_errors %}
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ personalization_form.non_field_errors }}</div>
+  {% endif %}
+
+  <form id="personalization-form" method="post" action="{% if embedded_settings %}{% url 'hub:dashboard_section' 'settings' %}?tab=personalization{% else %}{% url 'hub:dashboard_section' 'personalization' %}{% endif %}" class="space-y-6" data-dirty-form>
+    {% csrf_token %}
+    <input type="hidden" name="action" value="save_personalization" />
+
+    <article class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div class="border-b border-gray-100 px-5 py-4 sm:px-6">
+        <div class="flex items-start gap-3">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600"><i class="fa-solid fa-palette"></i></span>
+          <div>
+            <h2 class="font-bold text-gray-900">Appearance</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Set your colour mode and how spacious the dashboard feels.</p>
+          </div>
+        </div>
+      </div>
+      <div class="grid gap-5 p-5 sm:grid-cols-3 sm:p-6">
+        <div>
+          <label for="{{ personalization_form.theme_preference.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Theme</label>
+          {{ personalization_form.theme_preference }}
+          <p class="mt-1.5 text-xs text-gray-500">System follows your device.</p>
+        </div>
+        <div>
+          <label for="{{ personalization_form.accent_color.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Accent colour</label>
+          {{ personalization_form.accent_color }}
+          <p class="mt-1.5 text-xs text-gray-500">Used for your selected controls.</p>
+        </div>
+        <div>
+          <label for="{{ personalization_form.layout_density.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Layout spacing</label>
+          {{ personalization_form.layout_density }}
+          <p class="mt-1.5 text-xs text-gray-500">Choose compact or comfortable spacing.</p>
+        </div>
+      </div>
+    </article>
+
+    <article id="notification-preferences" class="scroll-mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div class="border-b border-gray-100 px-5 py-4 sm:px-6">
+        <div class="flex items-start gap-3">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-50 text-sky-600"><i class="fa-solid fa-compass"></i></span>
+          <div>
+            <h2 class="font-bold text-gray-900">Navigation and content</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Choose where you start and what order content appears in.</p>
+          </div>
+        </div>
+      </div>
+      <div class="grid gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3 sm:p-6">
+        <div>
+          <label for="{{ personalization_form.default_dashboard_section.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Default landing page</label>
+          {{ personalization_form.default_dashboard_section }}
+        </div>
+        <div>
+          <label for="{{ personalization_form.sidebar_default.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Sidebar on sign-in</label>
+          {{ personalization_form.sidebar_default }}
+        </div>
+        <div>
+          <label for="{{ personalization_form.feed_order.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Feed order</label>
+          {{ personalization_form.feed_order }}
+        </div>
+        <div>
+          <label for="{{ personalization_form.content_language.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Recommended content language</label>
+          {{ personalization_form.content_language }}
+        </div>
+        <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">
+          {{ personalization_form.show_recommendations }}
+          <span>
+            <span class="block text-sm font-semibold text-gray-800">Show recommendations</span>
+            <span class="block text-xs text-gray-500">Include suggested communities and people.</span>
+          </span>
+        </label>
+      </div>
+    </article>
+
+    <article class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div class="border-b border-gray-100 px-5 py-4 sm:px-6">
+        <div class="flex items-start gap-3">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600"><i class="fa-solid fa-bell"></i></span>
+          <div>
+            <h2 class="font-bold text-gray-900">Notifications</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Select how and when Union can alert you.</p>
+          </div>
+        </div>
+      </div>
+      <div class="grid gap-3 p-5 sm:grid-cols-3 sm:p-6">
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-3 transition hover:bg-gray-50">
+          {{ personalization_form.in_app_notifications }}
+          <span><span class="block text-sm font-semibold text-gray-800">In-app alerts</span><span class="block text-xs text-gray-500">Show alerts while using Union.</span></span>
+        </label>
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-3 transition hover:bg-gray-50">
+          {{ personalization_form.email_notifications }}
+          <span><span class="block text-sm font-semibold text-gray-800">Email alerts</span><span class="block text-xs text-gray-500">Receive selected activity by email.</span></span>
+        </label>
+        <label class="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-3 transition hover:bg-gray-50">
+          {{ personalization_form.push_notifications }}
+          <span><span class="block text-sm font-semibold text-gray-800">Push alerts</span><span class="block text-xs text-gray-500">Use browser/device notifications when available.</span></span>
+        </label>
+        <div>
+          <label for="{{ personalization_form.notification_frequency.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Delivery frequency</label>
+          {{ personalization_form.notification_frequency }}
+        </div>
+        <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">
+          {{ personalization_form.quiet_hours_enabled }}
+          <span><span class="block text-sm font-semibold text-gray-800">Quiet hours</span><span class="block text-xs text-gray-500">Pause non-urgent alerts overnight.</span></span>
+        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="{{ personalization_form.quiet_hours_start.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">From</label>
+            {{ personalization_form.quiet_hours_start }}
+          </div>
+          <div>
+            <label for="{{ personalization_form.quiet_hours_end.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Until</label>
+            {{ personalization_form.quiet_hours_end }}
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div class="border-b border-gray-100 px-5 py-4 sm:px-6">
+        <div class="flex items-start gap-3">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600"><i class="fa-solid fa-globe"></i></span>
+          <div>
+            <h2 class="font-bold text-gray-900">Language and regional format</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Use formats that make dates and times easier to read.</p>
+          </div>
+        </div>
+      </div>
+      <div class="grid gap-5 p-5 sm:grid-cols-2 lg:grid-cols-4 sm:p-6">
+        <div><label for="{{ personalization_form.language.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Interface language</label>{{ personalization_form.language }}</div>
+        <div><label for="{{ personalization_form.timezone.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Timezone</label>{{ personalization_form.timezone }}</div>
+        <div><label for="{{ personalization_form.date_format.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Date format</label>{{ personalization_form.date_format }}</div>
+        <div><label for="{{ personalization_form.time_format.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Time format</label>{{ personalization_form.time_format }}</div>
+      </div>
+    </article>
+
+    <article class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div class="border-b border-gray-100 px-5 py-4 sm:px-6">
+        <div class="flex items-start gap-3">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-fuchsia-50 text-fuchsia-600"><i class="fa-solid fa-universal-access"></i></span>
+          <div>
+            <h2 class="font-bold text-gray-900">Accessibility</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Adapt the interface for easier reading and less motion.</p>
+          </div>
+        </div>
+      </div>
+      <div class="grid gap-3 p-5 sm:grid-cols-3 sm:p-6">
+        <div>
+          <label for="{{ personalization_form.text_size.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Text size</label>
+          {{ personalization_form.text_size }}
+        </div>
+        <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">
+          {{ personalization_form.high_contrast }}
+          <span><span class="block text-sm font-semibold text-gray-800">High contrast</span><span class="block text-xs text-gray-500">Increase contrast between controls and text.</span></span>
+        </label>
+        <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">
+          {{ personalization_form.reduced_motion }}
+          <span><span class="block text-sm font-semibold text-gray-800">Reduce motion</span><span class="block text-xs text-gray-500">Minimise animations and transitions.</span></span>
+        </label>
+      </div>
+    </article>
+
+    <article class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div class="border-b border-gray-100 px-5 py-4 sm:px-6">
+        <div class="flex items-start gap-3">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-600"><i class="fa-solid fa-shield-halved"></i></span>
+          <div>
+            <h2 class="font-bold text-gray-900">Privacy</h2>
+            <p class="mt-0.5 text-sm text-gray-500">Decide who can find you, see your profile, and contact you.</p>
+          </div>
+        </div>
+      </div>
+      <div class="grid gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3 sm:p-6">
+        <div><label for="{{ personalization_form.profile_visibility.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Profile visibility</label>{{ personalization_form.profile_visibility }}</div>
+        <div><label for="{{ personalization_form.message_permission.id_for_label }}" class="mb-1.5 block text-sm font-semibold text-gray-800">Who can message you</label>{{ personalization_form.message_permission }}</div>
+        <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">
+          {{ personalization_form.show_online_status }}
+          <span><span class="block text-sm font-semibold text-gray-800">Show online status</span><span class="block text-xs text-gray-500">Let others see when you are active.</span></span>
+        </label>
+        <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">
+          {{ personalization_form.show_activity }}
+          <span><span class="block text-sm font-semibold text-gray-800">Show activity</span><span class="block text-xs text-gray-500">Show communities and recent activity on your profile.</span></span>
+        </label>
+        <label class="flex min-h-12 items-center gap-3 rounded-lg border border-gray-100 px-3 py-2.5 transition hover:bg-gray-50">
+          {{ personalization_form.search_visibility }}
+          <span><span class="block text-sm font-semibold text-gray-800">Appear in search</span><span class="block text-xs text-gray-500">Allow people to find your profile in Union.</span></span>
+        </label>
+      </div>
+    </article>
+
+    <div data-dirty-actions class="fixed bottom-4 right-4 z-40 hidden"><button type="submit" class="personalization-accent inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold text-white shadow-lg transition"><i class="fa-solid fa-check text-xs"></i>Save</button></div>
+  </form>
+</section>
+
+<script>
+  (function () {
+    var form = document.getElementById("personalization-form");
+    if (!form) return;
+    form.addEventListener("submit", function () {
+      var sidebar = form.elements.sidebar_default && form.elements.sidebar_default.value;
+      var theme = form.elements.theme_preference && form.elements.theme_preference.value;
+      try {
+        if (sidebar) localStorage.setItem("sidebar-state", sidebar);
+        if (theme === "dark") localStorage.setItem("dark-mode", "true");
+        if (theme === "light") localStorage.setItem("dark-mode", "false");
+        if (theme === "system") localStorage.removeItem("dark-mode");
+      } catch (error) {}
+    });
+  })();
+</script>
+{% endif %}

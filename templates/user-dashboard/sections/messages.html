@@ -1,0 +1,534 @@
+{% if active_page == "messages" %}
+<style>
+  .dashboard-messages-wrapper { margin: -1rem -1rem -1rem -1rem; height: calc(100dvh - 7.5rem); min-height: 0; }
+  body.messages-page { overflow: hidden; }
+  body.messages-page .app-sidebar-content { overflow: hidden; }
+  .messages-workspace { min-height: 0; }
+  .messages-rail { width: 72px; }
+  .messages-rail-button { color: #6b7280; }
+  .messages-rail-button:hover { background: #f3f4f6; color: #111827; }
+  .messages-rail-button.is-active { background: #ede9fe; color: #6d28d9; }
+  .messages-rail-profile { box-shadow: 0 0 0 3px #f3f4f6; }
+  .conversation-item.is-active { background: #f5f3ff; }
+  .conversation-item.is-active .conversation-avatar { box-shadow: 0 0 0 2px #8b5cf6; }
+  .message-filter.is-active { background: #ede9fe; color: #6d28d9; }
+  .message-row:hover .message-tools { opacity: 1; pointer-events: auto; }
+  .message-tools { opacity: 0; pointer-events: none; transition: opacity 160ms ease; }
+  .message-search-match { box-shadow: 0 0 0 3px #fbbf24; border-radius: 1rem; }
+  .details-panel { display: none; }
+  .messages-workspace.details-open .details-panel { display: flex; }
+  .conversation-search-bar.is-visible { display: flex; }
+  #messages ::-webkit-scrollbar { width: 6px; height: 6px; }
+  #messages ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+  #messages ::-webkit-scrollbar-track { background: transparent; }
+  .media-tile { aspect-ratio: 1; }
+  .emoji-popover { display: none; }
+  .emoji-popover.is-visible { display: grid; }
+  .message-file-card:hover { border-color: #c4b5fd; background: #faf5ff; }
+  .messages-first-entry-card { background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, .12), transparent 46%), linear-gradient(145deg, #ffffff 0%, #faf7ff 100%); }
+  .messages-first-entry-avatar { box-shadow: 0 0 0 3px #ffffff, 0 0 0 4px rgba(139, 92, 246, .22); }
+  .messages-welcome-stage { background: radial-gradient(circle at 50% 24%, rgba(139, 92, 246, .11), transparent 34%), linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
+  .messages-welcome-stage::before,
+  .messages-welcome-stage::after { content: ""; position: absolute; border: 1px dashed rgba(139, 92, 246, .16); border-radius: 999px; pointer-events: none; }
+  .messages-welcome-stage::before { width: min(76vw, 980px); height: min(46vw, 560px); }
+  .messages-welcome-stage::after { width: min(60vw, 760px); height: min(34vw, 410px); }
+  .messages-welcome-content { position: relative; z-index: 1; }
+  .messages-welcome-float { position: absolute; z-index: 2; display: flex; align-items: center; gap: .65rem; }
+  .messages-welcome-float-avatar { box-shadow: 0 0 0 3px #ffffff, 0 8px 25px rgba(15, 23, 42, .14); }
+  .messages-welcome-float-bubble { border: 1px solid rgba(226, 232, 240, .95); background: rgba(255, 255, 255, .9); box-shadow: 0 8px 24px rgba(15, 23, 42, .08); backdrop-filter: blur(8px); }
+  .messages-welcome-float-1 { left: 5%; top: 24%; }
+  .messages-welcome-float-2 { right: 5%; top: 25%; flex-direction: row-reverse; }
+  .messages-welcome-float-3 { left: 10%; bottom: 24%; }
+  .messages-welcome-float-4 { right: 10%; bottom: 23%; flex-direction: row-reverse; }
+  .messages-welcome-feature { border: 1px solid rgba(226, 232, 240, .9); background: rgba(255, 255, 255, .72); }
+  @media (max-width: 1279px) {
+    .messages-welcome-float-1 { left: 2%; }
+    .messages-welcome-float-2 { right: 2%; }
+    .messages-welcome-float-3 { left: 4%; }
+    .messages-welcome-float-4 { right: 4%; }
+  }
+  @media (max-width: 767px) {
+    .messages-welcome-stage { justify-content: flex-start; overflow-y-auto; padding-top: 2rem; }
+    .messages-welcome-stage::before, .messages-welcome-stage::after { display: none; }
+    .messages-welcome-float { display: none; }
+    .messages-welcome-content { width: 100%; }
+  }
+  .messages-first-entry-only > .messages-rail,
+  .messages-first-entry-only > #conversation-column,
+  .messages-first-entry-only > .messages-folder-panel,
+  .messages-first-entry-only > #details-panel { display: none; }
+  .messages-first-entry-only > #chat-panel { display: flex; width: 100%; }
+  .messages-first-entry-only #chat-empty { background: #f8fafc; }
+  .messages-folder-panel { display: none; }
+  .messages-folder-panel.is-active { display: flex; }
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .dashboard-messages-wrapper { margin-left: -1.5rem; margin-right: -1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .dashboard-messages-wrapper {
+      position: fixed;
+      top: 3.5rem;
+      right: 0;
+      bottom: 0;
+      left: var(--sidebar-width, 260px);
+      width: auto;
+      max-width: none;
+      height: auto;
+      margin: 0;
+      z-index: 10;
+    }
+    body.sidebar-collapsed .dashboard-messages-wrapper { left: 68px; }
+    .messages-workspace.folder-view-active #conversation-column,
+    .messages-workspace.folder-view-active #chat-panel,
+    .messages-workspace.folder-view-active #details-panel { display: none; }
+    .messages-workspace.folder-view-active .messages-folder-panel.is-active { display: flex; }
+  }
+  @media (max-width: 1279px) {
+    .messages-workspace.details-open .details-panel { display: flex; position: absolute; inset: 0 0 0 auto; z-index: 30; width: min(320px, 90%); box-shadow: -12px 0 30px rgba(15, 23, 42, .12); }
+  }
+  @media (max-width: 1023px) {
+    .dashboard-messages-wrapper { position: fixed; top: 3.5rem; right: 0; bottom: 4rem; left: 0; width: auto; height: auto; margin: 0; z-index: 10; }
+    .messages-chat-panel { position: absolute; inset: 0; z-index: 20; visibility: hidden; pointer-events: none; transform: translateX(100%); transition: transform 220ms ease, visibility 220ms ease; }
+    .messages-workspace.showing-chat .messages-chat-panel { visibility: visible; pointer-events: auto; transform: translateX(0); }
+    .messages-workspace.folder-view-active #conversation-column,
+    .messages-workspace.folder-view-active #chat-panel,
+    .messages-workspace.folder-view-active #details-panel { display: none; }
+    .messages-workspace.folder-view-active .messages-folder-panel.is-active { display: flex; }
+    .messages-first-entry-only > #chat-panel { position: static; visibility: visible; pointer-events: auto; transform: none; }
+  }
+  @media (max-width: 639px) {
+    .messages-rail { width: 60px; }
+    .messages-rail-button { height: 42px; width: 42px; }
+  }
+</style>
+
+<section id="messages" class="dashboard-messages-wrapper">
+  <div class="messages-workspace{% if not message_threads and not message_started %} messages-first-entry-only{% endif %} relative flex h-full overflow-hidden bg-white">
+    <nav class="messages-rail flex shrink-0 flex-col items-center border-r border-gray-200 bg-gray-50/80 py-4" aria-label="Message folders">
+      <div class="flex flex-col items-center gap-2">
+        <button type="button" class="messages-rail-button is-active flex h-11 w-11 items-center justify-center rounded-xl transition" data-rail-view="chats" title="Chats" aria-label="Chats"><i class="fa-regular fa-comment-dots text-lg"></i><span class="sr-only">Chats</span></button>
+        <button type="button" class="messages-rail-button flex h-11 w-11 items-center justify-center rounded-xl transition" data-rail-view="requests" title="Message requests" aria-label="Message requests"><i class="fa-regular fa-circle-question text-lg"></i><span class="sr-only">Requests</span></button>
+        <button type="button" class="messages-rail-button flex h-11 w-11 items-center justify-center rounded-xl transition" data-rail-view="archive" title="Archive" aria-label="Archive"><i class="fa-solid fa-box-archive text-lg"></i><span class="sr-only">Archive</span></button>
+      </div>
+      <div class="my-5 h-px w-8 bg-gray-300"></div>
+      <div class="flex min-h-0 flex-1 flex-col items-center">
+        <span class="mb-3 text-[9px] font-black uppercase tracking-widest text-gray-400 [writing-mode:vertical-rl]">Inbox</span>
+      </div>
+      <a href="{% url 'hub:user_profile' username=user.username %}" class="messages-rail-profile flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-xs font-black text-gray-600 transition hover:ring-violet-200" title="Your profile" aria-label="Your profile">
+        {% if user.profile.profile_image_url %}<img src="{{ user.profile.profile_image_url }}" alt="{{ user.username }}" class="h-full w-full object-cover" />{% else %}{{ user.username|first|upper }}{% endif %}
+      </a>
+    </nav>
+    <aside id="conversation-column" class="flex min-h-0 w-full shrink-0 flex-col border-r border-gray-200 bg-white lg:w-[310px] xl:w-[340px]" aria-label="Conversations">
+      <div class="shrink-0 border-b border-gray-100 px-4 pb-4 pt-4">
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <p class="text-lg font-black tracking-tight text-gray-950">Messages</p>
+            <p class="mt-0.5 text-xs text-gray-500">Stay connected with your people</p>
+          </div>
+        </div>
+
+        <div class="mt-4 flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 transition focus-within:border-violet-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-violet-100">
+          <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+          <label for="message-search" class="sr-only">Search conversations</label>
+          <input type="search" id="message-search" placeholder="Search conversations" class="min-w-0 flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400" />
+        </div>
+
+        <div class="mt-3 flex items-center gap-2">
+          <button type="button" class="message-filter is-active rounded-lg px-3 py-1.5 text-xs font-bold transition" data-filter="all">All chats</button>
+          <button type="button" class="message-filter rounded-lg px-3 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-gray-100 hover:text-gray-800" data-filter="unread">Unread</button>
+        </div>
+
+        <form method="get" action="{% url 'hub:dashboard_section' 'messages' %}" id="user-search-form" class="mt-3 hidden">
+          <label for="user-search" class="sr-only">Find a person to message</label>
+          <div class="flex gap-2">
+            <input type="text" id="user-search" name="user_q" value="{{ message_user_search }}" placeholder="Find people by username" class="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100" />
+            <button type="submit" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-900 text-white transition hover:bg-gray-800" aria-label="Find people"><i class="fa-solid fa-arrow-right text-xs"></i></button>
+          </div>
+        </form>
+      </div>
+
+      {% if message_user_results %}
+        <div class="shrink-0 border-b border-gray-100 bg-violet-50/50 p-3">
+          <p class="px-1 pb-2 text-[11px] font-bold uppercase tracking-wider text-violet-700">People</p>
+          <div class="space-y-1">
+            {% for result in message_user_results %}
+              <div class="flex items-center gap-3 rounded-xl bg-white px-3 py-2.5 ring-1 ring-violet-100">
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-violet-100 text-sm font-bold text-violet-700">
+                  {% if result.profile.profile_image_url %}<img src="{{ result.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ result.username|first|upper }}{% endif %}
+                </div>
+                <div class="min-w-0 flex-1"><p class="truncate text-sm font-bold text-gray-900">{{ result.first_name|default:result.username }}</p><a href="{% url 'hub:user_profile' username=result.username %}" class="block truncate text-xs text-gray-500 hover:text-violet-700">@{{ result.username }}</a></div>
+                <form method="post" action="{% url 'hub:dashboard_section' 'messages' %}" class="shrink-0">
+                  {% csrf_token %}<input type="hidden" name="action" value="start_message" /><input type="hidden" name="user_id" value="{{ result.id }}" />
+                  <button type="submit" class="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-white transition hover:bg-violet-700" aria-label="Message {{ result.username }}"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+                </form>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div id="conversation-list" class="min-h-0 flex-1 overflow-y-auto p-2">
+        {% if message_threads %}
+          {% for thread in message_threads %}
+            {% if thread.participant1.id == user.id %}
+              {% with other=thread.participant2 last_msg=thread.messages.last %}
+                <button type="button" class="conversation-item flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-gray-50" data-thread-id="{{ thread.id }}" data-conversation-search="{{ other.username }} {{ other.first_name }} {% if last_msg %}{{ last_msg.body }}{% endif %}" data-is-unread="{% if last_msg and not last_msg.is_read and last_msg.sender.id != user.id %}true{% else %}false{% endif %}">
+                  <div class="conversation-avatar relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 text-sm font-black text-gray-600 transition">
+                    {% if other.profile.profile_image_url %}<img src="{{ other.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ other.username|first|upper }}{% endif %}
+                    {% if other.profile.presence_status == 'online' %}<span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span>{% endif %}
+                  </div>
+                  <span class="min-w-0 flex-1"><span class="flex items-center justify-between gap-2"><span class="truncate text-sm font-bold text-gray-900">{{ other.first_name|default:other.username }}</span>{% if last_msg %}<span class="shrink-0 text-[11px] {% if not last_msg.is_read and last_msg.sender.id != user.id %}font-bold text-violet-600{% else %}text-gray-400{% endif %}">{{ last_msg.created_at|timesince|cut:"," }}</span>{% endif %}</span><span class="mt-1 flex items-center gap-1.5"><span class="truncate text-xs {% if last_msg and not last_msg.is_read and last_msg.sender.id != user.id %}font-semibold text-gray-800{% else %}text-gray-500{% endif %}">{% if last_msg %}{% if last_msg.sender.id == user.id %}<i class="fa-solid fa-check text-[9px] text-violet-500"></i> {% endif %}{{ last_msg.body|default:"Attachment"|truncatewords:7 }}{% else %}No messages yet{% endif %}</span>{% if last_msg and not last_msg.is_read and last_msg.sender.id != user.id %}<span class="h-2 w-2 shrink-0 rounded-full bg-violet-600"></span>{% endif %}</span></span>
+                </button>
+              {% endwith %}
+            {% else %}
+              {% with other=thread.participant1 last_msg=thread.messages.last %}
+                <button type="button" class="conversation-item flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-gray-50" data-thread-id="{{ thread.id }}" data-conversation-search="{{ other.username }} {{ other.first_name }} {% if last_msg %}{{ last_msg.body }}{% endif %}" data-is-unread="{% if last_msg and not last_msg.is_read and last_msg.sender.id != user.id %}true{% else %}false{% endif %}">
+                  <div class="conversation-avatar relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100 text-sm font-black text-gray-600 transition">
+                    {% if other.profile.profile_image_url %}<img src="{{ other.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ other.username|first|upper }}{% endif %}
+                    {% if other.profile.presence_status == 'online' %}<span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-emerald-500"></span>{% endif %}
+                  </div>
+                  <span class="min-w-0 flex-1"><span class="flex items-center justify-between gap-2"><span class="truncate text-sm font-bold text-gray-900">{{ other.first_name|default:other.username }}</span>{% if last_msg %}<span class="shrink-0 text-[11px] {% if not last_msg.is_read and last_msg.sender.id != user.id %}font-bold text-violet-600{% else %}text-gray-400{% endif %}">{{ last_msg.created_at|timesince|cut:"," }}</span>{% endif %}</span><span class="mt-1 flex items-center gap-1.5"><span class="truncate text-xs {% if last_msg and not last_msg.is_read and last_msg.sender.id != user.id %}font-semibold text-gray-800{% else %}text-gray-500{% endif %}">{% if last_msg %}{% if last_msg.sender.id == user.id %}<i class="fa-solid fa-check text-[9px] text-violet-500"></i> {% endif %}{{ last_msg.body|default:"Attachment"|truncatewords:7 }}{% else %}No messages yet{% endif %}</span>{% if last_msg and not last_msg.is_read and last_msg.sender.id != user.id %}<span class="h-2 w-2 shrink-0 rounded-full bg-violet-600"></span>{% endif %}</span></span>
+                </button>
+              {% endwith %}
+            {% endif %}
+          {% endfor %}
+          <p id="conversation-empty" class="hidden px-5 py-10 text-center text-xs leading-5 text-gray-400">No conversations match your search.</p>
+        {% else %}
+          <div class="flex h-full flex-col items-center justify-center px-8 text-center">
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-50 text-violet-600"><i class="fa-solid fa-message text-lg"></i></span>
+            <p class="mt-3 text-sm font-bold text-gray-900">Your inbox is empty</p>
+            <p class="mt-1 max-w-[220px] text-xs leading-5 text-gray-500">Find someone on Union and start your first conversation.</p>
+            <button type="button" class="mt-4 inline-flex h-9 items-center gap-2 rounded-xl bg-gray-950 px-3.5 text-xs font-bold text-white shadow-sm transition hover:bg-gray-800" data-start-chatting><i class="fa-solid fa-paper-plane text-[10px]"></i>Start messaging</button>
+          </div>
+        {% endif %}
+      </div>
+    </aside>
+
+    <section id="requests-folder" class="messages-folder-panel min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-gray-50" aria-labelledby="requests-folder-title">
+      <header class="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6 py-5 sm:px-10">
+        <div class="flex items-center gap-3"><span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-600"><i class="fa-regular fa-circle-question text-lg"></i></span><div><h1 id="requests-folder-title" class="text-lg font-black tracking-tight text-gray-950">Message requests</h1><p class="mt-0.5 text-xs text-gray-500">People waiting for your response</p></div></div>
+        <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-500">{{ message_requests|length }} pending</span>
+      </header>
+      <div class="mx-auto w-full max-w-3xl flex-1 px-5 py-7 sm:px-10">
+        <div class="flex items-center justify-between border-b border-gray-200 pb-3"><div><p class="text-sm font-black text-gray-900">Requests</p><p class="mt-1 text-xs text-gray-500">Accept a request to connect, or remove it from your inbox.</p></div><button type="button" class="rounded-lg px-3 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white hover:text-gray-900" data-folder-refresh="requests"><i class="fa-solid fa-rotate-right mr-1"></i>Refresh</button></div>
+        {% if message_requests %}
+          <div id="message-request-list" class="mt-4 divide-y divide-gray-200 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+            {% for requester in message_requests %}
+              <article class="message-request-item flex flex-col gap-4 p-5 sm:flex-row sm:items-center" data-request-user-id="{{ requester.id }}">
+                <a href="{% url 'hub:user_profile' username=requester.username %}" class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-black text-violet-700">
+                  {% if requester.profile.profile_image_url %}<img src="{{ requester.profile.profile_image_url }}" alt="{{ requester.username }}" class="h-full w-full object-cover" />{% else %}{{ requester.username|first|upper }}{% endif %}
+                </a>
+                <div class="min-w-0 flex-1"><a href="{% url 'hub:user_profile' username=requester.username %}" class="block truncate text-sm font-black text-gray-900 hover:text-violet-700">{{ requester.first_name|default:requester.username }}</a><p class="mt-1 truncate text-xs text-gray-500">@{{ requester.username }} wants to connect with you.</p><p class="mt-2 text-[11px] text-gray-400"><i class="fa-regular fa-clock mr-1"></i>Waiting for your response</p></div>
+                <div class="flex shrink-0 gap-2"><button type="button" class="request-action inline-flex h-9 items-center gap-1.5 rounded-xl bg-violet-600 px-3 text-xs font-bold text-white transition hover:bg-violet-700" data-request-action="accept" data-request-userid="{{ requester.id }}"><i class="fa-solid fa-check text-[10px]"></i>Accept</button><button type="button" class="request-action inline-flex h-9 items-center gap-1.5 rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-600 transition hover:bg-gray-50" data-request-action="decline" data-request-userid="{{ requester.id }}"><i class="fa-solid fa-xmark text-[10px]"></i>Delete</button></div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="flex min-h-[420px] flex-col items-center justify-center px-6 text-center"><span class="flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-2xl text-gray-400 shadow-sm ring-1 ring-gray-200"><i class="fa-regular fa-circle-question"></i></span><h2 class="mt-5 text-lg font-black text-gray-900">No message requests</h2><p class="mt-2 max-w-sm text-sm leading-6 text-gray-500">When someone you are not connected with wants to reach you, their request will appear here.</p></div>
+        {% endif %}
+      </div>
+    </section>
+
+    <section id="archive-folder" class="messages-folder-panel min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-gray-50" aria-labelledby="archive-folder-title">
+      <header class="flex shrink-0 items-center justify-between border-b border-gray-200 bg-white px-6 py-5 sm:px-10">
+        <div class="flex items-center gap-3"><span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-violet-50 text-violet-600"><i class="fa-solid fa-box-archive text-lg"></i></span><div><h1 id="archive-folder-title" class="text-lg font-black tracking-tight text-gray-950">Archived chats</h1><p class="mt-0.5 text-xs text-gray-500">Keep old conversations out of your inbox</p></div></div>
+        <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-500">{{ message_archived_threads|length }} archived</span>
+      </header>
+      <div class="mx-auto w-full max-w-3xl flex-1 px-5 py-7 sm:px-10">
+        <div class="flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 shadow-sm"><i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i><input id="archive-search" type="search" placeholder="Search archived chats" class="min-w-0 flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400" /></div>
+        {% if message_archived_threads %}
+          <div id="archived-thread-list" class="mt-4 divide-y divide-gray-200 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+            {% for thread in message_archived_threads %}
+              {% if thread.participant1.id == user.id %}{% with other=thread.participant2 last_msg=thread.messages.last %}
+                <button type="button" class="archived-thread-item flex w-full items-center gap-3 p-4 text-left transition hover:bg-violet-50/50" data-thread-id="{{ thread.id }}" data-archive-search="{{ other.username }} {{ other.first_name }} {% if last_msg %}{{ last_msg.body }}{% endif %}"><span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-sm font-black text-gray-600">{% if other.profile.profile_image_url %}<img src="{{ other.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ other.username|first|upper }}{% endif %}</span><span class="min-w-0 flex-1"><span class="block truncate text-sm font-bold text-gray-900">{{ other.first_name|default:other.username }}</span><span class="mt-1 block truncate text-xs text-gray-500">{% if last_msg %}{{ last_msg.body|default:"Attachment"|truncatewords:10 }}{% else %}No messages yet{% endif %}</span></span><span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-500"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i></span></button>
+              {% endwith %}{% else %}{% with other=thread.participant1 last_msg=thread.messages.last %}
+                <button type="button" class="archived-thread-item flex w-full items-center gap-3 p-4 text-left transition hover:bg-violet-50/50" data-thread-id="{{ thread.id }}" data-archive-search="{{ other.username }} {{ other.first_name }} {% if last_msg %}{{ last_msg.body }}{% endif %}"><span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100 text-sm font-black text-gray-600">{% if other.profile.profile_image_url %}<img src="{{ other.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ other.username|first|upper }}{% endif %}</span><span class="min-w-0 flex-1"><span class="block truncate text-sm font-bold text-gray-900">{{ other.first_name|default:other.username }}</span><span class="mt-1 block truncate text-xs text-gray-500">{% if last_msg %}{{ last_msg.body|default:"Attachment"|truncatewords:10 }}{% else %}No messages yet{% endif %}</span></span><span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-500"><i class="fa-solid fa-arrow-up-right-from-square text-xs"></i></span></button>
+              {% endwith %}{% endif %}
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="flex min-h-[420px] flex-col items-center justify-center px-6 text-center"><span class="flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-2xl text-violet-600 shadow-sm ring-1 ring-gray-200"><i class="fa-solid fa-box-archive"></i></span><h2 class="mt-5 text-lg font-black text-gray-900">Your archive is empty</h2><p class="mt-2 max-w-sm text-sm leading-6 text-gray-500">Archived conversations will stay here until you bring them back to your inbox.</p></div>
+        {% endif %}
+      </div>
+    </section>
+
+    <main id="chat-panel" class="messages-chat-panel flex min-w-0 flex-1 flex-col bg-gray-50">
+      <div id="chat-container" class="hidden min-h-0 flex-1 flex-col">
+        <header class="relative flex shrink-0 items-center gap-3 border-b border-gray-200 bg-white px-3 py-3 sm:px-5">
+          <button type="button" id="mobile-back-btn" class="-ml-1 flex h-9 w-9 items-center justify-center rounded-xl text-gray-500 transition hover:bg-gray-100 lg:hidden" aria-label="Back to conversations"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+          <a id="chat-avatar-link" href="#" class="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-black text-violet-700">U</a>
+          <div class="min-w-0 flex-1"><a id="chat-name" href="#" class="block truncate text-sm font-black text-gray-900 hover:text-violet-700">Conversation</a><p id="chat-status" class="mt-0.5 truncate text-xs text-gray-500">Direct message</p></div>
+          <div class="flex items-center gap-1">
+            <button type="button" id="chat-search-btn" class="flex h-9 w-9 items-center justify-center rounded-xl text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Search in conversation" aria-label="Search in conversation"><i class="fa-solid fa-magnifying-glass text-sm"></i></button>
+            <button type="button" class="hidden h-9 w-9 items-center justify-center rounded-xl text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 sm:flex" data-chat-action="audio" title="Start audio call" aria-label="Start audio call"><i class="fa-solid fa-phone text-sm"></i></button>
+            <button type="button" class="hidden h-9 w-9 items-center justify-center rounded-xl text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 sm:flex" data-chat-action="video" title="Start video call" aria-label="Start video call"><i class="fa-solid fa-video text-sm"></i></button>
+            <button type="button" id="details-btn" class="flex h-9 w-9 items-center justify-center rounded-xl text-gray-500 transition hover:bg-violet-50 hover:text-violet-700" title="Conversation details" aria-label="Conversation details"><i class="fa-solid fa-circle-info text-sm"></i></button>
+          </div>
+        </header>
+        <div id="conversation-search-bar" class="conversation-search-bar hidden shrink-0 items-center gap-2 border-b border-gray-200 bg-white px-4 py-2.5">
+          <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i><input id="in-chat-search" type="search" placeholder="Search messages in this chat" class="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400" /><button type="button" id="close-chat-search" class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700" aria-label="Close search"><i class="fa-solid fa-xmark text-xs"></i></button>
+        </div>
+
+        <div id="messages-display" class="min-h-0 flex-1 overflow-y-auto px-3 py-5 sm:px-8 lg:px-10"></div>
+
+        <footer class="shrink-0 border-t border-gray-200 bg-white p-3 sm:px-5 sm:py-4">
+          <div id="attachment-preview" class="mb-2 hidden items-center gap-2 rounded-xl bg-violet-50 px-3 py-2 text-xs text-violet-800"><i class="fa-solid fa-paperclip"></i><span id="attachment-name" class="min-w-0 flex-1 truncate"></span><button type="button" id="remove-attachment" class="flex h-6 w-6 items-center justify-center rounded-lg hover:bg-violet-100" aria-label="Remove attachment"><i class="fa-solid fa-xmark"></i></button></div>
+          <form id="message-form" enctype="multipart/form-data" class="rounded-2xl border border-gray-200 bg-gray-50 p-1.5 transition focus-within:border-violet-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-violet-100">
+            {% csrf_token %}<input type="hidden" id="thread-id" name="thread_id" /><input type="hidden" name="action" value="send_message" />
+            <div class="flex items-end gap-1">
+              <label for="message-attachment" class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl text-gray-500 transition hover:bg-violet-100 hover:text-violet-700" title="Attach a photo, video, or file"><i class="fa-solid fa-paperclip text-sm"></i><input type="file" id="message-attachment" name="attachment" class="hidden" accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip" /></label>
+              <button type="button" id="emoji-btn" class="hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl text-gray-500 transition hover:bg-violet-100 hover:text-violet-700 sm:flex" title="Add emoji" aria-label="Add emoji"><i class="fa-regular fa-face-smile text-sm"></i></button>
+              <label for="message-input" class="sr-only">Write a message</label>
+              <textarea id="message-input" name="body" placeholder="Write a message..." class="max-h-28 min-h-[42px] min-w-0 flex-1 resize-none bg-transparent px-2 py-2 text-sm leading-5 text-gray-900 outline-none placeholder:text-gray-400" rows="1"></textarea>
+              <button type="submit" id="send-btn" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-white shadow-sm transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Send message" disabled><i class="fa-solid fa-arrow-up text-sm"></i></button>
+            </div>
+          </form>
+          <div class="relative"><div id="emoji-popover" class="emoji-popover absolute bottom-2 left-1 z-20 grid-cols-6 gap-1 rounded-2xl border border-gray-200 bg-white p-2 shadow-xl"><button type="button" data-emoji="😀">😀</button><button type="button" data-emoji="😂">😂</button><button type="button" data-emoji="😍">😍</button><button type="button" data-emoji="😮">😮</button><button type="button" data-emoji="😢">😢</button><button type="button" data-emoji="🔥">🔥</button><button type="button" data-emoji="👍">👍</button><button type="button" data-emoji="❤️">❤️</button><button type="button" data-emoji="🎉">🎉</button><button type="button" data-emoji="👏">👏</button><button type="button" data-emoji="🙏">🙏</button><button type="button" data-emoji="✨">✨</button></div></div>
+          <p id="message-error" class="hidden mt-1 px-2 text-xs font-semibold text-red-600"></p>
+        </footer>
+      </div>
+
+      <div id="chat-empty" class="flex h-full flex-col items-center justify-center px-6 text-center">
+        {% if not message_threads and not message_started %}
+          <div class="messages-welcome-stage relative flex h-full w-full flex-col items-center justify-center overflow-hidden px-5 py-5 text-center sm:px-8 lg:px-12">
+            {% with person=suggested_users.0 %}
+              <div class="messages-welcome-float messages-welcome-float-1">
+                <span class="messages-welcome-float-avatar flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-black text-violet-700">
+                  {% if person.profile.profile_image_url %}<img src="{{ person.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ person.username|default:"A"|first|upper }}{% endif %}
+                </span><span class="messages-welcome-float-bubble rounded-xl px-3 py-2 text-xs font-bold text-gray-700">Hey, welcome! 👋</span>
+              </div>
+            {% endwith %}
+            {% with person=suggested_users.1 %}
+              <div class="messages-welcome-float messages-welcome-float-2">
+                <span class="messages-welcome-float-avatar flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-indigo-100 text-sm font-black text-indigo-700">
+                  {% if person.profile.profile_image_url %}<img src="{{ person.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ person.username|default:"U"|first|upper }}{% endif %}
+                </span><span class="messages-welcome-float-bubble rounded-xl px-3 py-2 text-xs font-bold text-gray-700">Nice to meet you!</span>
+              </div>
+            {% endwith %}
+            {% with person=suggested_users.2 %}
+              <div class="messages-welcome-float messages-welcome-float-3">
+                <span class="messages-welcome-float-avatar flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-fuchsia-100 text-sm font-black text-fuchsia-700">
+                  {% if person.profile.profile_image_url %}<img src="{{ person.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ person.username|default:"C"|first|upper }}{% endif %}
+                </span><span class="messages-welcome-float-bubble rounded-xl px-3 py-2 text-xs font-bold text-gray-700">Let’s catch up!</span>
+              </div>
+            {% endwith %}
+            {% with person=suggested_users.3 %}
+              <div class="messages-welcome-float messages-welcome-float-4">
+                <span class="messages-welcome-float-avatar flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-emerald-100 text-sm font-black text-emerald-700">
+                  {% if person.profile.profile_image_url %}<img src="{{ person.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ person.username|default:"P"|first|upper }}{% endif %}
+                </span><span class="messages-welcome-float-bubble rounded-xl px-3 py-2 text-xs font-bold text-gray-700">See you there! 😊</span>
+              </div>
+            {% endwith %}
+
+            <div class="messages-welcome-content flex w-full max-w-[700px] flex-col items-center">
+              <span class="inline-flex items-center gap-2 rounded-full border border-violet-100 bg-white/80 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-violet-700 shadow-sm"><i class="fa-regular fa-message"></i> Union messaging</span>
+              <h1 class="mt-5 max-w-3xl text-3xl font-black leading-tight tracking-[-.04em] text-gray-950 sm:text-5xl">Connect with your people,<br /><span class="text-violet-600">one message at a time.</span></h1>
+              <p class="mt-3 max-w-xl text-sm leading-6 text-gray-500 sm:text-base">A simple space to connect with your Union community, share ideas, and keep the conversations that matter close.</p>
+
+              <div class="messages-first-entry-card mt-6 w-full max-w-[620px] rounded-[28px] border border-violet-100 px-6 py-7 shadow-[0_18px_50px_rgba(91,33,182,.08)] sm:mt-8 sm:px-12 sm:py-8">
+                <div class="flex items-center justify-center -space-x-3">
+                  {% for person in suggested_users|slice:":4" %}
+                    <span class="messages-first-entry-avatar flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-sm font-black text-violet-700">
+                      {% if person.profile.profile_image_url %}<img src="{{ person.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ person.username|first|upper }}{% endif %}
+                    </span>
+                  {% empty %}
+                    <span class="messages-first-entry-avatar flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-sm font-black text-violet-700">U</span><span class="messages-first-entry-avatar flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-sm font-black text-indigo-700">N</span><span class="messages-first-entry-avatar flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-100 text-sm font-black text-fuchsia-700">C</span><span class="messages-first-entry-avatar flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-sm font-black text-purple-700">+</span>
+                  {% endfor %}
+                  {% if suggested_users|length > 4 %}<span class="messages-first-entry-avatar flex h-12 w-12 items-center justify-center rounded-full bg-gray-900 text-xs font-black text-white">+{{ suggested_users|length|add:"-4" }}</span>{% endif %}
+                </div>
+                <h2 class="mt-5 text-2xl font-black tracking-tight text-gray-950 sm:text-3xl">Start messaging</h2>
+                <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">Join the people already sharing, learning, and staying connected on Union.</p>
+                <a href="{% url 'hub:dashboard_section' 'messages' %}?started=1" class="mt-5 inline-flex h-12 w-full max-w-[360px] items-center justify-center gap-2 rounded-2xl bg-gray-950 px-5 text-sm font-black text-white shadow-lg shadow-gray-300 transition hover:-translate-y-0.5 hover:bg-gray-800"><i class="fa-regular fa-comment-dots"></i>Start messaging</a>
+              </div>
+
+              <div class="mt-5 grid w-full grid-cols-2 gap-2 text-left sm:mt-7 sm:grid-cols-4 sm:gap-3">
+                <div class="messages-welcome-feature rounded-2xl p-3"><span class="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-100 text-violet-700"><i class="fa-solid fa-lock text-xs"></i></span><p class="mt-2 text-xs font-black text-gray-900">Private chats</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Conversations made for your people.</p></div>
+                <div class="messages-welcome-feature rounded-2xl p-3"><span class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700"><i class="fa-solid fa-paperclip text-xs"></i></span><p class="mt-2 text-xs font-black text-gray-900">Share anything</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Photos, videos, files, and ideas.</p></div>
+                <div class="messages-welcome-feature rounded-2xl p-3"><span class="flex h-8 w-8 items-center justify-center rounded-xl bg-fuchsia-100 text-fuchsia-700"><i class="fa-solid fa-users text-xs"></i></span><p class="mt-2 text-xs font-black text-gray-900">Find your people</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Start a conversation with anyone on Union.</p></div>
+                <div class="messages-welcome-feature rounded-2xl p-3"><span class="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700"><i class="fa-solid fa-bolt text-xs"></i></span><p class="mt-2 text-xs font-black text-gray-900">Stay connected</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Keep every important moment close.</p></div>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <span class="flex h-16 w-16 items-center justify-center rounded-3xl bg-white text-2xl text-violet-600 shadow-sm ring-1 ring-gray-100"><i class="fa-solid fa-paper-plane"></i></span>
+          <h2 class="mt-5 text-xl font-black tracking-tight text-gray-950">Your conversations, in one place.</h2>
+          <p class="mt-2 max-w-sm text-sm leading-6 text-gray-500">Choose a conversation from the left to continue chatting.</p>
+        {% endif %}
+      </div>
+    </main>
+
+    <aside id="details-panel" class="details-panel min-h-0 w-[290px] shrink-0 flex-col overflow-y-auto border-l border-gray-200 bg-white" aria-label="Conversation details">
+      <div class="flex items-center justify-between border-b border-gray-100 px-4 py-3"><p class="text-sm font-black text-gray-900">Chat details</p><button type="button" id="close-details-btn" class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700" aria-label="Close chat details"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="border-b border-gray-100 px-4 py-6 text-center">
+        <a id="details-avatar-link" href="#" class="mx-auto flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-violet-100 text-xl font-black text-violet-700"></a>
+        <a id="details-name" href="#" class="mt-3 block text-base font-black text-gray-950 hover:text-violet-700">Conversation</a>
+        <p id="details-username" class="mt-1 text-xs text-gray-500">@username</p>
+        <span id="details-presence" class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active</span>
+        <a id="view-profile-btn" href="#" class="mt-4 inline-flex h-9 items-center gap-2 rounded-xl border border-gray-200 px-3 text-xs font-bold text-gray-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"><i class="fa-regular fa-user"></i> View profile</a>
+      </div>
+      <div class="border-b border-gray-100 px-4 py-4"><p class="text-[10px] font-black uppercase tracking-widest text-gray-400">About</p><p id="details-bio" class="mt-2 text-xs leading-5 text-gray-600">No bio added yet.</p><p id="details-joined" class="mt-3 text-[11px] text-gray-400"><i class="fa-regular fa-calendar mr-1"></i> On Union since -</p></div>
+      <div class="border-b border-gray-100 p-2"><button type="button" class="details-action flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-bold text-gray-700 transition hover:bg-gray-50" data-detail-action="mute"><i class="fa-regular fa-bell-slash w-4 text-center text-gray-400"></i><span>Mute notifications</span></button><button type="button" class="details-action flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-bold text-gray-700 transition hover:bg-gray-50" data-detail-action="search"><i class="fa-solid fa-magnifying-glass w-4 text-center text-gray-400"></i><span>Search in conversation</span></button></div>
+      <div class="border-b border-gray-100 p-4"><div class="flex items-center justify-between"><p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Shared media</p><span id="media-count" class="text-[11px] font-bold text-violet-600">0</span></div><div id="media-grid" class="mt-3 grid grid-cols-3 gap-1.5"></div><p id="media-empty" class="mt-3 text-xs text-gray-400">Photos and videos shared here will appear.</p></div>
+      <div class="border-b border-gray-100 p-4"><div class="flex items-center justify-between"><p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Files</p><span id="file-count" class="text-[11px] font-bold text-violet-600">0</span></div><div id="files-list" class="mt-2 space-y-1"></div><p id="files-empty" class="mt-3 text-xs text-gray-400">No files shared yet.</p></div>
+      <div class="p-4"><p class="text-[10px] font-black uppercase tracking-widest text-gray-400">Links</p><div id="links-list" class="mt-2 space-y-2"></div><p id="links-empty" class="mt-3 text-xs text-gray-400">Links shared in messages will appear.</p></div>
+    </aside>
+  </div>
+</section>
+
+<div id="media-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-gray-950/80 p-5"><button type="button" id="close-media-modal" class="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="Close media viewer"><i class="fa-solid fa-xmark"></i></button><div id="media-modal-content" class="max-h-[90vh] max-w-[90vw]"></div></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.body.classList.add("messages-page");
+  var workspace = document.querySelector(".messages-workspace");
+  var conversationItems = document.querySelectorAll(".conversation-item");
+  var chatContainer = document.getElementById("chat-container");
+  var chatEmpty = document.getElementById("chat-empty");
+  var messageSearch = document.getElementById("message-search");
+  var userSearch = document.getElementById("user-search");
+  var userSearchForm = document.getElementById("user-search-form");
+  var mobileBackBtn = document.getElementById("mobile-back-btn");
+  var messagesDisplay = document.getElementById("messages-display");
+  var messageInput = document.getElementById("message-input");
+  var sendBtn = document.getElementById("send-btn");
+  var attachmentInput = document.getElementById("message-attachment");
+  var attachmentPreview = document.getElementById("attachment-preview");
+  var attachmentName = document.getElementById("attachment-name");
+  var filterButtons = document.querySelectorAll(".message-filter");
+  var initialThreadId = "{{ open_message_thread_id|default:'' }}";
+  var activeFilter = "all";
+  var currentData = null;
+
+  function escapeHtml(value) { var node = document.createElement("span"); node.textContent = value || ""; return node.innerHTML; }
+  function applyConversationFilters() {
+    var search = messageSearch ? messageSearch.value.trim().toLowerCase() : "";
+    var visible = 0;
+    conversationItems.forEach(function (item) {
+      var matchesSearch = !search || (item.getAttribute("data-conversation-search") || "").toLowerCase().includes(search);
+      var matchesFilter = activeFilter === "all" || item.getAttribute("data-is-unread") === "true";
+      var visibleItem = matchesSearch && matchesFilter;
+      item.classList.toggle("hidden", !visibleItem);
+      if (visibleItem) visible += 1;
+    });
+    var empty = document.getElementById("conversation-empty");
+    if (empty) empty.classList.toggle("hidden", visible > 0);
+  }
+  function showConversation() { if (workspace) workspace.classList.add("showing-chat"); if (chatEmpty) chatEmpty.classList.add("hidden"); if (chatContainer) { chatContainer.classList.remove("hidden"); chatContainer.classList.add("flex"); } }
+  function openPeopleSearch() {
+    if (!userSearchForm) return;
+    userSearchForm.classList.remove("hidden");
+    if (userSearch) userSearch.focus();
+  }
+  function avatarMarkup(url, name, size) { return url ? '<img src="' + escapeHtml(url) + '" alt="" class="h-full w-full object-cover" />' : '<span class="flex h-full w-full items-center justify-center">' + escapeHtml((name || "U").charAt(0).toUpperCase()) + '</span>'; }
+  function showError(message) { var error = document.getElementById("message-error"); if (error) { error.textContent = message; error.classList.remove("hidden"); } }
+  function hideError() { var error = document.getElementById("message-error"); if (error) error.classList.add("hidden"); }
+  function syncComposer() { sendBtn.disabled = !(messageInput.value.trim() || attachmentInput.files.length); }
+
+  if (messageSearch) messageSearch.addEventListener("input", applyConversationFilters);
+  filterButtons.forEach(function (button) { button.addEventListener("click", function () { activeFilter = button.getAttribute("data-filter"); filterButtons.forEach(function (item) { item.classList.toggle("is-active", item === button); }); applyConversationFilters(); }); });
+  document.querySelectorAll("[data-start-chatting]").forEach(function (button) { button.addEventListener("click", openPeopleSearch); });
+  function selectRailView(view) {
+    document.querySelectorAll("[data-rail-view]").forEach(function (item) { item.classList.toggle("is-active", item.getAttribute("data-rail-view") === view); });
+    document.querySelectorAll(".messages-folder-panel").forEach(function (panel) { panel.classList.remove("is-active"); });
+    workspace.classList.remove("folder-view-active", "showing-chat", "details-open");
+    if (view === "chats") return;
+    workspace.classList.add("folder-view-active");
+    document.getElementById(view === "archive" ? "archive-folder" : "requests-folder").classList.add("is-active");
+  }
+  document.querySelectorAll("[data-rail-view]").forEach(function (button) { button.addEventListener("click", function () { selectRailView(button.getAttribute("data-rail-view")); }); });
+  document.querySelectorAll(".archived-thread-item").forEach(function (item) {
+    item.addEventListener("click", function () {
+      selectRailView("chats");
+      loadConversation(item.getAttribute("data-thread-id"));
+    });
+  });
+  var archiveSearch = document.getElementById("archive-search");
+  if (archiveSearch) archiveSearch.addEventListener("input", function () {
+    var term = this.value.trim().toLowerCase();
+    document.querySelectorAll(".archived-thread-item").forEach(function (item) { item.classList.toggle("hidden", !!term && !(item.getAttribute("data-archive-search") || "").toLowerCase().includes(term)); });
+  });
+  document.querySelectorAll("[data-folder-refresh]").forEach(function (button) { button.addEventListener("click", function () { window.location.reload(); }); });
+  document.querySelectorAll(".request-action").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var csrf = document.querySelector("[name=csrfmiddlewaretoken]");
+      var item = button.closest(".message-request-item");
+      button.disabled = true;
+      fetch("{% url 'hub:friend_request' %}", { method: "POST", headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest", "X-CSRFToken": csrf ? csrf.value : "" }, body: JSON.stringify({ action: button.getAttribute("data-request-action"), target_id: button.getAttribute("data-request-userid") }) })
+        .then(function (response) { return response.json().then(function (data) { if (!response.ok || !data.ok) throw new Error(data.error || "Could not update request."); return data; }); })
+        .then(function () { if (item) { item.style.opacity = "0"; item.style.transform = "translateX(12px)"; window.setTimeout(function () { item.remove(); }, 180); } })
+        .catch(function () { button.disabled = false; });
+    });
+  });
+
+  function attachmentMarkup(message) {
+    if (!message.attachment_url) return "";
+    if (message.attachment_kind === "image") return '<button type="button" class="message-media mt-2 block overflow-hidden rounded-xl" data-media-url="' + escapeHtml(message.attachment_url) + '" data-media-kind="image"><img src="' + escapeHtml(message.attachment_url) + '" alt="Shared image" class="max-h-72 max-w-full object-cover transition hover:brightness-90" /></button>';
+    if (message.attachment_kind === "video") return '<button type="button" class="message-media mt-2 flex w-full items-center gap-3 overflow-hidden rounded-xl bg-black/10 p-2 text-left" data-media-url="' + escapeHtml(message.attachment_url) + '" data-media-kind="video"><span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-600 text-white"><i class="fa-solid fa-play text-xs"></i></span><span class="min-w-0 truncate text-xs font-bold">' + escapeHtml(message.attachment_name || "Video") + '</span></button>';
+    return '<a href="' + escapeHtml(message.attachment_url) + '" target="_blank" rel="noopener" class="message-file-card mt-2 flex items-center gap-3 rounded-xl border border-current/10 bg-black/5 p-2.5 text-left transition"><span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/70"><i class="fa-solid fa-file-lines"></i></span><span class="min-w-0"><span class="block truncate text-xs font-bold">' + escapeHtml(message.attachment_name || "Shared file") + '</span><span class="block text-[10px] opacity-60">Open file</span></span></a>';
+  }
+  function renderMessages(messages) {
+    messagesDisplay.innerHTML = "";
+    if (!messages.length) { messagesDisplay.innerHTML = '<div class="flex h-full flex-col items-center justify-center text-center"><span class="flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-violet-600"><i class="fa-regular fa-face-smile"></i></span><p class="mt-3 text-sm font-bold text-gray-800">Say hello</p><p class="mt-1 text-xs text-gray-400">Start a new conversation with a message, photo, or file.</p></div>'; return; }
+    var lastDate = "";
+    messages.forEach(function (message) {
+      var date = message.date || message.time.split(" ")[0];
+      if (date !== lastDate) { var separator = document.createElement("div"); separator.className = "mb-5 mt-2 flex items-center gap-3 text-[10px] font-bold uppercase tracking-wider text-gray-400"; separator.innerHTML = '<span class="h-px flex-1 bg-gray-200"></span><span>' + escapeHtml(date) + '</span><span class="h-px flex-1 bg-gray-200"></span>'; messagesDisplay.appendChild(separator); lastDate = date; }
+      var row = document.createElement("div");
+      row.className = "message-row group relative mb-3 flex items-end gap-2 " + (message.is_sent ? "justify-end" : "");
+      var avatar = message.is_sent ? "" : '<div class="mb-1 flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[10px] font-bold text-gray-600">' + avatarMarkup(message.sender_avatar, message.sender, "small") + '</div>';
+      var bubbleClass = message.is_sent ? "bg-violet-600 text-white rounded-br-md" : "bg-white text-gray-900 ring-1 ring-gray-100 rounded-bl-md";
+      var metaClass = message.is_sent ? "text-violet-200" : "text-gray-400";
+      var body = message.body ? '<p class="whitespace-pre-wrap break-words text-sm leading-6">' + escapeHtml(message.body) + '</p>' : "";
+      var receipt = message.is_sent ? '<i class="fa-solid fa-check' + (message.is_read ? '-double' : '') + '"></i>' : "";
+      row.innerHTML = avatar + '<div class="relative max-w-[84%] sm:max-w-[72%]"><div class="message-tools absolute -top-8 right-0 z-10 flex items-center gap-1 rounded-full border border-gray-200 bg-white p-1 shadow-sm"><button type="button" class="flex h-6 w-6 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700" data-react-message="' + message.id + '" title="React"><i class="fa-regular fa-face-smile text-[10px]"></i></button><button type="button" class="flex h-6 w-6 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700" data-copy-message="' + message.id + '" title="Copy message"><i class="fa-regular fa-copy text-[10px]"></i></button></div><div class="message-bubble rounded-2xl px-3.5 py-2.5 shadow-sm ' + bubbleClass + '" data-message-body="' + escapeHtml((message.body || "") + " " + (message.attachment_name || "")) + '">' + body + attachmentMarkup(message) + '<div class="mt-1 flex items-center justify-end gap-1.5 text-[10px] ' + metaClass + '"><span>' + escapeHtml(message.time) + '</span>' + receipt + '</div></div></div>';
+      messagesDisplay.appendChild(row);
+    });
+    messagesDisplay.scrollTop = messagesDisplay.scrollHeight;
+  }
+  function renderDetails(data) {
+    var profileUrl = data.other_user_profile_url || "#";
+    var avatar = avatarMarkup(data.other_user_avatar, data.other_user_name);
+    ["chat-avatar-link", "details-avatar-link"].forEach(function (id) { var el = document.getElementById(id); if (el) { el.innerHTML = avatar; el.href = profileUrl; } });
+    ["chat-name", "details-name"].forEach(function (id) { var el = document.getElementById(id); if (el) { el.textContent = data.other_user_name; el.href = profileUrl; } });
+    document.getElementById("chat-status").textContent = "@" + data.other_user_username + (data.other_user_presence === "online" ? "  -  Active now" : "");
+    document.getElementById("details-username").textContent = "@" + data.other_user_username;
+    document.getElementById("view-profile-btn").href = profileUrl;
+    document.getElementById("details-bio").textContent = data.other_user_bio || "No bio added yet.";
+    document.getElementById("details-joined").innerHTML = '<i class="fa-regular fa-calendar mr-1"></i> On Union since ' + escapeHtml(data.other_user_joined || "-");
+    var presence = document.getElementById("details-presence"); var online = data.other_user_presence === "online"; presence.className = "mt-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold " + (online ? "bg-emerald-50 text-emerald-700" : "bg-gray-100 text-gray-500"); presence.innerHTML = '<span class="h-1.5 w-1.5 rounded-full ' + (online ? "bg-emerald-500" : "bg-gray-400") + '"></span> ' + (online ? "Active now" : "Available on Union");
+    var media = data.messages.filter(function (m) { return m.attachment_kind === "image" || m.attachment_kind === "video"; });
+    var files = data.messages.filter(function (m) { return m.attachment_kind === "file"; });
+    var links = []; data.messages.forEach(function (m) { var found = (m.body || "").match(/https?:\/\/[^\s]+/g) || []; found.forEach(function (url) { if (links.indexOf(url) < 0) links.push(url); }); });
+    document.getElementById("media-count").textContent = media.length; document.getElementById("file-count").textContent = files.length;
+    var grid = document.getElementById("media-grid"); grid.innerHTML = media.slice(-9).reverse().map(function (m) { return '<button type="button" class="media-tile relative overflow-hidden rounded-lg bg-gray-100" data-media-url="' + escapeHtml(m.attachment_url) + '" data-media-kind="' + m.attachment_kind + '">' + (m.attachment_kind === "image" ? '<img src="' + escapeHtml(m.attachment_url) + '" alt="Shared media" class="h-full w-full object-cover" />' : '<span class="flex h-full w-full items-center justify-center text-gray-500"><i class="fa-solid fa-play"></i></span>') + '</button>'; }).join("");
+    document.getElementById("media-empty").classList.toggle("hidden", media.length > 0);
+    var filesList = document.getElementById("files-list"); filesList.innerHTML = files.slice(-5).reverse().map(function (m) { return '<a href="' + escapeHtml(m.attachment_url) + '" target="_blank" rel="noopener" class="flex items-center gap-2 rounded-lg p-2 text-xs hover:bg-gray-50"><span class="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-50 text-violet-600"><i class="fa-solid fa-file-lines text-[11px]"></i></span><span class="min-w-0 truncate font-semibold text-gray-700">' + escapeHtml(m.attachment_name) + '</span></a>'; }).join("");
+    document.getElementById("files-empty").classList.toggle("hidden", files.length > 0);
+    var linksList = document.getElementById("links-list"); linksList.innerHTML = links.slice(-5).reverse().map(function (url) { return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" class="block truncate text-xs font-semibold text-violet-700 hover:underline">' + escapeHtml(url) + '</a>'; }).join("");
+    document.getElementById("links-empty").classList.toggle("hidden", links.length > 0);
+  }
+  function displayConversation(data) { currentData = data; document.getElementById("thread-id").value = data.thread_id; renderDetails(data); renderMessages(data.messages); showConversation(); hideError(); }
+  function loadConversation(threadId) { fetch("/api/messages/thread/" + threadId + "/", { headers: { "X-Requested-With": "XMLHttpRequest" } }).then(function (response) { return response.json(); }).then(displayConversation).catch(function () { showError("Could not load this conversation. Please try again."); }); }
+
+  conversationItems.forEach(function (item) { item.addEventListener("click", function () { conversationItems.forEach(function (conversation) { conversation.classList.remove("is-active"); }); item.classList.add("is-active"); loadConversation(item.getAttribute("data-thread-id")); }); });
+  if (messageInput) { messageInput.addEventListener("input", function () { this.style.height = "auto"; this.style.height = Math.min(this.scrollHeight, 112) + "px"; syncComposer(); }); messageInput.addEventListener("keydown", function (event) { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); if (!sendBtn.disabled) document.getElementById("message-form").requestSubmit(); } }); }
+  if (attachmentInput) attachmentInput.addEventListener("change", function () { if (this.files.length) { attachmentName.textContent = this.files[0].name; attachmentPreview.classList.remove("hidden"); attachmentPreview.classList.add("flex"); } else { attachmentPreview.classList.add("hidden"); attachmentPreview.classList.remove("flex"); } syncComposer(); });
+  document.getElementById("remove-attachment").addEventListener("click", function () { attachmentInput.value = ""; attachmentPreview.classList.add("hidden"); attachmentPreview.classList.remove("flex"); syncComposer(); });
+  document.getElementById("message-form").addEventListener("submit", function (event) { event.preventDefault(); var threadId = document.getElementById("thread-id").value; if (!threadId || sendBtn.disabled) return; hideError(); sendBtn.disabled = true; fetch("{% url 'hub:dashboard_section' 'messages' %}", { method: "POST", headers: { "X-Requested-With": "XMLHttpRequest", "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value }, body: new FormData(this) }).then(function (response) { return response.json().then(function (data) { if (!response.ok || !data.ok) throw new Error(data.error || "Could not send message."); return data; }); }).then(function () { messageInput.value = ""; messageInput.style.height = "auto"; attachmentInput.value = ""; attachmentPreview.classList.add("hidden"); attachmentPreview.classList.remove("flex"); loadConversation(threadId); }).catch(function (error) { showError(error.message); syncComposer(); }); });
+  if (mobileBackBtn) mobileBackBtn.addEventListener("click", function () { if (workspace) workspace.classList.remove("showing-chat"); });
+  document.getElementById("details-btn").addEventListener("click", function () { workspace.classList.toggle("details-open"); });
+  document.getElementById("close-details-btn").addEventListener("click", function () { workspace.classList.remove("details-open"); });
+  document.getElementById("chat-search-btn").addEventListener("click", function () { document.getElementById("conversation-search-bar").classList.add("is-visible"); document.getElementById("in-chat-search").focus(); });
+  document.getElementById("close-chat-search").addEventListener("click", function () { document.getElementById("conversation-search-bar").classList.remove("is-visible"); document.getElementById("in-chat-search").value = ""; document.querySelectorAll(".message-search-match").forEach(function (el) { el.classList.remove("message-search-match"); }); });
+  document.getElementById("in-chat-search").addEventListener("input", function () { var term = this.value.trim().toLowerCase(); var first = null; document.querySelectorAll(".message-bubble").forEach(function (el) { var match = term && (el.getAttribute("data-message-body") || "").toLowerCase().includes(term); el.classList.toggle("message-search-match", !!match); if (match && !first) first = el; }); if (first) first.scrollIntoView({ behavior: "smooth", block: "center" }); });
+  document.querySelectorAll("[data-detail-action=search]").forEach(function (button) { button.addEventListener("click", function () { workspace.classList.remove("details-open"); document.getElementById("chat-search-btn").click(); }); });
+  document.querySelectorAll("[data-chat-action]").forEach(function (button) { button.addEventListener("click", function () { showError(button.getAttribute("data-chat-action") === "video" ? "Video calls are coming soon." : "Audio calls are coming soon."); }); });
+  document.querySelectorAll("[data-detail-action=mute]").forEach(function (button) { button.addEventListener("click", function () { var label = button.querySelector("span"); label.textContent = label.textContent === "Mute notifications" ? "Notifications muted" : "Mute notifications"; button.classList.toggle("bg-violet-50"); }); });
+  document.getElementById("emoji-btn").addEventListener("click", function () { document.getElementById("emoji-popover").classList.toggle("is-visible"); });
+  document.querySelectorAll("[data-emoji]").forEach(function (button) { button.addEventListener("click", function () { messageInput.value += button.getAttribute("data-emoji"); messageInput.focus(); syncComposer(); }); });
+  document.addEventListener("click", function (event) { var mediaButton = event.target.closest("[data-media-url]"); if (mediaButton) { var modal = document.getElementById("media-modal"); var content = document.getElementById("media-modal-content"); var url = mediaButton.getAttribute("data-media-url"); content.innerHTML = mediaButton.getAttribute("data-media-kind") === "video" ? '<video src="' + escapeHtml(url) + '" controls autoplay class="max-h-[85vh] max-w-[85vw] rounded-xl"></video>' : '<img src="' + escapeHtml(url) + '" alt="Shared media" class="max-h-[85vh] max-w-[85vw] rounded-xl object-contain">'; modal.classList.remove("hidden"); modal.classList.add("flex"); } var react = event.target.closest("[data-react-message]"); if (react) { var bubble = react.closest(".relative").querySelector(".message-bubble"); if (bubble && !bubble.querySelector(".message-reaction")) bubble.insertAdjacentHTML("beforeend", '<span class="message-reaction absolute -bottom-3 right-2 rounded-full bg-white px-1.5 py-0.5 text-xs shadow ring-1 ring-gray-100">👍</span>'); } var copy = event.target.closest("[data-copy-message]"); if (copy && currentData) { var item = currentData.messages.find(function (m) { return String(m.id) === String(copy.getAttribute("data-copy-message")); }); if (item) navigator.clipboard && navigator.clipboard.writeText(item.body || item.attachment_name || ""); } });
+  document.getElementById("close-media-modal").addEventListener("click", function () { document.getElementById("media-modal").classList.add("hidden"); document.getElementById("media-modal").classList.remove("flex"); document.getElementById("media-modal-content").innerHTML = ""; });
+  if (initialThreadId) { var initialConversation = document.querySelector('[data-thread-id="' + initialThreadId + '"]'); if (initialConversation) initialConversation.click(); } else if (window.innerWidth >= 1024 && conversationItems.length) conversationItems[0].click();
+});
+</script>
+{% endif %}

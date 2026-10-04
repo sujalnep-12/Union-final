@@ -1,0 +1,5306 @@
+{
+  "models": [
+    {
+      "name": "User",
+      "fields": [
+        {
+          "name": "id",
+          "type": "AutoField",
+          "target": null
+        },
+        {
+          "name": "password",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "last_login",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "is_superuser",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "username",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "first_name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "last_name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "email",
+          "type": "EmailField",
+          "target": null
+        },
+        {
+          "name": "is_staff",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "date_joined",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "User",
+          "field": "groups",
+          "target": "Group",
+          "cardinality": "N:M"
+        },
+        {
+          "source": "User",
+          "field": "user_permissions",
+          "target": "Permission",
+          "cardinality": "N:M"
+        }
+      ]
+    },
+    {
+      "name": "UserProfile",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "OneToOneField",
+          "target": "User"
+        },
+        {
+          "name": "platform_role",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "date_of_birth",
+          "type": "DateField",
+          "target": null
+        },
+        {
+          "name": "gender",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "phone_number",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "address",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "bio",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "interests",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "profile_image",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "avatar_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "theme_preference",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "personalization_preferences",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "mfa_enabled",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "account_deletion_requested_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "email_verified",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "otp_code",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "otp_created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "kyc_verified",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "kyc_full_name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "kyc_national_id",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "kyc_date_of_birth",
+          "type": "DateField",
+          "target": null
+        },
+        {
+          "name": "kyc_verified_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "presence_status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "custom_status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "last_seen",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "verification_level",
+          "type": "PositiveSmallIntegerField",
+          "target": null
+        },
+        {
+          "name": "bank_name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "bank_account_holder",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "bank_account_number",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "esewa_id",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "khalti_id",
+          "type": "CharField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "UserProfile",
+          "field": "user",
+          "target": "User",
+          "cardinality": "1:1"
+        }
+      ]
+    },
+    {
+      "name": "Community",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "slug",
+          "type": "SlugField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "rules",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "topic",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "location",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "tags",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "interests",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "cover_image",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "theme_preset",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "membership_plan_name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "membership_plan_description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "membership_price",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "visibility",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "allow_member_posts",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_archived",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "verification_level",
+          "type": "PositiveSmallIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_listed",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "boost_count",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "owner",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "Community",
+          "field": "owner",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityMembership",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "role",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "joined_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "nickname",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "muted_until",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "ban_reason",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "banned_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "banned_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "self_removed_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "can_post_without_approval",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "last_active_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityMembership",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityMembership",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityMembership",
+          "field": "banned_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityPost",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "author_user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "title",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "author",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "category",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "content_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "body",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "attachment_file",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "attachment_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "safety_status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "accept_donations",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_pinned",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "publish_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "moderation_notes",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "removed_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "approval_status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "approved_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "approved_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "rejection_reason",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "moderation_reason",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "is_edited",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "edited_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityPost",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityPost",
+          "field": "author_user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityPost",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityPost",
+          "field": "approved_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PostComment",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "author",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "body",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "attachment_file",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "attachment_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "parent",
+          "type": "ForeignKey",
+          "target": "PostComment"
+        },
+        {
+          "name": "level",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_edited",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "edited_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "moderation_reason",
+          "type": "TextField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PostComment",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PostComment",
+          "field": "author",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PostComment",
+          "field": "parent",
+          "target": "PostComment",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PostEngagement",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "engagement_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "note",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PostEngagement",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PostEngagement",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommentEngagement",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "comment",
+          "type": "ForeignKey",
+          "target": "PostComment"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "engagement_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommentEngagement",
+          "field": "comment",
+          "target": "PostComment",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommentEngagement",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "HiddenPost",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "hidden_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "HiddenPost",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "HiddenPost",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "BookmarkedPost",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "BookmarkedPost",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "BookmarkedPost",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "UserFollow",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "follower",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "followed",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "UserFollow",
+          "field": "follower",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "UserFollow",
+          "field": "followed",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "UserReputation",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "OneToOneField",
+          "target": "User"
+        },
+        {
+          "name": "xp",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "level",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "posts_count",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "comments_count",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "likes_received",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "UserReputation",
+          "field": "user",
+          "target": "User",
+          "cardinality": "1:1"
+        }
+      ]
+    },
+    {
+      "name": "Badge",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "slug",
+          "type": "SlugField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "icon",
+          "type": "CharField",
+          "target": null
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "UserBadge",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "badge",
+          "type": "ForeignKey",
+          "target": "Badge"
+        },
+        {
+          "name": "awarded_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "UserBadge",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "UserBadge",
+          "field": "badge",
+          "target": "Badge",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PostPoll",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "OneToOneField",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "question",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "is_multiple_choice",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "closes_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PostPoll",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "1:1"
+        }
+      ]
+    },
+    {
+      "name": "PollOption",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "poll",
+          "type": "ForeignKey",
+          "target": "PostPoll"
+        },
+        {
+          "name": "text",
+          "type": "CharField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PollOption",
+          "field": "poll",
+          "target": "PostPoll",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PollVote",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "option",
+          "type": "ForeignKey",
+          "target": "PollOption"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PollVote",
+          "field": "option",
+          "target": "PollOption",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PollVote",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PostAward",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "giver",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "icon",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PostAward",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PostAward",
+          "field": "giver",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "ContentReport",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "reporter",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "reported_user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "reason",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "resolution_notes",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "reviewed_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "ContentReport",
+          "field": "reporter",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentReport",
+          "field": "reported_user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentReport",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentReport",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentReport",
+          "field": "reviewed_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "SubscriptionPlan",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "slug",
+          "type": "SlugField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "price",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "community_limit",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "feature_summary",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "subscription_tier",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "can_create_communities",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_edit_communities",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_delete_communities",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_manage_members",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_access_analytics",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_host_events",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_monetize_communities",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_use_advanced_themes",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_access_support",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "max_community_memberships",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_community_posts_per_day",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_attachment_size",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "advanced_feature_access",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "api_access_level",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "webhook_access",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "integrations_allowed",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "custom_domains",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "priority_support_hours",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "white_label_options",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "financial_reporting_access",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "marketing_tools_access",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "SubscriptionTierLimits",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "tier_name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "max_communities_per_user",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_community_size",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_posts_per_day",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_attachments_per_post",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_attachment_size_mb",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "feature_flags",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "analytics_access_level",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "support_level",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "max_integrations",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "webhook_support",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "api_access_level",
+          "type": "CharField",
+          "target": null
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "SubscriptionRole",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "OneToOneField",
+          "target": "User"
+        },
+        {
+          "name": "role",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "subscription_plan",
+          "type": "ForeignKey",
+          "target": "SubscriptionPlan"
+        },
+        {
+          "name": "role_permissions",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "access_level",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "granted_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "expires_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "SubscriptionRole",
+          "field": "user",
+          "target": "User",
+          "cardinality": "1:1"
+        },
+        {
+          "source": "SubscriptionRole",
+          "field": "subscription_plan",
+          "target": "SubscriptionPlan",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunitySubscriptionAccess",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "access_level",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "can_view_posts",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_create_posts",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_edit_posts",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_delete_posts",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_manage_members",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_view_analytics",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_host_events",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_monetize",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "can_use_advanced_features",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "max_community_members",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_concurrent_members",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "joined_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "expires_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "invited_by",
+          "type": "ForeignKey",
+          "target": "UserProfile"
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunitySubscriptionAccess",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunitySubscriptionAccess",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunitySubscriptionAccess",
+          "field": "invited_by",
+          "target": "UserProfile",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "SubscriptionActivityLog",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "subscription_plan",
+          "type": "ForeignKey",
+          "target": "SubscriptionPlan"
+        },
+        {
+          "name": "action",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "details",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "performed_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "performed_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "ip_address",
+          "type": "GenericIPAddressField",
+          "target": null
+        },
+        {
+          "name": "user_agent",
+          "type": "TextField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "SubscriptionActivityLog",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "SubscriptionActivityLog",
+          "field": "subscription_plan",
+          "target": "SubscriptionPlan",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "SubscriptionActivityLog",
+          "field": "performed_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "SubscriptionFeatureAccess",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "feature_name",
+          "type": "SlugField",
+          "target": null
+        },
+        {
+          "name": "feature_category",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "basic_access",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "standard_access",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "premium_access",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "max_uses_per_month",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "max_uses_per_day",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "UserSubscription",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "plan",
+          "type": "ForeignKey",
+          "target": "SubscriptionPlan"
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "starts_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "expires_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "community_limit_snapshot",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "auto_renew",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "UserSubscription",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "UserSubscription",
+          "field": "plan",
+          "target": "SubscriptionPlan",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PaymentTransaction",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "plan",
+          "type": "ForeignKey",
+          "target": "SubscriptionPlan"
+        },
+        {
+          "name": "subscription",
+          "type": "ForeignKey",
+          "target": "UserSubscription"
+        },
+        {
+          "name": "gateway",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "amount",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "transaction_uuid",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "reference_code",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "notes",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PaymentTransaction",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PaymentTransaction",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PaymentTransaction",
+          "field": "plan",
+          "target": "SubscriptionPlan",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PaymentTransaction",
+          "field": "subscription",
+          "target": "UserSubscription",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PostDonation",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "donor",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "amount",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "gateway",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "reference_code",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "message",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "PostDonation",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PostDonation",
+          "field": "donor",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "PayoutRequest",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "requested_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "amount",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "payout_method",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "creator_note",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "admin_note",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "reference_code",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "requested_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "processed_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "processed_by",
+          "type": "ForeignKey",
+          "target": "User"
+        }
+      ],
+      "relations": [
+        {
+          "source": "PayoutRequest",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PayoutRequest",
+          "field": "requested_by",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "PayoutRequest",
+          "field": "processed_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "actor",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "notification_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "title",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "body",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "category",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "is_read",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_archived",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "Notification",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "Notification",
+          "field": "actor",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "Notification",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "Notification",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityEvent",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "organizer",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "title",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "starts_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "ends_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "link_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityEvent",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityEvent",
+          "field": "organizer",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "AuditLog",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "actor",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "action",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "target",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "details",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "severity",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "AuditLog",
+          "field": "actor",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "ContactMessage",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "full_name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "email",
+          "type": "EmailField",
+          "target": null
+        },
+        {
+          "name": "message",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "DirectMessageThread",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "participant1",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "participant2",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "last_message_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "DirectMessageThread",
+          "field": "participant1",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "DirectMessageThread",
+          "field": "participant2",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "DirectMessage",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "thread",
+          "type": "ForeignKey",
+          "target": "DirectMessageThread"
+        },
+        {
+          "name": "sender",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "body",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "attachment",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "is_read",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "is_edited",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "edited_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "edit_history",
+          "type": "JSONField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "DirectMessage",
+          "field": "thread",
+          "target": "DirectMessageThread",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "DirectMessage",
+          "field": "sender",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "DirectMessage",
+          "field": "read_by",
+          "target": "User",
+          "cardinality": "N:M"
+        }
+      ]
+    },
+    {
+      "name": "CommunityRoom",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "room_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "layout",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "icon_class",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "icon_image_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "icon_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "color",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "display_order",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_default",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "access_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "price",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "is_adult_only",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "allow_member_posts",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "requires_approval",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_voice_enabled",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_stage_enabled",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "voice_max_speakers",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_archived",
+          "type": "BooleanField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityRoom",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityLink",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "title",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "icon_class",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "icon_image_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "open_in_new_tab",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "display_order",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityLink",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityRole",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "color",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "position",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_admin_flag",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_assignable_by_self",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_default",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_system",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "permissions",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityRole",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityRoleAssignment",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "membership",
+          "type": "ForeignKey",
+          "target": "CommunityMembership"
+        },
+        {
+          "name": "role",
+          "type": "ForeignKey",
+          "target": "CommunityRole"
+        },
+        {
+          "name": "assigned_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "assigned_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityRoleAssignment",
+          "field": "membership",
+          "target": "CommunityMembership",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityRoleAssignment",
+          "field": "role",
+          "target": "CommunityRole",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityRoleAssignment",
+          "field": "assigned_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "RoomRolePermission",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "role",
+          "type": "ForeignKey",
+          "target": "CommunityRole"
+        },
+        {
+          "name": "permission",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "value",
+          "type": "CharField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "RoomRolePermission",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "RoomRolePermission",
+          "field": "role",
+          "target": "CommunityRole",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityRoomMembership",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "self_removed",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "approved_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "joined_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "left_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityRoomMembership",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityRoomMembership",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityRoomMembership",
+          "field": "approved_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "RoomAccessGroup",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "RoomAccessGroup",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "RoomAccessGroup",
+          "field": "rooms",
+          "target": "CommunityRoom",
+          "cardinality": "N:M"
+        },
+        {
+          "source": "RoomAccessGroup",
+          "field": "members",
+          "target": "CommunityMembership",
+          "cardinality": "N:M"
+        }
+      ]
+    },
+    {
+      "name": "RoomAccessGroupMember",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "group",
+          "type": "ForeignKey",
+          "target": "RoomAccessGroup"
+        },
+        {
+          "name": "membership",
+          "type": "ForeignKey",
+          "target": "CommunityMembership"
+        },
+        {
+          "name": "added_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "added_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "RoomAccessGroupMember",
+          "field": "group",
+          "target": "RoomAccessGroup",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "RoomAccessGroupMember",
+          "field": "membership",
+          "target": "CommunityMembership",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "RoomAccessGroupMember",
+          "field": "added_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityProfileFieldDefinition",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "key",
+          "type": "SlugField",
+          "target": null
+        },
+        {
+          "name": "label",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "field_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "placeholder",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "options",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "is_required",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "display_order",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityProfileFieldDefinition",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityProfileFieldValue",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "field",
+          "type": "ForeignKey",
+          "target": "CommunityProfileFieldDefinition"
+        },
+        {
+          "name": "membership",
+          "type": "ForeignKey",
+          "target": "CommunityMembership"
+        },
+        {
+          "name": "value",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityProfileFieldValue",
+          "field": "field",
+          "target": "CommunityProfileFieldDefinition",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityProfileFieldValue",
+          "field": "membership",
+          "target": "CommunityMembership",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "OnboardingFlow",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "OneToOneField",
+          "target": "Community"
+        },
+        {
+          "name": "is_enabled",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "welcome_message",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "steps",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "required_field_keys",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "show_popup",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "OnboardingFlow",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "1:1"
+        }
+      ]
+    },
+    {
+      "name": "InviteLink",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "code",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_vanity",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "max_uses",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "used_count",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "expires_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "onboarding_override",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "InviteLink",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "InviteLink",
+          "field": "created_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "InterestTag",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "slug",
+          "type": "SlugField",
+          "target": null
+        },
+        {
+          "name": "color",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "is_self_assignable",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "InterestTag",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "InterestTag",
+          "field": "members",
+          "target": "CommunityMembership",
+          "cardinality": "N:M"
+        }
+      ]
+    },
+    {
+      "name": "Course",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "title",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "cover_image",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "instructor",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "is_published",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "price",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "currency",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "Course",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "Course",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "Course",
+          "field": "instructor",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "Lesson",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "course",
+          "type": "ForeignKey",
+          "target": "Course"
+        },
+        {
+          "name": "title",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "content",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "video_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "video_file",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "lesson_type",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "duration_seconds",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "display_order",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "is_free_preview",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "Lesson",
+          "field": "course",
+          "target": "Course",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "LessonProgress",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "lesson",
+          "type": "ForeignKey",
+          "target": "Lesson"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "is_completed",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "progress_percent",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "completed_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "updated_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "LessonProgress",
+          "field": "lesson",
+          "target": "Lesson",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "LessonProgress",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "Certificate",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "course",
+          "type": "ForeignKey",
+          "target": "Course"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "certificate_code",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "issued_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "pdf_url",
+          "type": "URLField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "Certificate",
+          "field": "course",
+          "target": "Course",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "Certificate",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "EventRSVP",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "event",
+          "type": "ForeignKey",
+          "target": "CommunityEvent"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "EventRSVP",
+          "field": "event",
+          "target": "CommunityEvent",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "EventRSVP",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "RoomVoiceSession",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "is_muted",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_deafened",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_screen_sharing",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_stage_speaker",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_live",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "joined_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "left_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "RoomVoiceSession",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "RoomVoiceSession",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "StageSpeakerQueue",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "position",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "requested_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "decided_by",
+          "type": "ForeignKey",
+          "target": "User"
+        }
+      ],
+      "relations": [
+        {
+          "source": "StageSpeakerQueue",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "StageSpeakerQueue",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "StageSpeakerQueue",
+          "field": "decided_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CustomEmoji",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "image_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "image_file",
+          "type": "FileField",
+          "target": null
+        },
+        {
+          "name": "is_animated",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CustomEmoji",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CustomEmoji",
+          "field": "created_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "SlashCommand",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "description",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "handler",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "cooldown_seconds",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "requires_kyc",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "RulesAcknowledgment",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "rules_version",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "acknowledged_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "RulesAcknowledgment",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "RulesAcknowledgment",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "ContentActionLog",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "comment",
+          "type": "ForeignKey",
+          "target": "PostComment"
+        },
+        {
+          "name": "action",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "reason",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "acted_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "ContentActionLog",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentActionLog",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentActionLog",
+          "field": "comment",
+          "target": "PostComment",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentActionLog",
+          "field": "acted_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "ContentApproval",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "post",
+          "type": "ForeignKey",
+          "target": "CommunityPost"
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "requested_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "approved_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "review_note",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "reviewed_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "ContentApproval",
+          "field": "post",
+          "target": "CommunityPost",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentApproval",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentApproval",
+          "field": "requested_by",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ContentApproval",
+          "field": "approved_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "ProfanityRule",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "pattern",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "replacement",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "action",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "ProfanityRule",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ProfanityRule",
+          "field": "created_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "ModerationAction",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "membership",
+          "type": "ForeignKey",
+          "target": "CommunityMembership"
+        },
+        {
+          "name": "target_user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "action",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "reason",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "duration_minutes",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "expires_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "acted_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "ModerationAction",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ModerationAction",
+          "field": "membership",
+          "target": "CommunityMembership",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ModerationAction",
+          "field": "target_user",
+          "target": "User",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "ModerationAction",
+          "field": "acted_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "AutoRoleRule",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "trigger",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "role",
+          "type": "ForeignKey",
+          "target": "CommunityRole"
+        },
+        {
+          "name": "room",
+          "type": "ForeignKey",
+          "target": "CommunityRoom"
+        },
+        {
+          "name": "condition_value",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "AutoRoleRule",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "AutoRoleRule",
+          "field": "role",
+          "target": "CommunityRole",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "AutoRoleRule",
+          "field": "room",
+          "target": "CommunityRoom",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "Announcement",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "title",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "body",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "created_by",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "is_pinned",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "starts_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "expires_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "Announcement",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "Announcement",
+          "field": "created_by",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "EmailBroadcast",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "subject",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "body",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "sender",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "status",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "recipients_count",
+          "type": "PositiveIntegerField",
+          "target": null
+        },
+        {
+          "name": "sent_at",
+          "type": "DateTimeField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "EmailBroadcast",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "EmailBroadcast",
+          "field": "sender",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "Integration",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "name",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "webhook_url",
+          "type": "URLField",
+          "target": null
+        },
+        {
+          "name": "api_key",
+          "type": "CharField",
+          "target": null
+        },
+        {
+          "name": "config",
+          "type": "JSONField",
+          "target": null
+        },
+        {
+          "name": "is_active",
+          "type": "BooleanField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "Integration",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        }
+      ]
+    },
+    {
+      "name": "CommunityBoost",
+      "fields": [
+        {
+          "name": "id",
+          "type": "BigAutoField",
+          "target": null
+        },
+        {
+          "name": "community",
+          "type": "ForeignKey",
+          "target": "Community"
+        },
+        {
+          "name": "user",
+          "type": "ForeignKey",
+          "target": "User"
+        },
+        {
+          "name": "amount",
+          "type": "DecimalField",
+          "target": null
+        },
+        {
+          "name": "note",
+          "type": "TextField",
+          "target": null
+        },
+        {
+          "name": "created_at",
+          "type": "DateTimeField",
+          "target": null
+        }
+      ],
+      "relations": [
+        {
+          "source": "CommunityBoost",
+          "field": "community",
+          "target": "Community",
+          "cardinality": "N:1"
+        },
+        {
+          "source": "CommunityBoost",
+          "field": "user",
+          "target": "User",
+          "cardinality": "N:1"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "source": "UserProfile",
+      "field": "user",
+      "target": "User",
+      "cardinality": "1:1"
+    },
+    {
+      "source": "Community",
+      "field": "owner",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityMembership",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityMembership",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityMembership",
+      "field": "banned_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityPost",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityPost",
+      "field": "author_user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityPost",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityPost",
+      "field": "approved_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostComment",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostComment",
+      "field": "author",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostComment",
+      "field": "parent",
+      "target": "PostComment",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostEngagement",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostEngagement",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommentEngagement",
+      "field": "comment",
+      "target": "PostComment",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommentEngagement",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "HiddenPost",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "HiddenPost",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "BookmarkedPost",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "BookmarkedPost",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "UserFollow",
+      "field": "follower",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "UserFollow",
+      "field": "followed",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "UserReputation",
+      "field": "user",
+      "target": "User",
+      "cardinality": "1:1"
+    },
+    {
+      "source": "UserBadge",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "UserBadge",
+      "field": "badge",
+      "target": "Badge",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostPoll",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "1:1"
+    },
+    {
+      "source": "PollOption",
+      "field": "poll",
+      "target": "PostPoll",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PollVote",
+      "field": "option",
+      "target": "PollOption",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PollVote",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostAward",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostAward",
+      "field": "giver",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentReport",
+      "field": "reporter",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentReport",
+      "field": "reported_user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentReport",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentReport",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentReport",
+      "field": "reviewed_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "SubscriptionRole",
+      "field": "user",
+      "target": "User",
+      "cardinality": "1:1"
+    },
+    {
+      "source": "SubscriptionRole",
+      "field": "subscription_plan",
+      "target": "SubscriptionPlan",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunitySubscriptionAccess",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunitySubscriptionAccess",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunitySubscriptionAccess",
+      "field": "invited_by",
+      "target": "UserProfile",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "SubscriptionActivityLog",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "SubscriptionActivityLog",
+      "field": "subscription_plan",
+      "target": "SubscriptionPlan",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "SubscriptionActivityLog",
+      "field": "performed_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "UserSubscription",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "UserSubscription",
+      "field": "plan",
+      "target": "SubscriptionPlan",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PaymentTransaction",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PaymentTransaction",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PaymentTransaction",
+      "field": "plan",
+      "target": "SubscriptionPlan",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PaymentTransaction",
+      "field": "subscription",
+      "target": "UserSubscription",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostDonation",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PostDonation",
+      "field": "donor",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PayoutRequest",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PayoutRequest",
+      "field": "requested_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "PayoutRequest",
+      "field": "processed_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Notification",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Notification",
+      "field": "actor",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Notification",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Notification",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityEvent",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityEvent",
+      "field": "organizer",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "AuditLog",
+      "field": "actor",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "DirectMessageThread",
+      "field": "participant1",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "DirectMessageThread",
+      "field": "participant2",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "DirectMessage",
+      "field": "thread",
+      "target": "DirectMessageThread",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "DirectMessage",
+      "field": "sender",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "DirectMessage",
+      "field": "read_by",
+      "target": "User",
+      "cardinality": "N:M"
+    },
+    {
+      "source": "CommunityRoom",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityLink",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityRole",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityRoleAssignment",
+      "field": "membership",
+      "target": "CommunityMembership",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityRoleAssignment",
+      "field": "role",
+      "target": "CommunityRole",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityRoleAssignment",
+      "field": "assigned_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomRolePermission",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomRolePermission",
+      "field": "role",
+      "target": "CommunityRole",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityRoomMembership",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityRoomMembership",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityRoomMembership",
+      "field": "approved_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomAccessGroup",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomAccessGroup",
+      "field": "rooms",
+      "target": "CommunityRoom",
+      "cardinality": "N:M"
+    },
+    {
+      "source": "RoomAccessGroup",
+      "field": "members",
+      "target": "CommunityMembership",
+      "cardinality": "N:M"
+    },
+    {
+      "source": "RoomAccessGroupMember",
+      "field": "group",
+      "target": "RoomAccessGroup",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomAccessGroupMember",
+      "field": "membership",
+      "target": "CommunityMembership",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomAccessGroupMember",
+      "field": "added_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityProfileFieldDefinition",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityProfileFieldValue",
+      "field": "field",
+      "target": "CommunityProfileFieldDefinition",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityProfileFieldValue",
+      "field": "membership",
+      "target": "CommunityMembership",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "OnboardingFlow",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "1:1"
+    },
+    {
+      "source": "InviteLink",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "InviteLink",
+      "field": "created_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "InterestTag",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "InterestTag",
+      "field": "members",
+      "target": "CommunityMembership",
+      "cardinality": "N:M"
+    },
+    {
+      "source": "Course",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Course",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Course",
+      "field": "instructor",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Lesson",
+      "field": "course",
+      "target": "Course",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "LessonProgress",
+      "field": "lesson",
+      "target": "Lesson",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "LessonProgress",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Certificate",
+      "field": "course",
+      "target": "Course",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Certificate",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "EventRSVP",
+      "field": "event",
+      "target": "CommunityEvent",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "EventRSVP",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomVoiceSession",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RoomVoiceSession",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "StageSpeakerQueue",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "StageSpeakerQueue",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "StageSpeakerQueue",
+      "field": "decided_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CustomEmoji",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CustomEmoji",
+      "field": "created_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RulesAcknowledgment",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "RulesAcknowledgment",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentActionLog",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentActionLog",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentActionLog",
+      "field": "comment",
+      "target": "PostComment",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentActionLog",
+      "field": "acted_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentApproval",
+      "field": "post",
+      "target": "CommunityPost",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentApproval",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentApproval",
+      "field": "requested_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ContentApproval",
+      "field": "approved_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ProfanityRule",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ProfanityRule",
+      "field": "created_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ModerationAction",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ModerationAction",
+      "field": "membership",
+      "target": "CommunityMembership",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ModerationAction",
+      "field": "target_user",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "ModerationAction",
+      "field": "acted_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "AutoRoleRule",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "AutoRoleRule",
+      "field": "role",
+      "target": "CommunityRole",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "AutoRoleRule",
+      "field": "room",
+      "target": "CommunityRoom",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Announcement",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Announcement",
+      "field": "created_by",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "EmailBroadcast",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "EmailBroadcast",
+      "field": "sender",
+      "target": "User",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "Integration",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityBoost",
+      "field": "community",
+      "target": "Community",
+      "cardinality": "N:1"
+    },
+    {
+      "source": "CommunityBoost",
+      "field": "user",
+      "target": "User",
+      "cardinality": "N:1"
+    }
+  ]
+}

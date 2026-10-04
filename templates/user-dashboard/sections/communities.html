@@ -1,0 +1,276 @@
+{% if active_page == "communities" %}
+<style>
+  .communities-welcome { display: none; }
+  .communities-avatar { box-shadow: 0 0 0 3px #ffffff, 0 8px 20px rgba(15,23,42,.12); }
+  .communities-first-stage { background: radial-gradient(circle at 50% 18%, rgba(139, 92, 246, .13), transparent 34%), linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
+</style>
+{% if not communities_started and not joined_communities_count and not managed_communities_count and not community_search %}
+<section class="communities-first-entry communities-first-stage">
+  <div class="flex h-full w-full items-center justify-center overflow-y-auto px-5 py-8 sm:px-10 lg:px-16">
+    <div class="w-full max-w-5xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.16em] text-violet-700"><i class="fa-solid fa-layer-group"></i> Your Union spaces</span>
+      <h1 class="mx-auto mt-5 max-w-4xl text-4xl font-black leading-tight tracking-[-.05em] text-gray-950 sm:text-6xl">Find your people.<br /><span class="text-violet-600">Build your place.</span></h1>
+      <p class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-gray-500 sm:text-base">Join a community to learn and connect, or create a space where your ideas can grow into something shared.</p>
+      <div class="mt-7 flex items-center justify-center -space-x-3"><span class="communities-avatar flex h-14 w-14 items-center justify-center rounded-full bg-violet-100 text-lg font-black text-violet-700">U</span><span class="communities-avatar flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-lg font-black text-indigo-700">P</span><span class="communities-avatar flex h-14 w-14 items-center justify-center rounded-full bg-fuchsia-100 text-lg font-black text-fuchsia-700">C</span><span class="communities-avatar flex h-14 w-14 items-center justify-center rounded-full bg-gray-950 text-xs font-black text-white">+3</span></div>
+      <div class="mx-auto mt-7 w-full max-w-2xl rounded-[28px] border border-violet-100 bg-white px-6 py-7 shadow-[0_20px_60px_rgba(91,33,182,.1)] sm:px-10"><h2 class="text-2xl font-black tracking-tight text-gray-950 sm:text-3xl">Make Union yours</h2><p class="mx-auto mt-2 max-w-lg text-sm leading-6 text-gray-500">Choose a space that feels right, meet people who get it, and start building something meaningful together.</p><span class="sr-only">Search communities Joined Communities</span><div class="mt-5 flex flex-col justify-center gap-2 sm:flex-row"><a href="{% url 'hub:dashboard_section' 'communities' %}?started=1" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 text-sm font-black text-white transition hover:bg-gray-800"><i class="fa-solid fa-layer-group"></i>Open communities</a><a href="{% url 'hub:create_community' %}" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-black text-gray-700 transition hover:bg-gray-50"><i class="fa-solid fa-plus"></i>Create a community</a></div></div>
+      <div class="mx-auto mt-6 grid max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4 sm:gap-3"><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-user-group text-violet-600"></i><p class="mt-2 text-xs font-black text-gray-900">Join conversations</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Find people with shared interests.</p></div><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-pen-nib text-indigo-600"></i><p class="mt-2 text-xs font-black text-gray-900">Share what you know</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Bring your ideas to the room.</p></div><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-people-roof text-fuchsia-600"></i><p class="mt-2 text-xs font-black text-gray-900">Build your place</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Create a space around a purpose.</p></div><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-heart text-rose-500"></i><p class="mt-2 text-xs font-black text-gray-900">Belong together</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Make every visit feel worthwhile.</p></div></div>
+    </div>
+  </div>
+
+</section>
+{% else %}
+<section id="communities" class="mt-0">
+  <div class="flex flex-col gap-5 border-b border-gray-200 pb-5 md:flex-row md:items-end md:justify-between">
+    <div>
+      <p class="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-violet-600">Community directory</p>
+      <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">Communities</h1>
+      <p class="mt-1 text-sm text-gray-500">Discover spaces to join and manage the communities you lead.</p>
+    </div>
+    <a href="{% url 'hub:create_community' %}" class="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-gray-950 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300">
+      <i class="fa-solid fa-plus text-sm"></i>
+      Create community
+    </a>
+  </div>
+
+  <section class="communities-welcome relative mt-7 overflow-hidden rounded-3xl border border-violet-100 px-6 py-7 shadow-sm sm:px-9 sm:py-8">
+    <div class="pointer-events-none absolute -right-10 -top-12 h-48 w-48 rounded-full bg-violet-200/50 blur-3xl"></div>
+    <div class="relative grid items-center gap-7 lg:grid-cols-[minmax(0,1fr)_330px]">
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.16em] text-violet-700"><i class="fa-solid fa-layer-group"></i> Your Union spaces</span>
+        <h2 class="mt-4 max-w-2xl text-2xl font-black tracking-tight text-gray-950 sm:text-4xl">Find your people. Build your place.</h2>
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-500">Join a community to learn and connect, or create a space where your ideas can grow into something shared.</p>
+        <div class="mt-5 flex flex-wrap gap-2"><span class="rounded-full bg-white px-3 py-2 text-xs font-bold text-gray-700 ring-1 ring-gray-200"><i class="fa-solid fa-user-group mr-1.5 text-violet-600"></i>Join conversations</span><span class="rounded-full bg-white px-3 py-2 text-xs font-bold text-gray-700 ring-1 ring-gray-200"><i class="fa-solid fa-pen-nib mr-1.5 text-indigo-600"></i>Share what you know</span><span class="rounded-full bg-gray-950 px-3 py-2 text-xs font-bold text-white"><i class="fa-solid fa-plus mr-1.5"></i>Create a community</span></div>
+      </div>
+      <div class="flex items-center justify-center lg:justify-end">
+        <div class="relative h-32 w-64">
+          <span class="communities-avatar absolute left-2 top-5 flex h-14 w-14 items-center justify-center rounded-full bg-violet-100 text-lg font-black text-violet-700">{{ community_cards.0.name|default:"U"|first|upper }}</span>
+          <span class="communities-avatar absolute left-14 top-0 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100 text-lg font-black text-indigo-700">{{ community_cards.1.name|default:"N"|first|upper }}</span>
+          <span class="communities-avatar absolute left-28 top-6 flex h-14 w-14 items-center justify-center rounded-full bg-fuchsia-100 text-lg font-black text-fuchsia-700">{{ community_cards.2.name|default:"C"|first|upper }}</span>
+          <span class="communities-avatar absolute right-1 top-1 flex h-16 w-16 items-center justify-center rounded-full bg-gray-950 text-xs font-black text-white">+{{ community_cards|length|default:"0" }}</span>
+          <span class="absolute bottom-0 left-16 rounded-xl bg-white px-3 py-2 text-xs font-bold text-gray-700 shadow-sm ring-1 ring-gray-200">People are gathering here <i class="fa-solid fa-heart ml-1 text-rose-500"></i></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <form method="get" action="{% url 'hub:dashboard_section' 'communities' %}" class="mt-5 flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-2.5 shadow-sm sm:flex-row sm:items-center">
+    <input type="hidden" name="tab" value="{{ community_tab }}" />
+    <input type="hidden" name="category" value="{{ community_category }}" />
+    <label for="community-search" class="sr-only">Search communities</label>
+    <div class="relative flex-1">
+      <i class="fa-solid fa-magnifying-glass pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+      <input id="community-search" type="search" name="q" value="{{ community_search }}" placeholder="Search communities by topic, tag, or location" class="h-11 w-full rounded-xl border-0 bg-gray-50 pl-11 pr-4 text-sm text-gray-800 outline-none ring-1 ring-transparent transition placeholder:text-gray-400 focus:bg-white focus:ring-violet-200" />
+    </div>
+    <label for="community-sort" class="sr-only">Sort communities</label>
+    <select id="community-sort" name="sort" class="h-11 rounded-xl border-0 bg-gray-50 px-3 text-xs font-bold text-gray-700 outline-none ring-1 ring-transparent focus:bg-white focus:ring-violet-200" onchange="this.form.submit()">
+      <option value="popular" {% if community_sort == 'popular' %}selected{% endif %}>Sort: Popular</option>
+      <option value="recent" {% if community_sort == 'recent' %}selected{% endif %}>Sort: Newest</option>
+      <option value="name" {% if community_sort == 'name' %}selected{% endif %}>Sort: A–Z</option>
+    </select>
+    <button type="submit" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 text-xs font-black text-white transition hover:bg-gray-800 sm:w-auto">
+      <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+      Search
+    </button>
+  </form>
+
+  <nav class="mt-4 flex flex-wrap items-center gap-2" aria-label="Community categories">
+    <a href="{% url 'hub:dashboard_section' 'communities' %}?tab={{ community_tab }}&amp;sort={{ community_sort }}{% if community_search %}&amp;q={{ community_search|urlencode }}{% endif %}" class="inline-flex items-center rounded-xl border px-3.5 py-2 text-xs font-bold transition {% if not community_category %}border-violet-200 bg-violet-50 text-violet-700{% else %}border-gray-200 bg-white text-gray-600 hover:border-violet-200 hover:text-violet-700{% endif %}">All</a>
+    {% for category in discover_categories|slice:":7" %}
+      <a href="{% url 'hub:dashboard_section' 'communities' %}?tab={{ community_tab }}&amp;category={{ category|urlencode }}&amp;sort={{ community_sort }}{% if community_search %}&amp;q={{ community_search|urlencode }}{% endif %}" class="inline-flex items-center rounded-xl border px-3.5 py-2 text-xs font-bold transition {% if community_category == category %}border-violet-200 bg-violet-50 text-violet-700{% else %}border-gray-200 bg-white text-gray-600 hover:border-violet-200 hover:text-violet-700{% endif %}">{{ category }}</a>
+    {% endfor %}
+  </nav>
+
+  <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <nav class="flex w-fit flex-wrap gap-1 rounded-xl border border-gray-200 bg-white p-1 text-sm font-semibold shadow-sm" aria-label="Community views">
+    <a href="{% url 'hub:dashboard_section' 'communities' %}?tab=discover&amp;sort={{ community_sort }}{% if community_category %}&amp;category={{ community_category|urlencode }}{% endif %}{% if community_search %}&amp;q={{ community_search|urlencode }}{% endif %}" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 transition {% if community_tab == 'discover' %}bg-gray-950 text-white{% else %}text-gray-500 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+      <i class="fa-solid fa-compass text-xs {% if community_tab == 'discover' %}text-violet-300{% else %}text-slate-400{% endif %}"></i>
+      Discover
+    </a>
+    <a href="{% url 'hub:dashboard_section' 'communities' %}?tab=joined&amp;sort={{ community_sort }}{% if community_category %}&amp;category={{ community_category|urlencode }}{% endif %}{% if community_search %}&amp;q={{ community_search|urlencode }}{% endif %}" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 transition {% if community_tab == 'joined' %}bg-gray-950 text-white{% else %}text-gray-500 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+      <i class="fa-solid fa-user-check text-xs {% if community_tab == 'joined' %}text-violet-300{% else %}text-slate-400{% endif %}"></i>
+      Joined<span class="sr-only"> Communities</span>
+      <span class="ml-1 text-xs text-slate-400">{{ joined_communities_count }}</span>
+    </a>
+    <a href="{% url 'hub:dashboard_section' 'communities' %}?tab=managed&amp;sort={{ community_sort }}{% if community_category %}&amp;category={{ community_category|urlencode }}{% endif %}{% if community_search %}&amp;q={{ community_search|urlencode }}{% endif %}" class="inline-flex items-center gap-2 rounded-lg px-3 py-2 transition {% if community_tab == 'managed' %}bg-gray-950 text-white{% else %}text-gray-500 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+      <i class="fa-solid fa-sliders text-xs {% if community_tab == 'managed' %}text-violet-300{% else %}text-slate-400{% endif %}"></i>
+      Managed by me
+      <span class="ml-1 text-xs text-slate-400">{{ managed_communities_count }}</span>
+    </a>
+    </nav>
+    <p class="text-xs font-medium text-slate-400">{{ community_cards|length }} space{{ community_cards|length|pluralize }} in this view</p>
+  </div>
+
+  <div class="mt-7 flex items-end justify-between gap-3">
+    <div><p class="text-[10px] font-black uppercase tracking-[0.16em] text-gray-400">Explore</p><h2 class="mt-1 text-xl font-extrabold tracking-tight text-gray-950">Communities for you</h2></div>
+    <p class="hidden text-xs text-gray-400 sm:block">Join a space that matches your interests.</p>
+  </div>
+
+  <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {% for community in community_cards %}
+      <article class="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-lg">
+        <div class="relative flex h-28 items-end overflow-hidden bg-slate-950 p-3 text-white" {% if not community.cover_image_url %}style="background: {{ community.cover_style }};"{% endif %}>
+          {% if community.cover_image_url %}
+            <img src="{{ community.cover_image_url }}" alt="{{ community.name }}" class="absolute inset-0 h-full w-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/35 to-slate-950/10"></div>
+          {% endif %}
+
+          <div class="absolute bottom-3 left-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-lg text-white shadow-lg ring-4 ring-white/80">
+            {% if "tech" in community.topic|lower or "develop" in community.topic|lower %}<i class="fa-solid fa-code"></i>{% elif "educ" in community.topic|lower or "study" in community.topic|lower %}<i class="fa-solid fa-graduation-cap"></i>{% elif "design" in community.topic|lower or "creative" in community.topic|lower %}<i class="fa-solid fa-pen-nib"></i>{% elif "business" in community.topic|lower or "entre" in community.topic|lower %}<i class="fa-solid fa-chart-line"></i>{% elif "game" in community.topic|lower %}<i class="fa-solid fa-gamepad"></i>{% elif "health" in community.topic|lower %}<i class="fa-solid fa-heart"></i>{% else %}<i class="fa-solid fa-layer-group"></i>{% endif %}
+          </div>
+
+          <details class="absolute right-3 top-3 z-20">
+            <summary class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-black/35 text-white transition hover:bg-black/50" style="list-style: none;">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+              <span class="sr-only">Open community menu</span>
+            </summary>
+            <div class="absolute right-0 z-30 mt-2 w-36 rounded-lg bg-white p-2 text-sm shadow-lg ring-1 ring-slate-100">
+              {% if community.is_owner %}
+                <form method="post" action="{% url 'hub:dashboard_section' 'communities' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete_community" />
+                  <input type="hidden" name="community_id" value="{{ community.id }}" />
+                  <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-red-600 transition hover:bg-red-50">
+                    <i class="fa-regular fa-trash-can"></i>
+                    Delete
+                  </button>
+                </form>
+              {% elif community.is_member %}
+                <form method="post" action="{% url 'hub:dashboard_section' 'communities' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="leave_community" />
+                  <input type="hidden" name="community_id" value="{{ community.id }}" />
+                  <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    Leave
+                  </button>
+                </form>
+              {% else %}
+                <span class="flex items-center gap-2 rounded-lg px-3 py-2 text-slate-500">
+                  <i class="fa-regular fa-compass"></i>
+                  Discover
+                </span>
+              {% endif %}
+            </div>
+          </details>
+
+          <div class="absolute right-3 top-3 z-10 flex flex-wrap justify-end gap-1.5">
+            {% if community.is_owner %}<span class="rounded-full bg-violet-600/90 px-2 py-1 text-[9px] font-bold text-white">Managed</span>{% elif community.is_member %}<span class="rounded-full bg-emerald-500/90 px-2 py-1 text-[9px] font-bold text-white">Joined</span>{% endif %}
+          </div>
+        </div>
+
+        <div class="p-4 pt-7">
+          <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400">{{ community.topic|default:"Community" }}</p>
+          <h3 class="mt-1 break-words text-base font-extrabold leading-tight tracking-tight text-gray-950">{{ community.name }}</h3>
+          <div class="mt-2 flex items-center gap-2 text-[11px] font-semibold text-gray-500">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-user-group text-violet-500"></i>
+              {{ community.member_count|default:"0" }} member{{ community.member_count|pluralize }}
+            </span>
+          </div>
+
+          {% if community.description %}
+            <p class="mt-3 line-clamp-3 min-h-[60px] text-xs leading-5 text-gray-600">{{ community.description }}</p>
+          {% else %}
+            <p class="mt-3 min-h-[60px] text-xs leading-5 text-gray-400">A space for people with shared interests.</p>
+          {% endif %}
+
+          {% if community.is_member %}
+            <div class="mt-4 grid gap-3">
+              <a href="{% url 'hub:community_detail' community.slug %}" class="inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg bg-violet-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-violet-700">
+                <i class="fa-regular fa-eye"></i>
+                View Community
+              </a>
+            </div>
+          {% else %}
+            <form method="post" action="{% if community.requires_payment %}{% url 'hub:esewa_community_payment_start' community.id %}{% else %}{% url 'hub:dashboard_section' 'communities' %}{% endif %}" class="mt-4">
+              {% csrf_token %}
+              {% if not community.requires_payment %}
+                <input type="hidden" name="action" value="join_community" />
+                <input type="hidden" name="community_id" value="{{ community.id }}" />
+              {% endif %}
+              <button type="submit" class="inline-flex min-h-9 w-full items-center justify-center gap-2 rounded-lg bg-violet-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-violet-700">
+                <i class="fa-solid fa-plus"></i>
+                {% if community.requires_payment %}
+                  Join · Rs. {{ community.membership_price }}
+                {% else %}
+                  Join
+                {% endif %}
+              </button>
+            </form>
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <div class="rounded-lg border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-500 sm:col-span-2 lg:col-span-3">
+        {% if community_search %}
+          No communities match "{{ community_search }}".
+        {% else %}
+          No communities are available in this view yet.
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <section class="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]" aria-label="Your communities and community creation">
+    <article class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div class="flex items-center justify-between gap-3 border-b border-gray-100 px-5 py-4">
+        <div>
+          <p class="text-[10px] font-black uppercase tracking-[0.16em] text-violet-600">Your spaces</p>
+          <h2 class="mt-1 text-lg font-extrabold tracking-tight text-gray-950">My communities</h2>
+        </div>
+        <a href="{% url 'hub:dashboard_section' 'communities' %}?tab=joined" class="text-xs font-bold text-violet-700 transition hover:text-violet-900">View all <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i></a>
+      </div>
+      <div class="divide-y divide-gray-100">
+        {% for community in user_communities|slice:":3" %}
+          <a href="{% url 'hub:community_detail' community.slug %}" class="flex items-center gap-3 px-5 py-3.5 transition hover:bg-violet-50/40">
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-violet-50 text-sm font-black text-violet-700">
+              {% if community.cover_image_url %}<img src="{{ community.cover_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ community.name|first|upper }}{% endif %}
+            </span>
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-sm font-bold text-gray-900">{{ community.name }}</span>
+              <span class="mt-0.5 block truncate text-xs text-gray-500">{{ community.topic|default:"Community" }} · {{ community.member_count|default:"0" }} member{{ community.member_count|pluralize }}</span>
+            </span>
+            <i class="fa-solid fa-chevron-right shrink-0 text-xs text-gray-300 transition group-hover:text-violet-600"></i>
+          </a>
+        {% empty %}
+          <div class="px-5 py-6 text-sm text-gray-500">You have not joined a community yet. Browse the directory to find your first space.</div>
+        {% endfor %}
+      </div>
+    </article>
+
+    <a href="{% url 'hub:create_community' %}" class="group relative overflow-hidden rounded-2xl bg-gray-950 p-5 text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-gray-900 hover:shadow-lg">
+      <div class="pointer-events-none absolute -right-8 -top-10 h-36 w-36 rounded-full bg-violet-600/35 blur-2xl transition group-hover:bg-violet-500/45"></div>
+      <div class="relative flex h-full min-h-[176px] flex-col justify-between">
+        <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-lg"><i class="fa-solid fa-plus"></i></span>
+        <span>
+          <span class="block text-lg font-extrabold tracking-tight">Create a community</span>
+          <span class="mt-1 block text-xs leading-5 text-gray-300">Start a space for your ideas, members, and conversations.</span>
+          <span class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-violet-300">Get started <i class="fa-solid fa-arrow-right text-[10px] transition group-hover:translate-x-0.5"></i></span>
+        </span>
+      </div>
+    </a>
+  </section>
+
+  <section class="mt-10" aria-labelledby="trending-communities-title">
+    <div class="flex items-end justify-between gap-3">
+      <div><p class="text-[10px] font-black uppercase tracking-[0.16em] text-violet-600">What people are joining</p><h2 id="trending-communities-title" class="mt-1 text-xl font-extrabold tracking-tight text-gray-950"><i class="fa-solid fa-arrow-trend-up mr-1 text-sm text-violet-500"></i>Trending communities</h2></div>
+      <a href="{% url 'hub:dashboard_section' 'discover' %}" class="text-xs font-bold text-violet-700 transition hover:text-violet-900">View all <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i></a>
+    </div>
+    <div class="mt-4 grid gap-3 lg:grid-cols-2">
+      {% for community in trending_communities|slice:":6" %}
+        <a href="{% url 'hub:community_detail' community.slug %}" class="group flex items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3.5 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md">
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 text-sm font-black text-violet-700">
+            {% if community.cover_image_url %}<img src="{{ community.cover_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ community.name|first|upper }}{% endif %}
+          </span>
+          <span class="min-w-0 flex-1"><span class="block truncate text-sm font-bold text-gray-900">{{ community.name }}</span><span class="mt-0.5 block truncate text-xs text-gray-500">{{ community.description|default:"A growing community on Union."|truncatewords:10 }}</span></span>
+          <span class="hidden shrink-0 text-right sm:block"><span class="block text-sm font-bold text-gray-800">{{ community.member_count_raw|default:"0" }}</span><span class="block text-[10px] text-gray-400">members</span></span>
+          <span class="inline-flex shrink-0 items-center gap-1 rounded-lg bg-violet-50 px-3 py-2 text-xs font-bold text-violet-700 transition group-hover:bg-violet-100">Explore <i class="fa-solid fa-arrow-right text-[9px]"></i></span>
+        </a>
+      {% empty %}
+        <div class="rounded-2xl border border-dashed border-gray-200 bg-white p-6 text-sm text-gray-500 lg:col-span-2">Trending communities will appear here as people join and conversations grow.</div>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+{% endif %}

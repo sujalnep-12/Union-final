@@ -1,0 +1,193 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Policy Enforcement | Union{% endblock %}
+
+{% block sidebar %}
+  <aside class="border-b border-gray-100 bg-white lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r">
+    <div class="flex items-center justify-between px-4 py-4 lg:block lg:px-4 lg:py-8">
+      <a href="{% url 'hub:dashboard' %}" class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 text-gray-900">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div>
+          <span class="block text-xl font-bold tracking-tight">UNION</span>
+          <span class="block text-xs font-semibold uppercase tracking-wide text-gray-900">Super Admin</span>
+        </div>
+      </a>
+      <form method="post" action="{% url 'hub:logout' %}" class="lg:hidden">
+        {% csrf_token %}
+        <button type="submit" class="rounded-xl border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600">
+          Logout
+        </button>
+      </form>
+    </div>
+
+    <nav class="flex flex-wrap gap-2 px-4 pb-4 text-sm lg:block lg:space-y-1 lg:pb-0">
+      <a href="{% url 'hub:dashboard' %}" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50">
+        <i class="fa-solid fa-table-cells-large w-5 text-center"></i>
+        Overview
+      </a>
+      <a href="{% url 'hub:dashboard' %}#communities" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50">
+        <i class="fa-solid fa-layer-group w-5 text-center"></i>
+        Communities
+      </a>
+      <a href="{% url 'hub:dashboard' %}#subscriptions" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50">
+        <i class="fa-solid fa-credit-card w-5 text-center"></i>
+        Subscriptions
+      </a>
+      <a href="{% url 'hub:dashboard' %}#system" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50">
+        <i class="fa-solid fa-server w-5 text-center"></i>
+        System Admin
+      </a>
+      <a href="{% url 'hub:dashboard' %}#messages" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50">
+        <i class="fa-regular fa-envelope w-5 text-center"></i>
+        Messages
+      </a>
+      <p class="hidden px-4 pb-3 pt-7 text-xs font-medium text-gray-400 lg:block">More</p>
+      <a href="{% url 'hub:policy_enforcement' %}" class="flex min-w-max items-center gap-3 rounded-lg bg-gray-100 px-4 py-3 font-medium text-gray-900">
+        <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+        Policy Enforcement
+      </a>
+
+      <div class="hidden lg:block lg:pt-9">
+        <form method="post" action="{% url 'hub:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left font-medium text-gray-600 transition hover:bg-gray-50">
+            <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center"></i>
+            Logout
+          </button>
+        </form>
+      </div>
+    </nav>
+  </aside>
+{% endblock %}
+
+{% block content %}
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide text-gray-900">Administration</p>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Policy Enforcement & Complaints</h1>
+      <p class="mt-2 text-sm text-gray-500 sm:text-base">{{ today|date:"l, F j, Y" }}</p>
+      <p class="mt-2 text-xs font-semibold text-gray-400">Session expires: {{ session_info.expiry_label }}</p>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="mt-5 space-y-2">
+      {% for message in messages %}
+        <div class="rounded-xl border px-4 py-3 text-sm {% if message.tags == 'success' %}border-gray-200 bg-gray-50 text-gray-700{% else %}border-red-200 bg-red-50 text-red-700{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Complaint Stats -->
+  <section class="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <article class="rounded-lg bg-gray-50 p-5 shadow-sm ring-1 ring-gray-200 sm:p-7">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wide text-gray-700">Pending Complaints</p>
+          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900">{{ pending_count }}</p>
+        </div>
+        <i class="fa-solid fa-exclamation-circle text-4xl text-gray-200"></i>
+      </div>
+    </article>
+
+    <article class="rounded-lg bg-gray-50 p-5 shadow-sm ring-1 ring-gray-200 sm:p-7">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wide text-gray-700">Under Review</p>
+          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900">{{ under_review_count }}</p>
+        </div>
+        <i class="fa-solid fa-magnifying-glass text-4xl text-gray-200"></i>
+      </div>
+    </article>
+
+    <article class="rounded-lg bg-gray-50 p-5 shadow-sm ring-1 ring-gray-200 sm:p-7">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wide text-gray-700">Total Complaints</p>
+          <p class="mt-2 text-3xl font-bold tracking-tight text-gray-900">{{ complaints|length }}</p>
+        </div>
+        <i class="fa-solid fa-file-circle-exclamation text-4xl text-gray-200"></i>
+      </div>
+    </article>
+  </section>
+
+  <!-- Complaints List -->
+  <section class="mt-7 space-y-6">
+    <div>
+      <h2 class="text-lg font-bold">Recent Complaints</h2>
+      <p class="mt-1 text-sm text-gray-500">Review and manage reported violations and disputes.</p>
+    </div>
+
+    <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[720px] text-left text-sm">
+          <thead class="border-b border-gray-100 text-xs uppercase tracking-wide text-gray-400">
+            <tr>
+              <th class="py-3 pr-4 font-semibold">Title</th>
+              <th class="py-3 pr-4 font-semibold">Category</th>
+              <th class="py-3 pr-4 font-semibold">Priority</th>
+              <th class="py-3 pr-4 font-semibold">Status</th>
+              <th class="py-3 pr-4 font-semibold">Reported User</th>
+              <th class="py-3 text-right font-semibold">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            {% for complaint in complaints %}
+              <tr>
+                <td class="py-4 pr-4">
+                  <p class="font-semibold text-gray-900">{{ complaint.title }}</p>
+                  <p class="mt-1 text-xs text-gray-400">{{ complaint.created_at|date:"M d, Y H:i" }}</p>
+                </td>
+                <td class="py-4 pr-4">
+                  <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                    {{ complaint.get_category_display }}
+                  </span>
+                </td>
+                <td class="py-4 pr-4">
+                  <span class="rounded-full px-3 py-1 text-xs font-semibold 
+                    {% if complaint.priority == 'critical' %}bg-red-100 text-red-700
+                    {% elif complaint.priority == 'high' %}bg-orange-100 text-orange-700
+                    {% elif complaint.priority == 'medium' %}bg-yellow-100 text-yellow-700
+                    {% else %}bg-blue-100 text-blue-700{% endif %}">
+                    {{ complaint.get_priority_display }}
+                  </span>
+                </td>
+                <td class="py-4 pr-4">
+                  <span class="rounded-full px-3 py-1 text-xs font-semibold 
+                    {% if complaint.status == 'pending' %}bg-red-50 text-red-700
+                    {% elif complaint.status == 'under_review' %}bg-yellow-50 text-yellow-700
+                    {% elif complaint.status == 'resolved' %}bg-gray-50 text-gray-700
+                    {% else %}bg-gray-50 text-gray-700{% endif %}">
+                    {{ complaint.get_status_display }}
+                  </span>
+                </td>
+                <td class="py-4 pr-4 text-gray-500">
+                  {% if complaint.reported_user %}
+                    {{ complaint.reported_user.first_name|default:complaint.reported_user.username }}
+                  {% else %}
+                    <span class="text-xs text-gray-400">N/A</span>
+                  {% endif %}
+                </td>
+                <td class="py-4 text-right">
+                  <a href="{% url 'hub:complaint_detail' complaint.id %}" class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50">
+                    Review
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="py-8 text-center text-sm text-gray-500">
+                  No complaints found. All clear!
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+{% endblock %}

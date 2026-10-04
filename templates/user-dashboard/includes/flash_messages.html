@@ -1,0 +1,134 @@
+{% if messages or show_subscription_notice %}
+<style>
+  .union-flash-stack {
+    position: fixed;
+    top: 4.25rem;
+    right: 1rem;
+    z-index: 70;
+    display: flex;
+    width: min(22rem, calc(100vw - 2rem));
+    flex-direction: column;
+    gap: .5rem;
+    pointer-events: none;
+  }
+
+  .union-flash-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: .625rem;
+    min-height: 2.5rem;
+    padding: .55rem .7rem;
+    border: 1px solid #bbf7d0;
+    border-radius: .75rem;
+    background: #f0fdf4;
+    color: #15803d !important;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .13);
+    font-size: .6875rem;
+    font-weight: 600;
+    line-height: 1.35;
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateX(1.25rem);
+    animation: union-flash-toast-in 240ms cubic-bezier(.22, 1, .36, 1) forwards;
+  }
+
+  .union-flash-toast--success,
+  .union-flash-toast--error,
+  .union-flash-toast--warning,
+  .union-flash-toast--info { border-color: #bbf7d0; background: #f0fdf4; color: #15803d !important; }
+
+  .union-flash-toast__icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 999px;
+    background: currentColor;
+    color: #ffffff;
+    font-size: .625rem;
+  }
+
+  .union-flash-toast__message { flex: 1; padding-top: .0625rem; color: #15803d !important; }
+
+  .union-flash-toast__action { color: #15803d !important; text-decoration: underline; text-underline-offset: 2px; }
+
+  .union-flash-toast__close {
+    flex: 0 0 auto;
+    padding: .125rem;
+    border: 0;
+    background: transparent;
+    color: currentColor;
+    cursor: pointer;
+    opacity: .55;
+    transition: opacity 150ms ease;
+  }
+
+  .union-flash-toast__close:hover { opacity: 1; }
+  .union-flash-toast.is-leaving { animation: union-flash-toast-out 180ms ease-in forwards; }
+
+  @keyframes union-flash-toast-in {
+    from { opacity: 0; transform: translateX(1.25rem); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes union-flash-toast-out {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(1.25rem); }
+  }
+
+  @media (max-width: 639px) {
+    .union-flash-stack { top: 4rem; right: .75rem; width: calc(100vw - 1.5rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .union-flash-toast { animation: none; opacity: 1; transform: none; }
+    .union-flash-toast.is-leaving { animation: none; opacity: 0; }
+  }
+</style>
+
+<div class="union-flash-stack" aria-live="polite" aria-atomic="true">
+  {% for message in messages %}
+    <div class="union-flash-toast {% if message.tags == 'success' %}union-flash-toast--success{% elif message.tags == 'error' %}union-flash-toast--error{% elif message.tags == 'warning' %}union-flash-toast--warning{% else %}union-flash-toast--info{% endif %}" data-flash-toast role="status">
+      <span class="union-flash-toast__icon" aria-hidden="true">
+        <i class="fa-solid {% if message.tags == 'success' %}fa-check{% elif message.tags == 'error' %}fa-xmark{% elif message.tags == 'warning' %}fa-triangle-exclamation{% else %}fa-info{% endif %}"></i>
+      </span>
+      <span class="union-flash-toast__message">{{ message }}</span>
+      <button type="button" class="union-flash-toast__close" data-dismiss-flash aria-label="Dismiss notification">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+  {% endfor %}
+
+  {% if show_subscription_notice and active_subscription and active_subscription.expires_at and active_subscription.plan.slug == 'basic' %}
+    <div class="union-flash-toast union-flash-toast--warning" data-flash-toast role="status">
+      <span class="union-flash-toast__icon" aria-hidden="true"><i class="fa-solid fa-circle-exclamation"></i></span>
+      <span class="union-flash-toast__message">Upgrade before {{ active_subscription.expires_at|date:"M d" }}. Expiring in {{ active_subscription.expires_at|timeuntil }}.</span>
+      <a href="{% url 'hub:dashboard_section' 'subscriptions' %}" class="union-flash-toast__action">Upgrade</a>
+      <button type="button" class="union-flash-toast__close" data-dismiss-flash aria-label="Dismiss notification">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  (function () {
+    function dismissFlash(toast) {
+      if (!toast || toast.classList.contains('is-leaving')) return;
+      toast.classList.add('is-leaving');
+      window.setTimeout(function () { toast.remove(); }, 190);
+    }
+
+    document.querySelectorAll('[data-dismiss-flash]').forEach(function (button) {
+      button.addEventListener('click', function () { dismissFlash(button.closest('[data-flash-toast]')); });
+    });
+
+    document.querySelectorAll('[data-flash-toast]').forEach(function (toast, index) {
+      toast.style.animationDelay = (index * 55) + 'ms';
+      window.setTimeout(function () { dismissFlash(toast); }, 4200 + (index * 55));
+    });
+  })();
+</script>
+{% endif %}

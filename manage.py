@@ -8,8 +8,12 @@ from pathlib import Path
 def relaunch_with_project_venv():
     """Let `python manage.py ...` work even when the venv is not activated."""
     project_root = Path(__file__).resolve().parent
-    venv_python = project_root / "venv" / "Scripts" / "python.exe"
-    if not venv_python.exists():
+    candidate_paths = [
+        project_root / ".venv" / "Scripts" / "python.exe",
+        project_root / "venv" / "Scripts" / "python.exe",
+    ]
+    venv_python = next((path for path in candidate_paths if path.exists()), None)
+    if not venv_python:
         return
 
     try:

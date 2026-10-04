@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050">
+  <rect width="1600" height="1050" fill="#ffffff"/>
+  <style>
+    .entity{fill:#55df93;stroke:#24ae68;stroke-width:2}
+    .rel{fill:#6fa8ff;stroke:#3f73d6;stroke-width:2}
+    .title{font:700 18px Arial;fill:#102a43}
+    .field{font:14px Arial;fill:#102a43}
+    .rtext{font:700 14px Arial;fill:#102a43;text-anchor:middle}
+    .card{font:700 16px Arial;fill:#243b53}
+    line{stroke:#243b53;stroke-width:2}
+  </style>
+  <text x="800" y="35" class="title" text-anchor="middle" font-size="25">Community Platform — Entity Relationship Diagram</text>
+  <text x="800" y="60" class="field" text-anchor="middle">Owner • Admin • Moderator • Member</text>
+
+  <!-- explicit role model -->
+  <g transform="translate(1400,90)"><rect class="entity" width="175" height="240" rx="3"/><text x="87" y="26" class="title" text-anchor="middle">ROLE</text><text x="12" y="55" class="field">PK role_id</text><text x="12" y="82" class="field">role_name</text><text x="12" y="110" class="field">OWNER</text><text x="12" y="136" class="field">ADMIN</text><text x="12" y="162" class="field">MODERATOR</text><text x="12" y="188" class="field">MEMBER</text><text x="12" y="216" class="field">scope</text></g>
+  <g transform="translate(1400,390)"><rect class="entity" width="175" height="190" rx="3"/><text x="87" y="26" class="title" text-anchor="middle">PERMISSION</text><text x="12" y="55" class="field">PK permission_id</text><text x="12" y="82" class="field">permission_name</text><text x="12" y="110" class="field">manage_users</text><text x="12" y="136" class="field">moderate_content</text><text x="12" y="162" class="field">manage_community</text></g>
+  <g><polygon class="rel" points="1335,170 1367,150 1399,170 1367,190"/><text x="1367" y="175" class="rtext">DEFINES</text></g>
+  <g><polygon class="rel" points="1335,470 1367,450 1399,470 1367,490"/><text x="1367" y="475" class="rtext">GRANTS</text></g>
+  <line x1="1375" y1="170" x2="1400" y2="170"/><line x1="1375" y1="470" x2="1400" y2="470"/>
+  <text x="1410" y="315" class="field">Platform: ADMIN</text><text x="1410" y="335" class="field">Community: OWNER</text><text x="1410" y="355" class="field">MODERATOR / MEMBER</text>
+
+  <!-- entities -->
+  <g transform="translate(40,100)"><rect class="entity" width="245" height="145" rx="3"/><text x="122" y="26" class="title" text-anchor="middle">USER</text><text x="14" y="52" class="field">PK user_id</text><text x="14" y="74" class="field">username</text><text x="14" y="96" class="field">email</text><text x="14" y="118" class="field">password</text><text x="14" y="140" class="field">is_active, date_joined</text></g>
+  <g transform="translate(40,390)"><rect class="entity" width="245" height="175" rx="3"/><text x="122" y="26" class="title" text-anchor="middle">USER_PROFILE</text><text x="14" y="52" class="field">PK profile_id</text><text x="14" y="74" class="field">FK user_id</text><text x="14" y="96" class="field">platform_role</text><text x="14" y="118" class="field">bio, phone_number</text><text x="14" y="140" class="field">email_verified</text><text x="14" y="162" class="field">kyc_verified, presence_status</text></g>
+  <g transform="translate(370,90)"><rect class="entity" width="285" height="190" rx="3"/><text x="142" y="26" class="title" text-anchor="middle">COMMUNITY</text><text x="14" y="52" class="field">PK community_id</text><text x="14" y="74" class="field">FK owner_id</text><text x="14" y="96" class="field">name, slug</text><text x="14" y="118" class="field">description, rules</text><text x="14" y="140" class="field">visibility, membership_price</text><text x="14" y="162" class="field">allow_member_posts</text><text x="14" y="184" class="field">is_archived, created_at</text></g>
+  <g transform="translate(370,410)"><rect class="entity" width="285" height="190" rx="3"/><text x="142" y="26" class="title" text-anchor="middle">COMMUNITY_MEMBERSHIP</text><text x="14" y="52" class="field">PK membership_id</text><text x="14" y="74" class="field">FK community_id</text><text x="14" y="96" class="field">FK user_id</text><text x="14" y="118" class="field">role: owner/moderator/member</text><text x="14" y="140" class="field">status: active/muted/banned</text><text x="14" y="162" class="field">joined_at, nickname</text><text x="14" y="184" class="field">banned_by_id</text></g>
+  <g transform="translate(760,90)"><rect class="entity" width="245" height="165" rx="3"/><text x="122" y="26" class="title" text-anchor="middle">COMMUNITY_ROOM</text><text x="14" y="52" class="field">PK room_id</text><text x="14" y="74" class="field">FK community_id</text><text x="14" y="96" class="field">name, description</text><text x="14" y="118" class="field">room_type, visibility</text><text x="14" y="140" class="field">position, is_active</text><text x="14" y="162" class="field">created_at</text></g>
+  <g transform="translate(760,395)"><rect class="entity" width="285" height="215" rx="3"/><text x="142" y="26" class="title" text-anchor="middle">COMMUNITY_POST</text><text x="14" y="52" class="field">PK post_id</text><text x="14" y="74" class="field">FK community_id, room_id</text><text x="14" y="96" class="field">FK author_user_id</text><text x="14" y="118" class="field">title, body, category</text><text x="14" y="140" class="field">content_type, attachment_url</text><text x="14" y="162" class="field">approval_status</text><text x="14" y="184" class="field">safety_status, is_pinned</text><text x="14" y="206" class="field">created_at, updated_at</text></g>
+  <g transform="translate(1130,90)"><rect class="entity" width="245" height="165" rx="3"/><text x="122" y="26" class="title" text-anchor="middle">POST_COMMENT</text><text x="14" y="52" class="field">PK comment_id</text><text x="14" y="74" class="field">FK post_id, author_id</text><text x="14" y="96" class="field">FK parent_comment_id</text><text x="14" y="118" class="field">body, attachment_url</text><text x="14" y="140" class="field">is_edited</text><text x="14" y="162" class="field">created_at</text></g>
+  <g transform="translate(1130,395)"><rect class="entity" width="245" height="190" rx="3"/><text x="122" y="26" class="title" text-anchor="middle">CONTENT_REPORT</text><text x="14" y="52" class="field">PK report_id</text><text x="14" y="74" class="field">FK reporter_id, reported_user_id</text><text x="14" y="96" class="field">FK community_id, post_id</text><text x="14" y="118" class="field">reason, description</text><text x="14" y="140" class="field">status</text><text x="14" y="162" class="field">FK reviewed_by_id</text><text x="14" y="184" class="field">created_at</text></g>
+  <g transform="translate(370,770)"><rect class="entity" width="285" height="175" rx="3"/><text x="142" y="26" class="title" text-anchor="middle">COMMUNITY_EVENT</text><text x="14" y="52" class="field">PK event_id</text><text x="14" y="74" class="field">FK community_id, organizer_id</text><text x="14" y="96" class="field">title, description</text><text x="14" y="118" class="field">start_at, end_at</text><text x="14" y="140" class="field">location, meeting_url</text><text x="14" y="162" class="field">capacity, created_at</text></g>
+  <g transform="translate(760,770)"><rect class="entity" width="285" height="175" rx="3"/><text x="142" y="26" class="title" text-anchor="middle">COURSE</text><text x="14" y="52" class="field">PK course_id</text><text x="14" y="74" class="field">FK community_id, room_id</text><text x="14" y="96" class="field">FK instructor_id</text><text x="14" y="118" class="field">title, description</text><text x="14" y="140" class="field">thumbnail, status</text><text x="14" y="162" class="field">created_at</text></g>
+  <g transform="translate(1130,770)"><rect class="entity" width="245" height="175" rx="3"/><text x="122" y="26" class="title" text-anchor="middle">PAYMENT_TRANSACTION</text><text x="14" y="52" class="field">PK transaction_id</text><text x="14" y="74" class="field">FK user_id, community_id</text><text x="14" y="96" class="field">amount, provider</text><text x="14" y="118" class="field">transaction_uuid</text><text x="14" y="140" class="field">status, paid_at</text><text x="14" y="162" class="field">created_at</text></g>
+
+  <!-- relationship diamonds -->
+  <g><polygon class="rel" points="305,155 335,135 365,155 335,175"/><text x="335" y="160" class="rtext">HAS</text></g>
+  <g><polygon class="rel" points="305,475 335,455 365,475 335,495"/><text x="335" y="480" class="rtext">JOINS</text></g>
+  <g><polygon class="rel" points="685,150 720,130 755,150 720,170"/><text x="720" y="155" class="rtext">HAS</text></g>
+  <g><polygon class="rel" points="685,500 720,480 755,500 720,520"/><text x="720" y="505" class="rtext">HAS</text></g>
+  <g><polygon class="rel" points="1065,160 1095,140 1125,160 1095,180"/><text x="1095" y="165" class="rtext">WRITES</text></g>
+  <g><polygon class="rel" points="1065,490 1095,470 1125,490 1095,510"/><text x="1095" y="495" class="rtext">REPORTS</text></g>
+  <g><polygon class="rel" points="515,700 550,680 585,700 550,720"/><text x="550" y="705" class="rtext">HOSTS</text></g>
+  <g><polygon class="rel" points="875,700 910,680 945,700 910,720"/><text x="910" y="705" class="rtext">OFFERS</text></g>
+  <g><polygon class="rel" points="1220,700 1255,680 1290,700 1255,720"/><text x="1255" y="705" class="rtext">MAKES</text></g>
+
+  <!-- connectors and cardinalities -->
+  <line x1="285" y1="170" x2="305" y2="155"/><line x1="365" y1="155" x2="370" y2="155"/><text x="292" y="145" class="card">1</text><text x="365" y="145" class="card">1</text>
+  <line x1="285" y1="475" x2="305" y2="475"/><line x1="365" y1="475" x2="370" y2="475"/><text x="292" y="460" class="card">1</text><text x="365" y="460" class="card">M</text>
+  <line x1="1400" y1="235" x2="1375" y2="235"/><line x1="1375" y1="235" x2="1375" y2="240"/><text x="1315" y="225" class="card">M</text>
+  <line x1="655" y1="155" x2="685" y2="150"/><line x1="755" y1="150" x2="760" y2="150"/><text x="662" y="138" class="card">1</text><text x="755" y="138" class="card">M</text>
+  <line x1="655" y1="510" x2="685" y2="500"/><line x1="755" y1="500" x2="760" y2="500"/><text x="662" y="490" class="card">1</text><text x="755" y="488" class="card">M</text>
+  <line x1="1005" y1="165" x2="1065" y2="160"/><line x1="1125" y1="160" x2="1130" y2="160"/><text x="1015" y="148" class="card">1</text><text x="1125" y="145" class="card">M</text>
+  <line x1="1045" y1="505" x2="1065" y2="490"/><line x1="1125" y1="490" x2="1130" y2="490"/><text x="1050" y="478" class="card">1</text><text x="1125" y="475" class="card">M</text>
+  <line x1="510" y1="600" x2="550" y2="680"/><line x1="550" y1="720" x2="510" y2="770"/><text x="520" y="655" class="card">1</text><text x="520" y="750" class="card">M</text>
+  <line x1="875" y1="610" x2="910" y2="680"/><line x1="910" y1="720" x2="900" y2="770"/><text x="885" y="655" class="card">1</text><text x="900" y="750" class="card">M</text>
+  <line x1="1220" y1="585" x2="1255" y2="680"/><line x1="1255" y1="720" x2="1255" y2="770"/><text x="1230" y="650" class="card">1</text><text x="1260" y="755" class="card">M</text>
+
+  <text x="40" y="1015" class="field">Legend: green = entity/table  •  blue diamond = relationship  •  PK = primary key  •  FK = foreign key  •  1:M = one-to-many</text>
+</svg>

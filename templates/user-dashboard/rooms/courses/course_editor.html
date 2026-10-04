@@ -1,0 +1,42 @@
+<section id="course-editor" class="hidden rounded-2xl border border-gray-200 bg-gray-50 p-4 shadow-xl sm:p-6">
+  <div class="flex flex-wrap items-start justify-between gap-4"><div><p class="text-xs font-bold uppercase tracking-wider text-indigo-600">Course studio</p><h2 class="mt-1 text-xl font-bold text-gray-950">Create a new course</h2><p class="mt-1 text-sm text-gray-500">Build lessons, organize modules, and publish when you are ready.</p></div><button type="button" data-course-editor-close class="rounded-lg p-2 text-gray-400 hover:bg-white hover:text-gray-900"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="mt-6 grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]"><div class="space-y-4"><div class="rounded-xl border border-gray-200 bg-white p-4"><label class="text-xs font-bold text-gray-500">Course title</label><input value="Designing a member experience people return to" class="mt-2 w-full border-0 border-b border-gray-200 px-0 py-2 text-lg font-bold outline-none focus:border-indigo-500" /><label class="mt-4 block text-xs font-bold text-gray-500">Subtitle</label><input value="A practical field guide for community builders" class="mt-2 w-full border-0 border-b border-gray-200 px-0 py-2 text-sm outline-none focus:border-indigo-500" /><label class="mt-4 block text-xs font-bold text-gray-500">Description</label><textarea rows="3" class="mt-2 w-full resize-none rounded-lg border border-gray-200 p-3 text-sm outline-none focus:border-indigo-500">Learn how to create a thoughtful, useful experience from the first member visit through long-term participation.</textarea></div><div class="flex flex-wrap gap-3 rounded-xl border border-gray-200 bg-white p-4"><label class="flex-1 text-xs font-bold text-gray-500">Category<select class="mt-2 w-full rounded-lg border border-gray-200 bg-white p-2 text-sm font-normal outline-none"><option>Community building</option><option>Creator skills</option><option>Career</option></select></label><label class="flex-1 text-xs font-bold text-gray-500">Difficulty<select class="mt-2 w-full rounded-lg border border-gray-200 bg-white p-2 text-sm font-normal outline-none"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></label><label class="flex-1 text-xs font-bold text-gray-500">Access<select class="mt-2 w-full rounded-lg border border-gray-200 bg-white p-2 text-sm font-normal outline-none"><option>Community members</option><option>Premium</option><option>Free preview</option></select></label></div><div data-curriculum-list class="space-y-3"><div class="flex items-center justify-between"><h3 class="font-bold">Curriculum</h3><button type="button" data-add-module class="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700"><i class="fa-solid fa-plus mr-1"></i>Add section</button></div>{% include 'user-dashboard/rooms/courses/lesson_editor.html' %}</div></div><aside class="space-y-4"><div class="rounded-xl border-2 border-dashed border-indigo-200 bg-white p-4"><div class="flex h-32 items-center justify-center rounded-lg bg-gradient-to-br from-violet-600 via-indigo-600 to-slate-900 text-center text-white"><div><i class="fa-solid fa-image text-xl text-white/70"></i><p class="mt-1 text-xs font-bold">Course cover preview</p></div></div><button class="mt-3 w-full rounded-lg border border-gray-200 py-2 text-xs font-bold text-gray-700"><i class="fa-solid fa-upload mr-1"></i>Upload thumbnail</button></div><div class="rounded-xl border border-gray-200 bg-white p-4"><p class="text-xs font-bold uppercase tracking-wider text-gray-400">Publishing</p><div class="mt-3 flex items-center justify-between text-sm"><span>Free preview lesson</span><button class="h-5 w-9 rounded-full bg-indigo-600 p-0.5 text-right"><i class="inline-block h-4 w-4 rounded-full bg-white"></i></button></div><div class="mt-4 grid grid-cols-2 gap-2"><button class="rounded-lg border border-gray-200 px-3 py-2 text-xs font-bold text-gray-700">Save draft</button><button class="rounded-lg bg-gray-900 px-3 py-2 text-xs font-bold text-white">Publish course</button><button type="button" data-course-delete class="col-span-2 mt-1 rounded-lg px-3 py-2 text-xs font-bold text-rose-600 transition hover:bg-rose-50">Delete course</button></div></div></aside></div>
+</section>
+
+<script>
+document.querySelectorAll('.course-lms').forEach(function (lms) {
+  if (lms.dataset.curriculumReady) return;
+  lms.dataset.curriculumReady = 'true';
+  lms.addEventListener('click', function (event) {
+    var addModule = event.target.closest('[data-add-module]');
+    if (addModule) {
+      var list = lms.querySelector('[data-curriculum-list]');
+      var source = list && list.querySelector('[data-course-module]');
+      if (!source) return;
+      var copy = source.cloneNode(true);
+      var name = copy.querySelector('[data-module-name]');
+      if (name) name.value = 'New section';
+      list.appendChild(copy);
+      return;
+    }
+    var access = event.target.closest('[data-access-toggle]');
+    if (access) {
+      var premium = access.textContent.trim() === 'PREMIUM';
+      access.textContent = premium ? 'FREE' : 'PREMIUM';
+      access.className = premium ? 'rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-bold text-emerald-700' : 'rounded-full bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-700';
+    }
+  });
+  lms.querySelectorAll('[data-curriculum-list]').forEach(function (list) {
+    var dragged;
+    list.addEventListener('dragstart', function (event) { dragged = event.target.closest('[data-course-module]'); });
+    list.addEventListener('dragover', function (event) { event.preventDefault(); });
+    list.addEventListener('drop', function (event) {
+      event.preventDefault();
+      var target = event.target.closest('[data-course-module]');
+      if (dragged && target && dragged !== target) list.insertBefore(dragged, target);
+    });
+  });
+});
+</script>
+
+<script>document.querySelectorAll('[data-course-delete]').forEach(function (button) { button.addEventListener('click', function () { if (window.confirm('Delete this course draft? This is a demo action.')) { button.closest('#course-editor').classList.add('hidden'); } }); });</script>

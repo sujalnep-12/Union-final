@@ -1,0 +1,236 @@
+<style>
+  .discover-welcome { display: none; }
+  .discover-getting-started { display: none; }
+  .discover-avatar { box-shadow: 0 0 0 3px rgba(255,255,255,.92), 0 8px 20px rgba(15,23,42,.25); }
+  .discover-first-entry, .communities-first-entry, .studio-first-entry { position: fixed; top: 3.5rem; right: 0; bottom: 0; left: var(--sidebar-width, 260px); z-index: 10; overflow: hidden; }
+  body.sidebar-collapsed .discover-first-entry, body.sidebar-collapsed .communities-first-entry, body.sidebar-collapsed .studio-first-entry { left: 68px; }
+  .discover-first-stage { background: radial-gradient(circle at 50% 16%, rgba(139, 92, 246, .14), transparent 34%), linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); }
+  @media (max-width: 1023px) { .discover-first-entry, .communities-first-entry, .studio-first-entry { top: 3.5rem; bottom: 4rem; left: 0; } }
+  @media (max-width: 639px) { .discover-first-entry, .communities-first-entry, .studio-first-entry { overflow-y: auto; } }
+</style>
+
+{% if not has_community and not discover_started and not discover_search and not discover_category %}
+<section class="discover-first-entry discover-first-stage">
+  <div class="flex h-full w-full items-center justify-center overflow-y-auto px-5 py-8 sm:px-10 lg:px-16">
+    <div class="w-full max-w-5xl text-center">
+      <span class="inline-flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-violet-700"><i class="fa-solid fa-compass"></i> Explore Union</span>
+      <h1 class="mx-auto mt-5 max-w-4xl text-4xl font-black leading-tight tracking-[-.05em] text-gray-950 sm:text-6xl">Find a place where your<br /><span class="text-violet-600">interests feel at home.</span></h1>
+      <p class="mx-auto mt-4 max-w-2xl text-sm leading-6 text-gray-500 sm:text-base">Discover communities, conversations, courses, and people who are curious about the same things you are.</p>
+      <div class="mt-7 flex items-center justify-center -space-x-3">
+        <span class="discover-avatar flex h-14 w-14 items-center justify-center rounded-full bg-violet-100 text-lg font-black text-violet-700">{{ discover_communities.0.name|default:"U"|first|upper }}</span><span class="discover-avatar flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-lg font-black text-indigo-700">{{ discover_communities.1.name|default:"N"|first|upper }}</span><span class="discover-avatar flex h-14 w-14 items-center justify-center rounded-full bg-fuchsia-100 text-lg font-black text-fuchsia-700">{{ discover_communities.2.name|default:"C"|first|upper }}</span><span class="discover-avatar flex h-14 w-14 items-center justify-center rounded-full bg-gray-950 text-xs font-black text-white">+{{ discover_communities|length|default:"0" }}</span>
+      </div>
+      <div class="mx-auto mt-7 w-full max-w-2xl rounded-[28px] border border-violet-100 bg-white px-6 py-7 shadow-[0_20px_60px_rgba(91,33,182,.1)] sm:px-10">
+        <h2 class="text-2xl font-black tracking-tight text-gray-950 sm:text-3xl">Start discovering</h2>
+        <p class="mx-auto mt-2 max-w-lg text-sm leading-6 text-gray-500">Find a community to join, learn from people with shared interests, and make Union feel like yours.</p>
+        <div class="mt-5 flex flex-col justify-center gap-2 sm:flex-row"><a href="{% url 'hub:dashboard_section' 'discover' %}?started=1&amp;category=Explore" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 text-sm font-black text-white transition hover:bg-gray-800"><i class="fa-solid fa-compass"></i>Explore communities</a><a href="{% url 'hub:create_community' %}" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 text-sm font-black text-gray-700 transition hover:bg-gray-50"><i class="fa-solid fa-plus"></i>Create a community</a></div>
+      </div>
+      <div class="mx-auto mt-6 grid max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4 sm:gap-3"><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-users text-violet-600"></i><p class="mt-2 text-xs font-black text-gray-900">Meet people</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Find your kind of crowd.</p></div><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-lightbulb text-amber-500"></i><p class="mt-2 text-xs font-black text-gray-900">Learn together</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Discover useful ideas.</p></div><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-comments text-indigo-600"></i><p class="mt-2 text-xs font-black text-gray-900">Join conversations</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Take part at your pace.</p></div><div class="rounded-2xl border border-gray-200 bg-white/80 p-3"><i class="fa-solid fa-heart text-rose-500"></i><p class="mt-2 text-xs font-black text-gray-900">Belong somewhere</p><p class="mt-1 text-[11px] leading-4 text-gray-500">Make Union yours.</p></div></div>
+    </div>
+  </div>
+</section>
+{% else %}
+<section class="mx-auto max-w-7xl px-4 pb-6 pt-0 sm:px-6 lg:px-8">
+
+  <section class="discover-welcome relative mb-7 overflow-hidden rounded-3xl px-6 py-8 text-white shadow-sm sm:px-10 sm:py-10">
+    <div class="pointer-events-none absolute -right-10 -top-20 h-64 w-64 rounded-full bg-violet-400/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-20 left-1/3 h-52 w-52 rounded-full bg-indigo-300/10 blur-3xl"></div>
+    <div class="relative grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-violet-100 ring-1 ring-white/15"><i class="fa-solid fa-compass"></i> Explore Union</span>
+        <h1 class="mt-5 max-w-2xl text-3xl font-black leading-tight tracking-[-.04em] sm:text-5xl">Find a place where your interests feel at home.</h1>
+        <p class="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">Discover communities, conversations, courses, and people who are curious about the same things you are.</p>
+        <div class="mt-6 flex flex-wrap gap-2 text-xs font-bold text-white/90"><span class="rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/10"><i class="fa-solid fa-users mr-1.5 text-violet-200"></i>Meet people</span><span class="rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/10"><i class="fa-solid fa-lightbulb mr-1.5 text-amber-200"></i>Learn together</span><span class="rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/10"><i class="fa-solid fa-heart mr-1.5 text-rose-200"></i>Belong somewhere</span></div>
+      </div>
+      <div class="relative hidden min-h-[190px] lg:block">
+        <div class="absolute left-4 top-5 flex items-center gap-3 rounded-2xl bg-white/10 px-3 py-2.5 ring-1 ring-white/15 backdrop-blur"><span class="discover-avatar flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-violet-200 text-sm font-black text-violet-900">{{ discover_communities.0.name|default:"U"|first|upper }}</span><span class="text-xs font-bold">A new space for you</span></div>
+        <div class="absolute right-0 top-20 flex items-center gap-3 rounded-2xl bg-white/10 px-3 py-2.5 ring-1 ring-white/15 backdrop-blur"><span class="discover-avatar flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-indigo-200 text-sm font-black text-indigo-900">{{ discover_communities.1.name|default:"N"|first|upper }}</span><span class="text-xs font-bold">Let’s explore!</span></div>
+        <div class="absolute bottom-1 left-14 flex items-center gap-3 rounded-2xl bg-white/10 px-3 py-2.5 ring-1 ring-white/15 backdrop-blur"><span class="discover-avatar flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-fuchsia-200 text-sm font-black text-fuchsia-900">{{ discover_communities.2.name|default:"C"|first|upper }}</span><span class="text-xs font-bold">Find your people</span></div>
+        <div class="absolute right-14 top-1 flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-violet-500/30 text-xl text-violet-100"><i class="fa-solid fa-sparkles"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search + category filters -->
+  <div class="space-y-3">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">Discover</h1>
+      <form method="get" action="{% url 'hub:dashboard_section' 'discover' %}" class="w-full sm:w-80" role="search">
+        {% if discover_category %}<input type="hidden" name="category" value="{{ discover_category }}" />{% endif %}
+        <label for="discover-community-search" class="sr-only">Search communities</label>
+        <div class="flex h-10 items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 transition focus-within:border-violet-400 focus-within:ring-4 focus-within:ring-violet-100">
+          <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+          <input id="discover-community-search" name="q" value="{{ discover_search }}" type="search" placeholder="Search communities" class="min-w-0 flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400" />
+          {% if discover_search %}<a href="{% url 'hub:dashboard_section' 'discover' %}{% if discover_category %}?category={{ discover_category|urlencode }}{% endif %}" class="text-xs font-bold text-gray-400 transition hover:text-gray-700" aria-label="Clear community search"><i class="fa-solid fa-xmark"></i></a>{% endif %}
+          <button type="submit" class="sr-only">Search</button>
+        </div>
+      </form>
+    </div>
+    <div class="flex items-center gap-2 overflow-x-auto scrollbar-none">
+      <a href="{% url 'hub:dashboard_section' 'discover' %}{% if discover_search %}?q={{ discover_search|urlencode }}{% endif %}"
+         class="shrink-0 rounded-full px-4 py-1.5 text-xs font-bold transition whitespace-nowrap
+         {% if not discover_category or discover_category == 'Explore' %}bg-gray-900 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+        Explore
+      </a>
+      {% for cat in discover_categories %}
+        {% if cat %}
+          <a href="{% url 'hub:dashboard_section' 'discover' %}?category={{ cat|urlencode }}{% if discover_search %}&amp;q={{ discover_search|urlencode }}{% endif %}"
+             class="shrink-0 rounded-full px-4 py-1.5 text-xs font-bold transition whitespace-nowrap
+             {% if discover_category == cat %}bg-gray-900 text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %}">
+            {{ cat }}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <section class="mt-7 rounded-2xl border border-violet-100 bg-violet-50/60 p-4 shadow-sm sm:p-5">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div><span class="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-violet-600"><i class="fa-solid fa-fire"></i> Trending now</span><h2 class="mt-1 text-xl font-black tracking-tight text-gray-950">Top 5 communities</h2><p class="mt-1 text-sm text-gray-500">Ranked by new members, recent posts, and interactions from the last 30 days.</p></div>
+      <span class="w-fit rounded-full bg-white px-3 py-1.5 text-[10px] font-black uppercase tracking-wide text-violet-700 ring-1 ring-violet-100">Fresh activity</span>
+    </div>
+    <div class="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      {% for community in trending_communities %}
+        <a href="{% url 'hub:community_detail' community.slug %}" class="group overflow-hidden rounded-2xl border border-violet-100 bg-white transition hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-md">
+          <div class="relative h-24 overflow-hidden bg-gradient-to-br from-violet-600 via-indigo-600 to-slate-900">
+            {% if community.cover_image_url %}<img src="{{ community.cover_image_url }}" alt="" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" /><div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 to-transparent"></div>{% endif %}
+            <span class="absolute left-2.5 top-2.5 rounded-lg bg-white/90 px-2 py-1 text-[10px] font-black text-violet-700">#{{ forloop.counter }} trending</span>
+          </div>
+          <div class="p-3"><h3 class="truncate text-sm font-black text-gray-950">{{ community.name }}</h3><p class="mt-1 truncate text-[11px] font-semibold text-gray-400">{{ community.topic|default:"Community" }} &middot; {{ community.member_count|default:"0" }} members</p><p class="mt-2 line-clamp-2 text-[11px] leading-4 text-gray-500">{{ community.trending_reason }}</p><span class="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-violet-700">Explore <i class="fa-solid fa-arrow-right text-[9px] transition group-hover:translate-x-0.5"></i></span></div>
+        </a>
+      {% empty %}
+        <div class="sm:col-span-2 xl:col-span-5 rounded-xl border border-dashed border-violet-200 bg-white px-4 py-6 text-center text-sm text-gray-500">No trending communities match this search yet.</div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Getting Started Guide (shown for new users) -->
+  {% if not has_community %}
+  <div class="discover-getting-started mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+    <div class="flex items-start gap-4">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-900 text-white">
+        <i class="fa-solid fa-rocket text-sm"></i>
+      </div>
+      <div class="min-w-0 flex-1">
+        <h2 class="text-lg font-extrabold text-gray-900">Get started with Union</h2>
+        <p class="mt-1 text-sm text-gray-500">Follow these steps to set up your community and start building your audience.</p>
+
+        <div class="mt-5 space-y-3">
+          <!-- Step 1 -->
+          <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-900 text-xs font-bold text-white">1</span>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-bold text-gray-900">Create your community</p>
+              <p class="mt-0.5 text-xs text-gray-500">Set up your space with a name, description, and cover image.</p>
+            </div>
+            <a href="{% url 'hub:create_community' %}" class="shrink-0 rounded-lg bg-gray-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-gray-800">Create</a>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">2</span>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-bold text-gray-900">Customize your theme</p>
+              <p class="mt-0.5 text-xs text-gray-500">Add your brand colors, logo, and styling to make it feel like home.</p>
+            </div>
+            <span class="shrink-0 rounded-lg bg-gray-100 px-4 py-2 text-xs font-bold text-gray-400">After creating</span>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">3</span>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-bold text-gray-900">Invite your first members</p>
+              <p class="mt-0.5 text-xs text-gray-500">Share your community link and start building your audience.</p>
+            </div>
+            <span class="shrink-0 rounded-lg bg-gray-100 px-4 py-2 text-xs font-bold text-gray-400">After creating</span>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 p-4">
+            <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-bold text-gray-500">4</span>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-bold text-gray-900">Post your first update</p>
+              <p class="mt-0.5 text-xs text-gray-500">Share an introduction, announcement, or welcome message.</p>
+            </div>
+            <span class="shrink-0 rounded-lg bg-gray-100 px-4 py-2 text-xs font-bold text-gray-400">After creating</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Hero Banner -->
+  <div class="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">
+    <p class="text-sm font-bold text-gray-500">Community marketplace</p>
+    <h2 class="mt-2 max-w-3xl text-3xl font-black tracking-tight text-gray-950 sm:text-4xl">Find spaces, courses, events, and creators worth coming back to.</h2>
+    <p class="mt-3 max-w-2xl text-sm leading-6 text-gray-500">Join public communities as a member, then create your own spaces when you are ready to lead.</p>
+  </div>
+
+  <!-- Community Cards Grid -->
+  <div class="mt-8 flex items-end justify-between gap-3"><div><h2 class="text-xl font-black tracking-tight text-gray-950">More communities</h2><p class="mt-1 text-sm text-gray-500">Browse every other public community matching your search.</p></div><span class="rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-black uppercase tracking-wide text-gray-500">{{ discover_other_communities|length }} more</span></div>
+  <div class="mt-4 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+    {% for community in discover_other_communities %}
+      <article class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+        <a href="{% url 'hub:community_detail' community.slug %}" class="relative block h-40 overflow-hidden bg-gray-950">
+          {% if community.cover_image_url %}
+            <img src="{{ community.cover_image_url }}" alt="{{ community.name }}" class="h-full w-full object-cover transition duration-300 hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
+          {% endif %}
+          <div class="absolute left-4 top-4 flex flex-wrap gap-2">
+            <span class="rounded-lg bg-white/95 px-2.5 py-1 text-[11px] font-bold text-gray-900">{{ community.topic }}</span>
+            {% if community.requires_payment %}
+              <span class="rounded-lg bg-gray-950/80 px-2.5 py-1 text-[11px] font-bold text-white">Paid</span>
+            {% else %}
+              <span class="rounded-lg bg-gray-950/80 px-2.5 py-1 text-[11px] font-bold text-white">Free</span>
+            {% endif %}
+          </div>
+        </a>
+        <div class="p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <a href="{% url 'hub:community_detail' community.slug %}" class="line-clamp-2 text-lg font-black leading-6 text-gray-950 hover:text-gray-700">{{ community.name }}</a>
+              <p class="mt-1 text-xs font-semibold text-gray-400">by {{ community.owner.first_name|default:community.owner.username }}</p>
+            </div>
+            <div class="shrink-0 rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-700">
+              {% if community.requires_payment %}Rs. {{ community.membership_price|floatformat:0 }}{% else %}Free{% endif %}
+            </div>
+          </div>
+          <p class="mt-3 line-clamp-3 text-sm leading-6 text-gray-500">{{ community.description|truncatechars:180 }}</p>
+          <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-semibold text-gray-500">
+            <span><i class="fa-solid fa-user-group mr-1 text-gray-400"></i>{{ community.member_count|default:"0" }} members</span>
+            <span><i class="fa-solid fa-file-lines mr-1 text-gray-400"></i>{{ community.post_count|default:"0" }} posts</span>
+          </div>
+          <div class="mt-4">
+            {% if community.is_member %}
+              <a href="{% url 'hub:community_detail' community.slug %}" class="flex h-10 items-center justify-center gap-2 rounded-lg bg-gray-950 px-4 text-sm font-bold text-white transition hover:bg-gray-800">
+                <i class="fa-regular fa-eye text-xs"></i> Open Space
+              </a>
+            {% else %}
+              <form method="post" action="{% if community.requires_payment %}{% url 'hub:esewa_community_payment_start' community.id %}{% else %}{% url 'hub:dashboard_section' 'discover' %}{% endif %}">
+                {% csrf_token %}
+                {% if not community.requires_payment %}
+                  <input type="hidden" name="action" value="join_community" />
+                  <input type="hidden" name="community_id" value="{{ community.id }}" />
+                {% endif %}
+                <button type="submit" class="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700">
+                  <i class="fa-solid fa-plus text-xs"></i>
+                  {% if community.requires_payment %}Pay &amp; Join{% else %}Join Space{% endif %}
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      {% if not trending_communities %}
+        <div class="col-span-full rounded-xl border border-dashed border-gray-200 bg-white p-12 text-center"><i class="fa-solid fa-compass text-4xl text-gray-300"></i><p class="mt-4 text-base font-bold text-gray-950">No communities found</p><p class="mt-1 text-sm text-gray-500">There are no public spaces matching your search right now. Be the first to create one!</p><a href="{% url 'hub:create_community' %}" class="mt-4 inline-flex items-center rounded-lg bg-gray-900 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-gray-800"><i class="fa-solid fa-plus mr-2 text-xs"></i> Create Community</a></div>
+      {% else %}
+        <div class="col-span-full rounded-xl border border-gray-200 bg-white p-8 text-center text-sm text-gray-500">All matching communities are featured in the trending section above.</div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<style>.scrollbar-none::-webkit-scrollbar{display:none}.scrollbar-none{-ms-overflow-style:none;scrollbar-width:none}</style>

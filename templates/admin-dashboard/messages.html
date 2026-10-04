@@ -1,0 +1,145 @@
+<section id="messages" class="mt-6 space-y-6">
+  <!-- Message Thread Management -->
+  <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-bold">User Messages</h2>
+        <p class="mt-1 text-sm text-gray-500">Monitor and manage user-to-user direct messages.</p>
+      </div>
+      <span class="rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-900">{{ message_threads|length }} Active</span>
+    </div>
+
+    <!-- Message Threads Table -->
+    <div class="mt-6 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="border-b-2 border-gray-200">
+          <tr class="text-left font-semibold text-gray-600">
+            <th class="pb-3 pr-4">Participants</th>
+            <th class="pb-3 pr-4">Status</th>
+            <th class="pb-3 pr-4">Last Message</th>
+            <th class="pb-3 pr-4">Messages</th>
+            <th class="pb-3 pr-4">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for thread in message_threads %}
+            <tr class="hover:bg-gray-50">
+              <td class="py-4 pr-4">
+                <div class="flex items-center gap-3">
+                  <div class="h-8 w-8 shrink-0 rounded-full bg-gray-200 text-xs font-bold text-gray-700 flex items-center justify-center">
+                    {{ thread.participant1.first_name|default:thread.participant1.username|first|upper }}
+                  </div>
+                  <span class="font-medium text-gray-900">{{ thread.participant1.get_full_name|default:thread.participant1.username }}</span>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">↔</p>
+                <div class="mt-1 flex items-center gap-3">
+                  <div class="h-8 w-8 shrink-0 rounded-full bg-gray-200 text-xs font-bold text-gray-700 flex items-center justify-center">
+                    {{ thread.participant2.first_name|default:thread.participant2.username|first|upper }}
+                  </div>
+                  <span class="font-medium text-gray-900">{{ thread.participant2.get_full_name|default:thread.participant2.username }}</span>
+                </div>
+              </td>
+              <td class="py-4 pr-4">
+                <span class="rounded-full {% if thread.status == 'active' %}bg-gray-100 text-gray-700{% elif thread.status == 'archived' %}bg-gray-100 text-gray-700{% elif thread.status == 'blocked' %}bg-red-100 text-red-700{% endif %} px-3 py-1 text-xs font-semibold">
+                  {{ thread.get_status_display }}
+                </span>
+              </td>
+              <td class="py-4 pr-4">
+                <p class="text-xs text-gray-600">{{ thread.last_message_at|date:"M j, Y H:i"|default:"Never" }}</p>
+              </td>
+              <td class="py-4 pr-4">
+                <p class="font-medium text-gray-900">{{ thread.messages.count }}</p>
+              </td>
+              <td class="py-4 pr-4">
+                <div class="flex gap-2">
+                  <button type="button" class="rounded px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-100" title="View messages">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                  <form method="post" class="inline" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="manage_thread" />
+                    <input type="hidden" name="thread_id" value="{{ thread.id }}" />
+                    <select name="new_status" class="text-xs rounded border border-gray-200 px-2 py-1" onchange="this.form.submit();">
+                      <option value="">Change status...</option>
+                      <option value="active" {% if thread.status == 'active' %}selected{% endif %}>Active</option>
+                      <option value="archived" {% if thread.status == 'archived' %}selected{% endif %}>Archive</option>
+                      <option value="blocked" {% if thread.status == 'blocked' %}selected{% endif %}>Block</option>
+                    </select>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="py-8 text-center text-sm text-gray-500">No message threads found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <!-- Contact Messages -->
+  <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+    <h2 class="text-lg font-bold">Contact Messages</h2>
+    <p class="mt-1 text-sm text-gray-500">Latest requests from the public site.</p>
+    <div class="mt-6 grid gap-4 lg:grid-cols-2">
+      {% for message in contact_messages %}
+        <div class="rounded-lg border border-gray-100 p-4">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-semibold text-gray-900">{{ message.full_name }}</h3>
+              <p class="mt-1 text-xs text-gray-400">{{ message.email }} / {{ message.created_at|date:"M j, Y" }}</p>
+            </div>
+          </div>
+          <p class="mt-3 text-sm leading-6 text-gray-500">{{ message.message|truncatewords:28 }}</p>
+        </div>
+      {% empty %}
+        <p class="rounded-lg border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500 lg:col-span-2">No messages yet.</p>
+      {% endfor %}
+    </div>
+  </article>
+
+  <!-- Message Settings -->
+  <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+    <h2 class="text-lg font-bold">Message Settings</h2>
+    <p class="mt-1 text-sm text-gray-500">Control messaging policies and moderation.</p>
+    
+    <form method="post" class="mt-6 space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="update_message_settings" />
+      
+      <div class="flex items-center justify-between rounded-lg border border-gray-200 p-4">
+        <div>
+          <p class="font-medium text-gray-900">Enable Private Messaging</p>
+          <p class="text-xs text-gray-500">Allow users to send direct messages to each other</p>
+        </div>
+        <input type="checkbox" name="messaging_enabled" class="h-4 w-4 rounded border-gray-300 text-gray-900" {% if settings.messaging_enabled %}checked{% endif %} />
+      </div>
+
+      <div class="flex items-center justify-between rounded-lg border border-gray-200 p-4">
+        <div>
+          <p class="font-medium text-gray-900">Message Moderation</p>
+          <p class="text-xs text-gray-500">Automatically scan messages for inappropriate content</p>
+        </div>
+        <input type="checkbox" name="message_moderation" class="h-4 w-4 rounded border-gray-300 text-gray-900" {% if settings.message_moderation %}checked{% endif %} />
+      </div>
+
+      <div class="flex items-center justify-between rounded-lg border border-gray-200 p-4">
+        <div>
+          <p class="font-medium text-gray-900">Block New Users</p>
+          <p class="text-xs text-gray-500">New users can only message after 24 hours</p>
+        </div>
+        <input type="checkbox" name="block_new_users" class="h-4 w-4 rounded border-gray-300 text-gray-900" {% if settings.block_new_users %}checked{% endif %} />
+      </div>
+
+      <div class="rounded-lg border border-gray-200 p-4">
+        <label class="block text-sm font-medium text-gray-900">Max Messages Per Day</label>
+        <input type="number" name="max_messages_per_day" min="10" step="10" value="{{ settings.max_messages_per_day|default:'500' }}" class="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2 text-sm outline-none focus:border-gray-500 focus:ring-4 focus:ring-gray-200" />
+        <p class="mt-1 text-xs text-gray-500">0 = unlimited</p>
+      </div>
+
+      <button type="submit" class="rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800">Save Settings</button>
+    </form>
+  </article>
+</section>

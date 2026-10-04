@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200">
+<defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#e8edf3" stroke-width="1"/></pattern></defs>
+<rect width="1800" height="1200" fill="url(#grid)"/>
+<style>
+.e{fill:#59df91;stroke:#48c77d;stroke-width:1}.d{fill:#6e9df7;stroke:#4d78d7;stroke-width:1}.t{font:700 15px Arial;fill:#0d2b1b;text-anchor:middle}.f{font:12px Arial;fill:#183b2a}.r{font:700 13px Arial;fill:#17345c;text-anchor:middle}.c{font:700 14px Arial;fill:#1d2f45}.ln{stroke:#1d2f45;stroke-width:2;fill:none}
+</style>
+<text x="900" y="30" font="700 22px Arial" text-anchor="middle" fill="#19324d">COMMUNITY MANAGEMENT SYSTEM — ER DIAGRAM</text>
+
+<!-- role entities -->
+<g transform="translate(35 75)"><rect class="e" width="150" height="74"/><text x="75" y="25" class="t">OWNER</text><text x="10" y="48" class="f">PK owner_id</text><text x="10" y="65" class="f">FK user_id</text></g>
+<g transform="translate(35 300)"><rect class="e" width="150" height="74"/><text x="75" y="25" class="t">ADMIN</text><text x="10" y="48" class="f">PK admin_id</text><text x="10" y="65" class="f">FK user_id</text></g>
+<g transform="translate(35 525)"><rect class="e" width="150" height="74"/><text x="75" y="25" class="t">MODERATOR</text><text x="10" y="48" class="f">PK moderator_id</text><text x="10" y="65" class="f">FK user_id</text></g>
+<g transform="translate(35 750)"><rect class="e" width="150" height="74"/><text x="75" y="25" class="t">USER</text><text x="10" y="48" class="f">PK user_id</text><text x="10" y="65" class="f">account/profile</text></g>
+
+<!-- core entities -->
+<g transform="translate(700 75)"><rect class="e" width="210" height="105"/><text x="105" y="25" class="t">USER</text><text x="10" y="48" class="f">PK user_id</text><text x="10" y="66" class="f">username</text><text x="10" y="84" class="f">email</text><text x="10" y="100" class="f">status</text></g>
+<g transform="translate(1120 75)"><rect class="e" width="210" height="105"/><text x="105" y="25" class="t">PROFILE</text><text x="10" y="48" class="f">PK profile_id</text><text x="10" y="66" class="f">FK user_id</text><text x="10" y="84" class="f">bio, phone</text><text x="10" y="100" class="f">preferences</text></g>
+<g transform="translate(700 360)"><rect class="e" width="240" height="125"/><text x="120" y="25" class="t">COMMUNITY</text><text x="10" y="48" class="f">PK community_id</text><text x="10" y="66" class="f">FK owner_id</text><text x="10" y="84" class="f">name, description</text><text x="10" y="102" class="f">visibility, rules</text><text x="10" y="120" class="f">created_at</text></g>
+<g transform="translate(1090 360)"><rect class="e" width="245" height="125"/><text x="122" y="25" class="t">MEMBERSHIP</text><text x="10" y="48" class="f">PK membership_id</text><text x="10" y="66" class="f">FK user_id, community_id</text><text x="10" y="84" class="f">role, status</text><text x="10" y="102" class="f">joined_at, ban_reason</text><text x="10" y="120" class="f">nickname</text></g>
+<g transform="translate(700 700)"><rect class="e" width="240" height="125"/><text x="120" y="25" class="t">POST</text><text x="10" y="48" class="f">PK post_id</text><text x="10" y="66" class="f">FK author_id, community_id</text><text x="10" y="84" class="f">title, body</text><text x="10" y="102" class="f">approval_status</text><text x="10" y="120" class="f">created_at</text></g>
+<g transform="translate(1090 700)"><rect class="e" width="245" height="125"/><text x="122" y="25" class="t">COMMENT</text><text x="10" y="48" class="f">PK comment_id</text><text x="10" y="66" class="f">FK post_id, author_id</text><text x="10" y="84" class="f">FK parent_id</text><text x="10" y="102" class="f">body, is_edited</text><text x="10" y="120" class="f">created_at</text></g>
+<g transform="translate(1460 700)"><rect class="e" width="245" height="125"/><text x="122" y="25" class="t">REPORT</text><text x="10" y="48" class="f">PK report_id</text><text x="10" y="66" class="f">FK reporter_id, post_id</text><text x="10" y="84" class="f">FK reviewed_by_id</text><text x="10" y="102" class="f">reason, status</text><text x="10" y="120" class="f">created_at</text></g>
+<g transform="translate(250 1010)"><rect class="e" width="220" height="105"/><text x="110" y="25" class="t">EVENT</text><text x="10" y="48" class="f">PK event_id</text><text x="10" y="66" class="f">FK community_id</text><text x="10" y="84" class="f">FK organizer_id</text><text x="10" y="100" class="f">start_at, location</text></g>
+<g transform="translate(690 1010)"><rect class="e" width="220" height="105"/><text x="110" y="25" class="t">COURSE</text><text x="10" y="48" class="f">PK course_id</text><text x="10" y="66" class="f">FK community_id</text><text x="10" y="84" class="f">FK instructor_id</text><text x="10" y="100" class="f">title, status</text></g>
+<g transform="translate(1100 1010)"><rect class="e" width="235" height="105"/><text x="117" y="25" class="t">PAYMENT</text><text x="10" y="48" class="f">PK transaction_id</text><text x="10" y="66" class="f">FK user_id, community_id</text><text x="10" y="84" class="f">amount, provider</text><text x="10" y="100" class="f">status, paid_at</text></g>
+
+<!-- diamonds -->
+<g><polygon class="d" points="420,112 465,86 510,112 465,138"/><text x="465" y="117" class="r">MANAGES</text></g>
+<g><polygon class="d" points="420,337 465,311 510,337 465,363"/><text x="465" y="342" class="r">MANAGES</text></g>
+<g><polygon class="d" points="420,562 465,536 510,562 465,588"/><text x="465" y="567" class="r">MANAGES</text></g>
+<g><polygon class="d" points="420,787 465,761 510,787 465,813"/><text x="465" y="792" class="r">JOINS</text></g>
+<g><polygon class="d" points="235,215 280,189 325,215 280,241"/><text x="280" y="220" class="r">OWNS</text></g>
+<g><polygon class="d" points="235,660 280,634 325,660 280,686"/><text x="280" y="665" class="r">MANAGES</text></g>
+<g><polygon class="d" points="420,930 465,904 510,930 465,956"/><text x="465" y="935" class="r">CREATES</text></g>
+<g><polygon class="d" points="980,112 1025,86 1070,112 1025,138"/><text x="1025" y="117" class="r">HAS</text></g>
+<g><polygon class="d" points="980,422 1025,396 1070,422 1025,448"/><text x="1025" y="427" class="r">MEMBERS</text></g>
+<g><polygon class="d" points="980,762 1025,736 1070,762 1025,788"/><text x="1025" y="767" class="r">WRITES</text></g>
+<g><polygon class="d" points="1370,762 1415,736 1460,762 1415,788"/><text x="1415" y="767" class="r">REVIEWS</text></g>
+<g><polygon class="d" points="530,1062 575,1036 620,1062 575,1088"/><text x="575" y="1067" class="r">ORGANIZES</text></g>
+<g><polygon class="d" points="950,1062 995,1036 1040,1062 995,1088"/><text x="995" y="1067" class="r">OFFERS</text></g>
+<g><polygon class="d" points="1430,1062 1475,1036 1520,1062 1475,1088"/><text x="1475" y="1067" class="r">PAYS</text></g>
+
+<!-- connectors -->
+<path class="ln" d="M185 112H420M510 112H700"/><text x="220" y="100" class="c">1</text><text x="660" y="100" class="c">M</text>
+<path class="ln" d="M185 337H420M510 337H700"/><text x="220" y="325" class="c">1</text><text x="660" y="325" class="c">M</text>
+<path class="ln" d="M185 562H420M510 562L610 562L610 422L1090 422"/><text x="220" y="550" class="c">M</text><text x="1060" y="410" class="c">M</text>
+<path class="ln" d="M185 787H420M510 787L610 787L610 422L1090 422"/><text x="220" y="775" class="c">M</text><text x="1060" y="455" class="c">M</text>
+<!-- Owner controls every functional area, including payment; Admin controls all operational areas except payment. -->
+<path class="ln" d="M185 112H235M325 215L560 215L560 422L700 422M560 215L560 762L700 762M560 215L560 1062L1100 1062"/>
+<path class="ln" d="M185 337H235M325 337L520 337L520 762L700 762M520 337L520 422L700 422M520 337L520 130L700 130M360 337L360 562L420 562"/>
+<path class="ln" d="M185 787H235M325 660L400 660L400 562L420 562"/>
+<path class="ln" d="M185 787H420M510 930L600 930L600 422L700 422"/>
+<path class="ln" d="M910 130H980M1070 112H1120"/><text x="920" y="118" class="c">1</text><text x="1080" y="100" class="c">1</text>
+<path class="ln" d="M940 422H980M1070 422H1090"/><text x="950" y="410" class="c">1</text><text x="1080" y="410" class="c">M</text>
+<path class="ln" d="M940 762H980M1070 762H1090"/><text x="950" y="750" class="c">1</text><text x="1080" y="750" class="c">M</text>
+<path class="ln" d="M1335 762H1370M1460 762H1460"/><text x="1340" y="750" class="c">1</text><text x="1465" y="750" class="c">M</text>
+<path class="ln" d="M470 1062H530M620 1062H690"/><text x="480" y="1050" class="c">1</text><text x="665" y="1050" class="c">M</text>
+<path class="ln" d="M910 1062H950M1040 1062H1100"/><text x="920" y="1050" class="c">1</text><text x="1060" y="1050" class="c">M</text>
+<path class="ln" d="M1335 1062H1430M1520 1062H1600"/><text x="1345" y="1050" class="c">1</text><text x="1550" y="1050" class="c">M</text>
+<text x="35" y="1170" class="f">Green rectangles = entities/subclasses • Blue diamonds = verb relationships • 1/M/N = cardinality • PK/FK = key fields</text>
+</svg>

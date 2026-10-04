@@ -8,27 +8,30 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
     <style>
       * {
-        font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
       .gradient-primary {
         background: linear-gradient(135deg, #6c2bd9 0%, #8b5cf6 100%);
       }
     </style>
+    <link rel="stylesheet" href="{% static 'css/typography.css' %}" />
   </head>
 
   <body class="min-h-screen bg-[#f8f8fb] text-gray-900">
     <main class="flex min-h-screen items-center justify-center px-5 py-8">
       <section class="w-full max-w-md rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-100 sm:p-8">
         <div class="mb-6">
-          <img src="{% static 'images/union-logo.png' %}" alt="Union logo" class="mb-4 h-12 w-12 rounded-2xl object-contain" />
-          <h1 class="text-3xl font-black tracking-tight text-purple-600">Verify your email</h1>
+          <a href="{% url 'hub:home' %}" aria-label="Union home" class="inline-flex">
+            <img src="{% static 'images/union-logo.png' %}" alt="Union logo" class="mb-4 h-12 w-12 rounded-2xl object-contain" />
+          </a>
+          <h1 class="text-3xl font-black tracking-tight text-purple-600">{% if reset_flow %}Verify password reset OTP{% else %}Verify your email{% endif %}</h1>
           <p class="mt-2 text-sm leading-6 text-gray-500">
             Enter the OTP code sent to {{ email }}.
           </p>
@@ -67,7 +70,7 @@
             type="submit"
             class="w-full rounded-xl py-3.5 text-base font-semibold text-white transition hover:opacity-95 gradient-primary"
           >
-            Verify account
+            {% if reset_flow %}Verify OTP{% else %}Verify account{% endif %}
           </button>
         </form>
 
@@ -78,6 +81,14 @@
             Resend OTP
           </button>
         </form>
+
+        <nav aria-label="Account navigation" class="mt-5 flex justify-center gap-4 text-sm">
+          <a href="{% url 'hub:home' %}" class="font-semibold text-gray-600 hover:text-gray-900">Home</a>
+          <a href="{% url 'hub:signin' %}" class="font-semibold text-gray-600 hover:text-gray-900">Sign in</a>
+          {% if not reset_flow %}
+            <a href="{% url 'hub:signup' %}" class="font-semibold text-gray-600 hover:text-gray-900">Sign up</a>
+          {% endif %}
+        </nav>
       </section>
     </main>
   </body>

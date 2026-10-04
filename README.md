@@ -62,7 +62,7 @@ The routed pages live in `templates/`:
 - `landing.html` for the public marketing/contact page
 - `signup.html` and `signin.html` for authentication
 - `verify_otp.html` for email OTP verification
-- `dashboard/user.html` and `dashboard/super_admin.html` for role-based dashboards
+- `user-dashboard/user-dashboard.html` and `admin-dashboard/super_admin.html` for role-based dashboards
 
 Tailwind CSS is loaded through CDN scripts in the templates, so you can refresh the browser after editing.
 
@@ -97,6 +97,23 @@ python manage.py test
 
 Tests use SQLite by default so they can run without a local PostgreSQL service. Set
 `TEST_DATABASE_URL` if you want the test suite to use another database.
+
+## eSewa ePay V2 payment collection
+
+Paid community joins use the server-side eSewa ePay V2 flow when these values are configured:
+
+```powershell
+ESEWA_ENABLED=True
+ESEWA_PRODUCT_CODE=your-production-merchant-code
+ESEWA_SECRET_KEY=your-production-secret-key
+ESEWA_FORM_URL=https://epay.esewa.com.np/api/epay/main/v2/form
+ESEWA_STATUS_URL=https://epay.esewa.com.np/api/epay/transaction/status/
+ESEWA_ALLOW_SIGNED_CALLBACK_FALLBACK=False
+```
+
+Obtain production credentials through eSewa merchant onboarding. The secret is used only by Django to generate the HMAC-SHA256 signature; it is never sent to the browser. The success callback verifies eSewa's signed response and calls status check before creating the membership. If eSewa is disabled, local development can continue using the existing manual fallback; production refuses to grant paid access without configured online payments.
+
+For local UAT, the repository `.env` is configured with eSewa's documented test merchant values. Use the test eSewa account shown on the official [ePay V2 test credentials page](https://developer.esewa.com.np/pages/Epay-V2), then return to the local success URL. When `DJANGO_DEBUG=True`, `ESEWA_ALLOW_SIGNED_CALLBACK_FALLBACK=True` lets a valid signed `COMPLETE` callback finish local testing if eSewa's UAT status endpoint is unreachable. UAT does not move real money and must be replaced with approved production credentials before launch.
 
 ## Deployment
 

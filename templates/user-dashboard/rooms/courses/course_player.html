@@ -1,0 +1,73 @@
+<section id="course-player" class="hidden bg-gray-50">
+  <div class="mx-auto max-w-[1500px] px-4 py-5 sm:px-6">
+    <div class="mb-4 flex items-center justify-between"><button type="button" data-course-close class="text-sm font-semibold text-gray-600 hover:text-gray-950"><i class="fa-solid fa-arrow-left mr-1.5"></i>Back to courses</button><div class="flex items-center gap-3 text-xs font-semibold text-gray-400"><span><i class="fa-solid fa-book-open mr-1"></i>Course player</span><button type="button" class="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-gray-600"><i class="fa-regular fa-bookmark mr-1"></i>Save</button></div></div>
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div class="grid min-h-[680px] lg:grid-cols-[310px_minmax(0,1fr)]">
+        {% include 'user-dashboard/rooms/courses/course_sidebar.html' %}
+        <main class="min-w-0 p-4 sm:p-6">
+          {% include 'user-dashboard/rooms/courses/video_player.html' %}
+          <div class="mt-6 flex flex-wrap items-start justify-between gap-4">
+            <div><p class="text-xs font-bold uppercase tracking-wider text-indigo-600">Section 2 - Facilitate connection</p><h2 data-player-lesson-title class="mt-1 text-xl font-extrabold text-gray-950">Understanding conversation prompts</h2><p data-player-lesson-description class="mt-2 max-w-3xl text-sm leading-6 text-gray-600">Learn how the right invitation makes it easier for a member to share, respond, and return for another conversation.</p></div>
+            <button type="button" data-mark-complete class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700"><i class="fa-solid fa-check mr-1"></i>Mark complete</button>
+          </div>
+          <div class="mt-6 grid gap-4 xl:grid-cols-2">
+            <section class="rounded-2xl border border-gray-200 p-4"><div class="flex items-center justify-between"><div><h3 class="font-bold text-gray-950">Lesson resources</h3><p class="mt-1 text-xs text-gray-400">Download and keep these files.</p></div><i class="fa-solid fa-paperclip text-gray-400"></i></div>
+              <a href="#" class="mt-4 flex items-center gap-3 rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-500"><i class="fa-solid fa-file-pdf"></i></span><span class="min-w-0 flex-1 truncate">Conversation prompt workbook.pdf</span><i class="fa-solid fa-download text-xs text-gray-400"></i></a>
+              <a href="#" class="mt-2 flex items-center gap-3 rounded-xl bg-gray-50 p-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-500"><i class="fa-solid fa-file-zipper"></i></span><span class="min-w-0 flex-1 truncate">Prompt templates.zip</span><i class="fa-solid fa-download text-xs text-gray-400"></i></a>
+            </section>
+            <section class="rounded-2xl border border-gray-200 p-4"><div class="flex items-center justify-between"><div><h3 class="font-bold text-gray-950">Your notes</h3><p class="mt-1 text-xs text-gray-400">Private and autosaved.</p></div><i class="fa-solid fa-note-sticky text-amber-400"></i></div><textarea rows="4" class="mt-3 w-full resize-none rounded-xl bg-gray-50 p-3 text-sm leading-6 outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Write a private note about this lesson...">Try the small win prompt at our next live session.</textarea></section>
+          </div>
+          <section class="mt-4 rounded-2xl border border-gray-200 p-4"><div class="flex items-center justify-between"><div><h3 class="font-bold text-gray-950">Lesson discussion <span class="font-normal text-gray-400">- 8 comments</span></h3><p class="mt-1 text-xs text-gray-400">Share takeaways and questions with the course community.</p></div><button class="text-xs font-bold text-indigo-600">Sort: top <i class="fa-solid fa-chevron-down ml-1"></i></button></div>
+            <div class="mt-4 flex gap-3"><span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sky-100 text-xs font-bold text-sky-700">A</span><div><p class="text-sm font-bold text-gray-900">Alex Rivera <span class="ml-1 text-xs font-normal text-gray-400">2 hours ago</span></p><p class="mt-1 text-sm leading-6 text-gray-600">The examples made the difference between an icebreaker and a meaningful prompt really clear.</p><button class="mt-2 text-xs font-bold text-gray-500 hover:text-gray-800">Reply</button></div></div>
+            <form class="mt-4 flex gap-2"><input class="min-w-0 flex-1 rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-50" placeholder="Add to the discussion..." /><button type="button" class="rounded-xl bg-gray-900 px-4 text-xs font-bold text-white hover:bg-gray-800">Post</button></form>
+          </section>
+          <div class="mt-6 flex justify-between gap-3"><button type="button" data-player-previous class="rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-700 transition hover:bg-gray-50"><i class="fa-solid fa-arrow-left mr-1.5"></i>Previous</button><button type="button" data-player-next class="rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-gray-800">Next lesson<i class="fa-solid fa-arrow-right ml-1.5"></i></button></div>
+        </main>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function () {
+  document.querySelectorAll('.course-lms').forEach(function (lms) {
+    if (lms.dataset.playerReady) return;
+    lms.dataset.playerReady = 'true';
+    var lessons = Array.prototype.slice.call(lms.querySelectorAll('[data-course-lesson]'));
+    var activeIndex = Math.max(0, lessons.findIndex(function (lesson) { return lesson.classList.contains('bg-indigo-50'); }));
+    function activate(index) {
+      if (!lessons.length) return;
+      activeIndex = (index + lessons.length) % lessons.length;
+      var lesson = lessons[activeIndex];
+      lessons.forEach(function (item) { item.classList.remove('bg-indigo-50', 'font-semibold', 'text-indigo-700'); item.classList.add('text-gray-500'); });
+      lesson.classList.add('bg-indigo-50', 'font-semibold', 'text-indigo-700');
+      lesson.classList.remove('text-gray-500');
+      var title = lms.querySelector('[data-player-lesson-title]');
+      var description = lms.querySelector('[data-player-lesson-description]');
+      var videoTitle = lms.querySelector('[data-video-lesson-title]');
+      if (title) title.textContent = lesson.dataset.lessonTitle || lesson.textContent.trim();
+      if (description) description.textContent = lesson.dataset.lessonDescription || '';
+      if (videoTitle) videoTitle.textContent = lesson.dataset.lessonTitle || lesson.textContent.trim();
+    }
+    lessons.forEach(function (lesson, index) { lesson.addEventListener('click', function () { activate(index); }); });
+    var next = lms.querySelector('[data-player-next]'); if (next) next.addEventListener('click', function () { activate(activeIndex + 1); });
+    var previous = lms.querySelector('[data-player-previous]'); if (previous) previous.addEventListener('click', function () { activate(activeIndex - 1); });
+    lms.querySelectorAll('[data-mark-complete]').forEach(function (button) { button.addEventListener('click', function () { button.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i>Completed'; button.classList.remove('bg-emerald-600', 'hover:bg-emerald-700'); button.classList.add('bg-gray-900'); lms.querySelectorAll('[data-course-player-progress]').forEach(function (label) { label.textContent = '45%'; }); lms.querySelectorAll('[data-course-player-progress-bar]').forEach(function (bar) { bar.style.width = '45%'; }); }); });
+  });
+}());
+</script>
+
+<script>
+document.querySelectorAll('.course-lms').forEach(function (lms) {
+  lms.querySelectorAll('[data-video-toggle]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var paused = button.dataset.playing !== 'true';
+      button.dataset.playing = paused ? 'true' : 'false';
+      var icon = button.querySelector('i');
+      var label = button.querySelector('[data-video-state]');
+      if (icon) icon.className = paused ? 'fa-solid fa-pause' : 'fa-solid fa-play ml-1';
+      if (label) label.textContent = paused ? 'Pause lesson' : 'Play lesson';
+      button.setAttribute('aria-label', paused ? 'Pause lesson' : 'Play lesson');
+    });
+  });
+});
+</script>

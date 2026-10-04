@@ -1,0 +1,122 @@
+{% if active_page == "notifications" %}
+<section id="notifications" class="mt-2 space-y-5">
+  <form id="notification-csrf" class="hidden">{% csrf_token %}</form>
+
+  <header class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-violet-950 p-5 text-white shadow-sm sm:p-7">
+    <div class="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-violet-400/20 blur-3xl"></div>
+    <div class="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-violet-100 ring-1 ring-white/15"><i class="fa-solid fa-bell"></i> Your activity</span>
+        <h1 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Notification center</h1>
+        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-300">Stay on top of community activity, payments, member conversations, and account updates from one calm workspace.</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" data-page-mark-all class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-slate-950 transition hover:bg-violet-50"><i class="fa-solid fa-check-double"></i>Mark all as read</button>
+        <a href="{% url 'hub:dashboard_section' 'settings' %}?tab=personalization#notification-preferences" class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-bold text-white ring-1 ring-white/15 transition hover:bg-white/20"><i class="fa-solid fa-sliders"></i>Notification settings</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+    <article class="rounded-2xl border border-violet-100 bg-violet-50 p-4"><div class="flex items-center justify-between"><p class="text-[10px] font-black uppercase tracking-wide text-violet-600">Unread</p><i class="fa-solid fa-envelope text-violet-500"></i></div><p data-page-notif-stat="unread" class="mt-2 text-2xl font-black text-violet-950">{{ notification_count }}</p><p class="mt-1 text-xs text-violet-700">Needs your attention</p></article>
+    <article class="rounded-2xl border border-emerald-100 bg-emerald-50 p-4"><div class="flex items-center justify-between"><p class="text-[10px] font-black uppercase tracking-wide text-emerald-700">Read</p><i class="fa-solid fa-envelope-open text-emerald-600"></i></div><p data-page-notif-stat="read" class="mt-2 text-2xl font-black text-emerald-950">{{ notification_read_count }}</p><p class="mt-1 text-xs text-emerald-700">Cleared from your inbox</p></article>
+    <article class="rounded-2xl border border-sky-100 bg-sky-50 p-4"><div class="flex items-center justify-between"><p class="text-[10px] font-black uppercase tracking-wide text-sky-700">All activity</p><i class="fa-solid fa-inbox text-sky-600"></i></div><p data-page-notif-stat="total" class="mt-2 text-2xl font-black text-sky-950">{{ notification_total_count }}</p><p class="mt-1 text-xs text-sky-700">Everything received</p></article>
+    <article class="rounded-2xl border border-amber-100 bg-amber-50 p-4"><div class="flex items-center justify-between"><p class="text-[10px] font-black uppercase tracking-wide text-amber-700">Archived</p><i class="fa-solid fa-box-archive text-amber-600"></i></div><p data-page-notif-stat="archived" class="mt-2 text-2xl font-black text-amber-950">{{ notification_archived_count }}</p><p class="mt-1 text-xs text-amber-700">Saved for later</p></article>
+  </div>
+
+  <div class="grid gap-5 xl:grid-cols-[240px_minmax(0,1fr)]">
+    <aside class="h-fit rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div class="flex items-center justify-between"><h2 class="text-sm font-black text-gray-950">Filter notifications</h2><i class="fa-solid fa-filter text-xs text-gray-400"></i></div>
+      <div class="mt-4 space-y-1" data-page-notif-filters>
+        <button type="button" data-page-filter="inbox" class="page-notif-filter active flex w-full items-center justify-between rounded-xl bg-gray-950 px-3 py-2.5 text-left text-xs font-bold text-white"><span><i class="fa-solid fa-inbox mr-2 w-4 text-center"></i>Inbox</span><span data-page-filter-count="inbox" class="rounded-full bg-white/15 px-2 py-0.5 text-[10px]">{{ notification_count }}</span></button>
+        <button type="button" data-page-filter="all" class="page-notif-filter flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-xs font-bold text-gray-600 transition hover:bg-gray-50"><span><i class="fa-solid fa-list mr-2 w-4 text-center"></i>All activity</span><span data-page-filter-count="all" class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px]">{{ notification_total_count }}</span></button>
+        <button type="button" data-page-filter="unread" class="page-notif-filter flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-xs font-bold text-gray-600 transition hover:bg-gray-50"><span><i class="fa-solid fa-circle-dot mr-2 w-4 text-center"></i>Unread</span><span data-page-filter-count="unread" class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px]">{{ notification_count }}</span></button>
+        <button type="button" data-page-filter="read" class="page-notif-filter flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-xs font-bold text-gray-600 transition hover:bg-gray-50"><span><i class="fa-solid fa-check mr-2 w-4 text-center"></i>Read</span><span data-page-filter-count="read" class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px]">{{ notification_read_count }}</span></button>
+        <button type="button" data-page-filter="archived" class="page-notif-filter flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-xs font-bold text-gray-600 transition hover:bg-gray-50"><span><i class="fa-solid fa-box-archive mr-2 w-4 text-center"></i>Archived</span><span data-page-filter-count="archived" class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px]">{{ notification_archived_count }}</span></button>
+      </div>
+      <div class="mt-5 border-t border-gray-100 pt-4"><p class="text-[10px] font-black uppercase tracking-[0.16em] text-gray-400">Categories</p><div class="mt-2 space-y-1">
+        {% for category in notification_categories %}<button type="button" data-page-category="{{ category.key }}" class="page-notif-category flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs font-semibold text-gray-600 transition hover:bg-gray-50"><span><i class="fa-solid {{ category.icon }} mr-2 w-4 text-center"></i>{{ category.label }}</span><span class="text-[10px] text-gray-400">{{ category.count }}</span></button>{% endfor %}
+      </div></div>
+      <div class="mt-5 rounded-xl bg-gray-50 p-3"><p class="text-xs font-bold text-gray-700">Tip</p><p class="mt-1 text-[11px] leading-5 text-gray-500">Archive items you want to keep without letting them compete with new activity.</p></div>
+    </aside>
+
+    <main class="min-w-0 rounded-2xl border border-gray-200 bg-white shadow-sm">
+      <div class="flex flex-col gap-3 border-b border-gray-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6"><div><h2 class="text-lg font-black text-gray-950">Your inbox</h2><p data-page-result-label class="mt-1 text-xs text-gray-500">Showing current notifications</p></div><span class="rounded-full bg-gray-100 px-3 py-1.5 text-[10px] font-black uppercase tracking-wide text-gray-500">Live activity</span></div>
+      <div id="notification-page-list" class="divide-y divide-gray-100">
+        {% for notification in notifications %}
+          <article data-page-notification data-page-notif-id="{{ notification.id }}" data-page-read="{% if notification.is_read %}true{% else %}false{% endif %}" data-page-archived="{% if notification.is_archived %}true{% else %}false{% endif %}" data-page-category="{{ notification.category }}" class="notification-page-card group flex gap-3 px-5 py-4 transition hover:bg-gray-50 sm:gap-4 sm:px-6 {% if not notification.is_read and not notification.is_archived %}bg-violet-50/40{% endif %}">
+            <div class="relative shrink-0"><span class="flex h-10 w-10 items-center justify-center rounded-xl {% if notification.category == 'payment' %}bg-emerald-100 text-emerald-700{% elif notification.category == 'moderation' %}bg-amber-100 text-amber-700{% elif notification.category == 'community' %}bg-violet-100 text-violet-700{% else %}bg-sky-100 text-sky-700{% endif %}"><i class="fa-solid {% if notification.notification_type == 'comment' %}fa-comment{% elif notification.notification_type == 'like' %}fa-heart{% elif notification.notification_type == 'follow' %}fa-user-plus{% elif notification.notification_type == 'award' %}fa-award{% elif notification.category == 'payment' %}fa-wallet{% elif notification.category == 'moderation' %}fa-shield-halved{% elif notification.category == 'community' %}fa-people-group{% else %}fa-bell{% endif %}"></i></span>{% if not notification.is_read %}<span class="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-violet-600"></span>{% endif %}</div>
+            <div class="min-w-0 flex-1"><div class="flex flex-wrap items-center gap-2"><h3 class="text-sm font-black text-gray-950">{{ notification.title }}</h3>{% if not notification.is_read %}<span class="notification-new-badge rounded-full bg-violet-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-violet-700">New</span>{% endif %}<span class="rounded-full bg-gray-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-gray-500">{{ notification.get_category_display }}</span></div><p class="mt-1 text-sm leading-6 text-gray-600">{{ notification.body }}</p><div class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-gray-400"><span>{{ notification.created_at|timesince }} ago</span>{% if notification.actor %}<span>·</span><span>From {{ notification.actor.get_full_name|default:notification.actor.username }}</span>{% endif %}{% if notification.community %}<span>·</span><a href="{% url 'hub:community_detail' notification.community.slug %}" class="font-semibold text-violet-600 hover:text-violet-800">{{ notification.community.name }}</a>{% endif %}{% if notification.room %}<span>· {{ notification.room.name }}</span>{% endif %}</div></div>
+            <div class="flex shrink-0 items-start gap-1 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100"><button type="button" data-page-notif-action="{% if notification.is_read %}unread{% else %}read{% endif %}" class="page-notif-action flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-800" title="{% if notification.is_read %}Mark as unread{% else %}Mark as read{% endif %}"><i class="fa-solid {% if notification.is_read %}fa-envelope{% else %}fa-envelope-open{% endif %} text-xs"></i></button><button type="button" data-page-notif-action="archive" class="page-notif-action flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-amber-50 hover:text-amber-700" title="Archive"><i class="fa-solid fa-box-archive text-xs"></i></button><button type="button" data-page-notif-action="delete" class="page-notif-action flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-rose-50 hover:text-rose-700" title="Delete"><i class="fa-solid fa-trash text-xs"></i></button></div>
+          </article>
+        {% endfor %}
+      </div>
+      <div data-page-empty class="hidden px-5 py-20 text-center sm:px-6"><span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-gray-400"><i class="fa-solid fa-filter text-xl"></i></span><h3 class="mt-4 text-sm font-black text-gray-900">Nothing in this view</h3><p class="mt-1 text-xs leading-5 text-gray-500">Try another filter or check back when new activity arrives.</p></div>
+    </main>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById("notifications");
+  if (!root) return;
+  var cards = Array.prototype.slice.call(root.querySelectorAll("[data-page-notification]"));
+  var empty = root.querySelector("[data-page-empty]");
+  var filter = "inbox";
+  var category = "all";
+  var csrf = root.querySelector("input[name=csrfmiddlewaretoken]");
+  var csrfToken = csrf ? csrf.value : "";
+
+  function cardMatches(card) {
+    var read = card.getAttribute("data-page-read") === "true";
+    var archived = card.getAttribute("data-page-archived") === "true";
+    var cardCategory = card.getAttribute("data-page-category") || "account";
+    var matchesFilter = filter === "all" || (filter === "inbox" && !archived) || (filter === "unread" && !archived && !read) || (filter === "read" && !archived && read) || (filter === "archived" && archived);
+    return matchesFilter && (category === "all" || category === cardCategory);
+  }
+
+  function updateCounts() {
+    var unread = cards.filter(function (card) { return card.getAttribute("data-page-read") !== "true" && card.getAttribute("data-page-archived") !== "true"; }).length;
+    var read = cards.filter(function (card) { return card.getAttribute("data-page-read") === "true" && card.getAttribute("data-page-archived") !== "true"; }).length;
+    var archived = cards.filter(function (card) { return card.getAttribute("data-page-archived") === "true"; }).length;
+    [["unread", unread], ["read", read], ["archived", archived], ["total", cards.length]].forEach(function (entry) { var node = root.querySelector('[data-page-notif-stat="' + entry[0] + '"]'); if (node) node.textContent = entry[1]; });
+    [["inbox", unread + read], ["all", cards.length], ["unread", unread], ["read", read], ["archived", archived]].forEach(function (entry) { var node = root.querySelector('[data-page-filter-count="' + entry[0] + '"]'); if (node) node.textContent = entry[1]; });
+  }
+
+  function apply() {
+    var visible = 0;
+    cards.forEach(function (card) { var show = cardMatches(card); card.classList.toggle("hidden", !show); if (show) visible += 1; });
+    if (empty) empty.classList.toggle("hidden", visible !== 0);
+    var label = root.querySelector("[data-page-result-label]");
+    if (label) label.textContent = visible + " notification" + (visible === 1 ? "" : "s") + " in this view";
+    updateCounts();
+  }
+
+  function updateReadState(card, isRead) {
+    card.setAttribute("data-page-read", isRead ? "true" : "false");
+    card.classList.toggle("bg-violet-50/40", !isRead && card.getAttribute("data-page-archived") !== "true");
+    var button = card.querySelector("[data-page-notif-action=read], [data-page-notif-action=unread]");
+    if (button) { button.setAttribute("data-page-notif-action", isRead ? "unread" : "read"); button.title = isRead ? "Mark as unread" : "Mark as read"; button.innerHTML = '<i class="fa-solid ' + (isRead ? "fa-envelope" : "fa-envelope-open") + ' text-xs"></i>'; }
+    var badge = card.querySelector(".notification-new-badge");
+    if (!isRead && !badge) { var title = card.querySelector("h3"); if (title) { badge = document.createElement("span"); badge.className = "notification-new-badge rounded-full bg-violet-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-violet-700"; badge.textContent = "New"; title.parentElement.appendChild(badge); } }
+    if (isRead && badge) badge.remove();
+  }
+
+  root.querySelectorAll("[data-page-filter]").forEach(function (button) { button.addEventListener("click", function () { filter = button.getAttribute("data-page-filter") || "inbox"; root.querySelectorAll("[data-page-filter]").forEach(function (other) { var active = other === button; other.classList.toggle("bg-gray-950", active); other.classList.toggle("text-white", active); other.classList.toggle("text-gray-600", !active); }); apply(); }); });
+  root.querySelectorAll("[data-page-category]").forEach(function (button) { button.addEventListener("click", function () { var selected = button.getAttribute("data-page-category") || "all"; category = category === selected ? "all" : selected; root.querySelectorAll("[data-page-category]").forEach(function (other) { other.classList.toggle("bg-violet-50", other === button && category !== "all"); other.classList.toggle("text-violet-700", other === button && category !== "all"); }); apply(); }); });
+
+  root.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-page-notif-action]");
+    if (!button) return;
+    var card = button.closest("[data-page-notification]");
+    var action = button.getAttribute("data-page-notif-action");
+    if (!card) return;
+    button.disabled = true;
+    fetch("/api/notifications/action/", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken }, body: JSON.stringify({ action: action, pk: card.getAttribute("data-page-notif-id") }) }).then(function (response) { return response.json(); }).then(function (data) { if (!data.ok) return; if (action === "read" || action === "unread") updateReadState(card, action === "read"); if (action === "archive") card.setAttribute("data-page-archived", "true"); if (action === "delete") { cards = cards.filter(function (item) { return item !== card; }); card.remove(); } apply(); }).finally(function () { button.disabled = false; });
+  });
+
+  root.querySelector("[data-page-mark-all]").addEventListener("click", function () { fetch("/api/notifications/action/", { method: "POST", headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken }, body: JSON.stringify({ action: "mark_all_read" }) }).then(function (response) { return response.json(); }).then(function (data) { if (!data.ok) return; cards.forEach(function (card) { if (card.getAttribute("data-page-archived") !== "true") updateReadState(card, true); }); apply(); }); });
+  apply();
+}());
+</script>
+{% endif %}

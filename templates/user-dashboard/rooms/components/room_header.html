@@ -1,0 +1,10 @@
+<header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 bg-white px-4 py-4 sm:px-6">
+  <div class="flex min-w-0 items-center gap-3">
+    {% if room.icon_image_url %}
+      <img src="{{ room.icon_image_url }}" alt="" class="h-10 w-10 rounded-xl object-cover" />
+    {% else %}
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-900 text-white"><i class="{{ room.icon_class|default:'fa-solid fa-layer-group' }} text-sm"></i></div>
+    {% endif %}
+    <div class="min-w-0"><p class="text-xs font-semibold uppercase tracking-wider text-gray-400">{{ room.get_room_type_display }}</p><h1 class="truncate text-lg font-bold text-gray-950">{{ room.name }}</h1>{% if room.description %}<p class="truncate text-sm text-gray-500">{{ room.description }}</p>{% endif %}</div>
+  </div>
+</header>

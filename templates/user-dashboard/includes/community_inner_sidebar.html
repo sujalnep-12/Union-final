@@ -1,0 +1,233 @@
+<style>
+  .community-dashboard-nav { position: relative; }
+  .community-dashboard-row { border-radius: 8px; }
+  .community-dashboard-nav.has-active .community-dashboard-row { background: rgba(17, 24, 39, 0.08); }
+  .community-dashboard-main,
+  .community-dashboard-toggle { color: #4b5563; }
+  .community-dashboard-main:hover,
+  .community-dashboard-toggle:hover { background: rgba(17, 24, 39, 0.06); color: #111827; }
+  .community-dashboard-main.active,
+  .community-dashboard-nav.has-active .community-dashboard-toggle { background: transparent; color: #111827; }
+  .community-dashboard-toggle { border: 0; cursor: pointer; }
+  .community-dashboard-toggle svg { transition: transform 150ms ease; }
+  .community-dashboard-nav.open .community-dashboard-toggle svg { transform: rotate(180deg); }
+  .community-dashboard-submenu { display: none; padding: 2px 0 0 32px; }
+  .community-dashboard-nav.open .community-dashboard-submenu { display: grid; gap: 2px; }
+  .community-dashboard-submenu a { color: #6b7280; }
+  .community-dashboard-submenu a:hover,
+  .community-dashboard-submenu a.active { background: #f3f4f6; color: #111827; }
+</style>
+
+<!-- Inner sidebar — always visible -->
+<aside class="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-white" style="height: calc(100vh - 56px); position: sticky; top: 56px;">
+  <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+    <!-- Back to home (only on the Feed page, returns to the full nav) -->
+    {% if active_community_tab == "posts" %}
+    <a href="{% url 'hub:community_detail' community.slug %}?tab=getting-started" class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+      <i class="fa-solid fa-arrow-left text-xs"></i> Back to home
+    </a>
+    {% endif %}
+
+    <!-- Main navigation -->
+    <div>
+      <div class="space-y-0.5">
+        <!-- Primary nav first item, hidden on the Feed page -->
+        {% if active_community_tab != "posts" %}
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=getting-started" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'getting-started' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-list-check w-5 text-center text-sm"></i> Getting Started
+        </a>
+        {% endif %}
+
+        <!-- Feed -->
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=posts" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'posts' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-house w-5 text-center text-sm"></i> Feed
+        </a>
+
+        {% if active_community_tab != "posts" %}
+        <div class="community-dashboard-nav mt-2 border-t border-gray-100 pt-2 {% if active_community_tab == 'dashboard' or active_community_tab == 'payments' or active_community_tab == 'earnings' %}has-active open{% endif %}">
+          <div class="community-dashboard-row flex items-center gap-1">
+            <a href="{% url 'hub:community_detail' community.slug %}?tab=dashboard" class="community-dashboard-main flex min-w-0 flex-1 items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'dashboard' %}active{% endif %}">
+              <i class="fa-solid fa-chart-line w-5 text-center text-sm"></i><span>Dashboard</span>
+            </a>
+            {% if can_view_payments %}
+            <button type="button" class="community-dashboard-toggle flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition" data-community-dashboard-toggle aria-controls="community-dashboard-submenu" aria-expanded="{% if active_community_tab == 'dashboard' or active_community_tab == 'payments' or active_community_tab == 'earnings' %}true{% else %}false{% endif %}" aria-label="Toggle Dashboard submenu">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </button>
+            {% endif %}
+          </div>
+          {% if can_view_payments %}
+          <div id="community-dashboard-submenu" class="community-dashboard-submenu" aria-label="Dashboard submenu">
+            <a href="{% url 'hub:community_detail' community.slug %}?tab=payments" class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition {% if active_community_tab == 'payments' %}active{% endif %}"><i class="fa-solid fa-wallet w-4 text-center text-[10px]"></i>Payments</a>
+            <a href="{% url 'hub:community_detail' community.slug %}?tab=earnings" class="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition {% if active_community_tab == 'earnings' %}active{% endif %}"><i class="fa-solid fa-coins w-4 text-center text-[10px]"></i>Earnings</a>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Courses / Events / Members / Leaderboard (hidden on the Feed page) -->
+        {% if active_community_tab != "posts" %}
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=courses" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'courses' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-graduation-cap w-5 text-center text-sm"></i> Courses
+        </a>
+
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=events" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'events' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-calendar-days w-5 text-center text-sm"></i> Events
+        </a>
+
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=members" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'members' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-users w-5 text-center text-sm"></i> Members
+        </a>
+
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=leaderboard" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'leaderboard' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-trophy w-5 text-center text-sm"></i> Leaderboard
+        </a>
+        {% if is_manager %}
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=moderation" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'moderation' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-shield-halved w-5 text-center text-sm"></i> Moderation
+        </a>
+        {% endif %}
+        {% if can_edit_community %}
+        <div class="my-2 border-t border-gray-100"></div>
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=settings" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition {% if active_community_tab == 'settings' %}community-active-nav{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %}">
+          <i class="fa-solid fa-gear w-5 text-center text-sm"></i> Settings
+        </a>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    {% if active_community_tab == "posts" %}
+    <!-- Feed sections: Rooms + Links (only visible on the Feed page) -->
+    <div class="feed-sections space-y-6">
+      <!-- Rooms -->
+      <div class="feed-section-stagger">
+        <div class="rooms-header group relative flex items-center justify-between px-2">
+          <button type="button" data-collapse-toggle="rooms" class="flex items-center gap-2 text-sm font-bold text-gray-900 transition hover:text-gray-950">
+            <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 transition-transform duration-200" data-chevron-icon></i>
+            <i class="fa-solid fa-people-group text-xs text-gray-400"></i> Rooms
+          </button>
+          {% if is_manager %}
+          <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+            <button type="button" data-open-add-room class="flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700" title="Add room">
+              <i class="fa-solid fa-plus text-[10px]"></i>
+            </button>
+            <button type="button" data-open-rooms-menu class="flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700" title="More">
+              <i class="fa-solid fa-ellipsis-vertical text-[10px]"></i>
+            </button>
+          </div>
+          {% endif %}
+        </div>
+        <div class="mt-1 space-y-px" data-rooms-list>
+          {% for room in community_rooms %}
+            <div
+              class="group/room relative flex items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-[13px] font-medium {% if active_room and active_room.id == room.id %}bg-gray-100 text-gray-950{% else %}text-gray-600 hover:bg-gray-100 hover:text-gray-950{% endif %} transition"
+              data-room-id="{{ room.id }}"
+              data-room-name="{{ room.name }}"
+              data-room-type="{{ room.room_type }}"
+              data-room-layout="{{ room.layout }}"
+              data-room-description="{{ room.description|default:'' }}"
+              data-room-icon-type="{{ room.icon_type }}"
+              data-room-icon-class="{{ room.icon_class|default:'' }}"
+              data-room-icon-image="{{ room.icon_image_url|default:'' }}"
+              data-room-color="{{ room.color|default:'' }}"
+              data-room-order="{{ room.display_order }}"
+              draggable="true">
+              <a href="{% url 'hub:community_detail' community.slug %}?room={{ room.id }}" class="flex flex-1 items-center gap-2.5 min-w-0">
+                {% if room.icon_image_url %}
+                  <img src="{{ room.icon_image_url }}" alt="" class="h-6 w-6 shrink-0 rounded-full object-cover" />
+                {% else %}
+                  <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-{{ room.color|default:'gray' }}-100">
+                    <i class="{{ room.icon_class|default:'fa-solid fa-comment-dots' }} text-{{ room.color|default:'gray' }}-600 text-[10px]"></i>
+                  </div>
+                {% endif %}
+                <span class="flex-1 truncate">{{ room.name }}</span>
+              </a>
+              {% if is_manager %}
+              <div class="flex items-center gap-0.5 opacity-0 transition-opacity group-hover/room:opacity-100 relative z-10">
+                <button type="button" data-edit-room="{{ room.id }}" class="flex h-4 w-4 items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-700" title="Edit">
+                  <i class="fa-solid fa-pen text-[8px]"></i>
+                </button>
+                <button type="button" data-delete-room="{{ room.id }}" class="flex h-4 w-4 items-center justify-center rounded text-gray-400 hover:bg-red-100 hover:text-red-600" title="Delete">
+                  <i class="fa-solid fa-trash text-[8px]"></i>
+                </button>
+              </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Links -->
+      <div class="feed-section-stagger">
+        <div class="links-header group relative flex items-center justify-between px-2">
+          <button type="button" data-collapse-toggle="links" class="flex items-center gap-2 text-sm font-bold text-gray-900 transition hover:text-gray-950">
+            <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 transition-transform duration-200" data-chevron-icon></i>
+            <i class="fa-solid fa-link text-xs text-gray-400"></i> Links
+          </button>
+          {% if is_manager %}
+          <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+            <button type="button" data-open-add-link class="flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700" title="Add link">
+              <i class="fa-solid fa-plus text-[10px]"></i>
+            </button>
+            <button type="button" data-open-links-menu class="flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700" title="More">
+              <i class="fa-solid fa-ellipsis-vertical text-[10px]"></i>
+            </button>
+          </div>
+          {% endif %}
+        </div>
+        <div class="mt-2 space-y-0.5" data-links-list>
+          {% for link in community_links %}
+            <a href="{{ link.url }}" draggable="true" {% if link.open_in_new_tab %}target="_blank" rel="noopener"{% endif %} class="group/link flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950" data-link-id="{{ link.id }}">
+              {% if link.icon_image_url %}
+                <img src="{{ link.icon_image_url }}" alt="" class="h-5 w-5 rounded object-cover" />
+              {% else %}
+                <i class="{{ link.icon_class|default:'fa-solid fa-globe' }} text-gray-400 text-xs"></i>
+              {% endif %}
+              <span class="min-w-0 flex-1 truncate" title="{{ link.title|default:link.url }}">{{ link.title|default:link.url }}</span>
+              {% if link.open_in_new_tab %}
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9px] text-gray-400 opacity-0 transition-opacity group-hover/link:opacity-100"></i>
+              {% endif %}
+              {% if is_manager %}
+              <div class="flex items-center gap-0.5 opacity-0 transition-opacity group-hover/link:opacity-100">
+                <button type="button" data-edit-link="{{ link.id }}" class="flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-gray-200 hover:text-gray-700" title="Edit">
+                  <i class="fa-solid fa-pen text-[9px]"></i>
+                </button>
+                <button type="button" data-delete-link="{{ link.id }}" class="flex h-5 w-5 items-center justify-center rounded text-gray-400 hover:bg-red-100 hover:text-red-600" title="Delete">
+                  <i class="fa-solid fa-trash text-[9px]"></i>
+                </button>
+              </div>
+              {% endif %}
+            </a>
+          {% endfor %}
+          {% if is_manager %}
+            <button type="button" data-open-add-link class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-400 transition hover:bg-gray-100 hover:text-gray-600">
+              <i class="fa-solid fa-plus text-xs"></i> Add Link
+            </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Go live pinned to bottom -->
+  <div class="shrink-0 border-t border-gray-200 p-3">
+    <button type="button" class="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 hover:text-gray-950">
+      <i class="fa-solid fa-video text-xs"></i> Go live
+    </button>
+    <p class="mt-2 text-center text-[10px] text-gray-400">Powered by Union</p>
+  </div>
+</aside>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-community-dashboard-toggle]').forEach(function (toggle) {
+      toggle.addEventListener('click', function () {
+        var nav = toggle.closest('.community-dashboard-nav');
+        if (!nav) return;
+        var isOpen = nav.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+  });
+</script>

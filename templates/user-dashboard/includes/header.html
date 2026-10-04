@@ -1,0 +1,1235 @@
+{% load static hub_tags %}
+<style>
+  /* Union dark theme: layered navy surfaces, calm contrast, and violet focus. */
+  html.dark {
+    --dark-page: #0b1120;
+    --dark-surface: #111827;
+    --dark-elevated: #172238;
+    --dark-soft: #1e293b;
+    --dark-border: #2d3b52;
+    --dark-border-strong: #41516b;
+    --dark-text: #f8fafc;
+    --dark-text-secondary: #cbd5e1;
+    --dark-text-muted: #94a3b8;
+    --dark-text-subtle: #64748b;
+    --dark-accent: #8b5cf6;
+    --dark-accent-strong: #7c3aed;
+    color-scheme: dark;
+  }
+
+  html.dark,
+  html.dark body {
+    background-color: var(--dark-page) !important;
+    color: var(--dark-text) !important;
+  }
+
+  /* Surface scale. Alpha utilities such as bg-white/10 are intentionally
+     left translucent so hero artwork keeps its depth. */
+  html.dark .bg-white { background-color: var(--dark-surface) !important; }
+  html.dark .bg-gray-50,
+  html.dark .bg-slate-50 { background-color: var(--dark-page) !important; }
+  html.dark .bg-gray-100,
+  html.dark .bg-slate-100 { background-color: var(--dark-soft) !important; }
+  html.dark .bg-gray-200,
+  html.dark .bg-slate-200 { background-color: #334155 !important; }
+  html.dark .bg-gray-300,
+  html.dark .bg-slate-300 { background-color: #475569 !important; }
+  html.dark .bg-gray-800 { background-color: #334155 !important; }
+  html.dark .bg-gray-900,
+  html.dark .bg-slate-900,
+  html.dark .bg-slate-950 { background-color: #0f172a !important; }
+  html.dark .bg-gray-950 { background-color: var(--dark-accent-strong) !important; }
+  html.dark .bg-purple-500 { background-color: #8b5cf6 !important; }
+  html.dark .bg-purple-600 { background-color: #7c3aed !important; }
+  html.dark .bg-violet-50 { background-color: #1c1634 !important; }
+  html.dark .bg-violet-100 { background-color: #2b1f4b !important; }
+  html.dark .bg-violet-200 { background-color: #3d2b65 !important; }
+  html.dark .bg-indigo-50 { background-color: #172243 !important; }
+  html.dark .bg-indigo-100 { background-color: #202d55 !important; }
+  html.dark .bg-indigo-200 { background-color: #31457a !important; }
+  html.dark .bg-fuchsia-50 { background-color: #321b3d !important; }
+  html.dark .bg-fuchsia-100 { background-color: #4a2255 !important; }
+  html.dark .bg-fuchsia-200 { background-color: #643069 !important; }
+  html.dark .bg-blue-50 { background-color: #122c45 !important; }
+  html.dark .bg-blue-100 { background-color: #173d5f !important; }
+  html.dark .bg-emerald-50 { background-color: #112e2b !important; }
+  html.dark .bg-emerald-100 { background-color: #16443b !important; }
+  html.dark .bg-amber-50 { background-color: #332515 !important; }
+  html.dark .bg-amber-100 { background-color: #4a3515 !important; }
+  html.dark .bg-rose-50 { background-color: #381b25 !important; }
+
+  /* Type scale. Muted labels remain muted instead of becoming white. */
+  html.dark .text-white { color: var(--dark-text) !important; }
+  html.dark .text-gray-950,
+  html.dark .text-gray-900,
+  html.dark .text-gray-800,
+  html.dark .text-slate-950,
+  html.dark .text-slate-900,
+  html.dark .text-slate-800 { color: var(--dark-text) !important; }
+  html.dark .text-gray-700,
+  html.dark .text-slate-700 { color: var(--dark-text-secondary) !important; }
+  html.dark .text-gray-600,
+  html.dark .text-slate-600 { color: var(--dark-text-muted) !important; }
+  html.dark .text-gray-500,
+  html.dark .text-gray-400,
+  html.dark .text-slate-500,
+  html.dark .text-slate-400 { color: var(--dark-text-subtle) !important; }
+  html.dark .text-gray-300,
+  html.dark .text-slate-300 { color: #a9b7ca !important; }
+  html.dark .text-violet-700,
+  html.dark .text-violet-600,
+  html.dark .text-violet-500 { color: #c4b5fd !important; }
+  html.dark .text-indigo-700,
+  html.dark .text-indigo-600 { color: #a5b4fc !important; }
+  html.dark .text-fuchsia-700,
+  html.dark .text-fuchsia-600 { color: #f0abfc !important; }
+  html.dark .text-blue-700,
+  html.dark .text-blue-600 { color: #93c5fd !important; }
+  html.dark .text-emerald-700,
+  html.dark .text-emerald-600 { color: #6ee7b7 !important; }
+  html.dark .text-amber-700,
+  html.dark .text-amber-600,
+  html.dark .text-amber-500 { color: #fbbf24 !important; }
+  html.dark .text-rose-600,
+  html.dark .text-rose-500 { color: #fb7185 !important; }
+
+  /* Borders and rings use low-contrast cool gray, never stark white. */
+  html.dark .border,
+  html.dark .border-gray-50,
+  html.dark .border-gray-100,
+  html.dark .border-gray-200,
+  html.dark .border-slate-50,
+  html.dark .border-slate-100,
+  html.dark .border-slate-200 { border-color: var(--dark-border) !important; }
+  html.dark .border-gray-300,
+  html.dark .border-slate-300,
+  html.dark .border-gray-900,
+  html.dark .border-gray-950 { border-color: var(--dark-border-strong) !important; }
+  html.dark [class*="border-white"],
+  html.dark [class*="ring-white"] { --tw-ring-color: var(--dark-border) !important; border-color: var(--dark-border) !important; }
+  html.dark hr { border-color: var(--dark-border) !important; }
+
+  html.dark .border-purple-200,
+  html.dark .border-violet-200 { border-color: #5b3ca0 !important; }
+
+  /* Inputs and selects share the elevated surface. */
+  html.dark input,
+  html.dark select,
+  html.dark textarea {
+    background-color: var(--dark-elevated) !important;
+    color: var(--dark-text) !important;
+    border-color: var(--dark-border) !important;
+    caret-color: var(--dark-text) !important;
+  }
+  html.dark input::placeholder,
+  html.dark textarea::placeholder { color: var(--dark-text-subtle) !important; opacity: 1 !important; }
+  html.dark input:focus,
+  html.dark select:focus,
+  html.dark textarea:focus { border-color: var(--dark-accent) !important; --tw-ring-color: rgba(139,92,246,.28) !important; }
+  html.dark input[type="checkbox"],
+  html.dark input[type="radio"] { accent-color: var(--dark-accent); }
+
+  /* Preserve component backgrounds; add a polished focus treatment. */
+  html.dark button,
+  html.dark [role="button"] { color: var(--dark-text); }
+  html.dark button:focus-visible,
+  html.dark a:focus-visible,
+  html.dark input:focus-visible,
+  html.dark select:focus-visible,
+  html.dark textarea:focus-visible { outline: 2px solid var(--dark-accent) !important; outline-offset: 2px; }
+  html.dark .hover\:bg-gray-50:hover { background-color: var(--dark-soft) !important; }
+  html.dark .hover\:bg-gray-100:hover { background-color: #263449 !important; }
+  html.dark .hover\:bg-gray-200:hover { background-color: #334155 !important; }
+  html.dark .hover\:bg-gray-800:hover { background-color: #475569 !important; }
+  html.dark .hover\:bg-purple-600:hover { background-color: #8b5cf6 !important; }
+
+  /* Custom experience panels that do not use utility background classes. */
+  html.dark .discover-first-stage,
+  html.dark .communities-first-stage,
+  html.dark .studio-first-stage,
+  html.dark .messages-welcome-stage {
+    background: radial-gradient(circle at 50% 16%, rgba(139,92,246,.16), transparent 36%), linear-gradient(180deg, #0f172a 0%, #0b1120 100%) !important;
+  }
+  html.dark .messages-first-entry-card,
+  html.dark .messages-welcome-float-bubble,
+  html.dark .messages-welcome-feature {
+    background: rgba(23,34,56,.9) !important;
+    border-color: var(--dark-border) !important;
+  }
+  html.dark .messages-first-entry-avatar,
+  html.dark .messages-welcome-float-avatar,
+  html.dark .communities-avatar,
+  html.dark .studio-launch-avatar,
+  html.dark .discover-avatar { box-shadow: 0 0 0 3px var(--dark-surface), 0 8px 24px rgba(2,6,23,.3) !important; }
+  html.dark .messages-rail-button:hover { background: var(--dark-soft) !important; }
+  html.dark .messages-rail-button.is-active,
+  html.dark .message-filter.is-active,
+  html.dark .conversation-item.is-active { background: rgba(124,58,237,.22) !important; color: #c4b5fd !important; }
+  html.dark .conversation-item.is-active .conversation-avatar { box-shadow: 0 0 0 2px var(--dark-accent) !important; }
+  html.dark .messages-first-entry-only #chat-empty { background: var(--dark-page) !important; }
+  html.dark .community-quick-actions__label,
+  html.dark .community-quick-actions__icon,
+  html.dark .community-quick-actions__toggle { border-color: var(--dark-border) !important; }
+
+  /* Keep elevation visible against the navy page. */
+  html.dark .shadow,
+  html.dark .shadow-sm,
+  html.dark .shadow-md,
+  html.dark .shadow-lg,
+  html.dark .shadow-xl,
+  html.dark .shadow-2xl { box-shadow: 0 14px 36px rgba(2, 6, 23, .34) !important; }
+</style>
+
+<header id="app-header" class="fixed top-0 left-0 right-0 z-30 flex h-14 items-center border-b border-gray-200 bg-white px-4 transition-all duration-300">
+  <a href="{% url 'hub:dashboard_section' 'discover' %}" class="flex items-center gap-2 lg:hidden">
+    <img src="{% static 'images/union-logo.png' %}" alt="Union" class="h-8 w-8 rounded-lg object-contain" />
+  </a>
+
+  {% if community %}
+  <div class="relative flex items-center min-w-0 shrink-0 mr-2">
+    <button id="community-nav-btn" type="button" class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-sm font-bold text-gray-950 transition hover:bg-gray-100 max-w-[180px]">
+      <span class="truncate">{{ community.name }}</span>
+      <i class="fa-solid fa-chevron-down text-[10px] text-gray-400 shrink-0"></i>
+    </button>
+    <div id="community-nav-menu" class="absolute left-0 top-full z-50 mt-2 hidden w-56">
+      <div class="rounded-xl border border-gray-200 bg-white p-1 shadow-xl ring-1 ring-black/5">
+        <div class="flex items-center gap-3 rounded-lg px-3 py-2.5">
+          <div class="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-gray-200 text-xs font-bold text-gray-700 flex items-center justify-center">
+            {% if community.cover_image_url %}
+              <img src="{{ community.cover_image_url }}" alt="" class="h-full w-full object-cover" />
+            {% else %}
+              {{ community.name|first|upper }}
+            {% endif %}
+          </div>
+          <div class="min-w-0">
+            <p class="truncate text-sm font-bold text-gray-900">{{ community.name }}</p>
+          </div>
+        </div>
+        <div class="border-t border-gray-100"></div>
+        <a href="{% url 'hub:dashboard' %}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+          <i class="fa-solid fa-gauge w-5 text-center text-xs"></i> Dashboard
+        </a>
+        <a href="{% url 'hub:dashboard_section' 'communities' %}" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+          <i class="fa-solid fa-layer-group w-5 text-center text-xs"></i> All Communities
+        </a>
+        <div class="border-t border-gray-100"></div>
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=settings" class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+          <i class="fa-solid fa-gear w-5 text-center text-xs"></i> Community Settings
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="hidden sm:flex items-center gap-1 flex-1 justify-center px-4">
+    <a href="{% url 'hub:community_detail' community.slug %}?tab=posts"
+       class="rounded-full px-4 py-1.5 text-sm font-medium transition
+       {% if active_community_tab == 'posts' %}bg-gray-100 text-gray-950 font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %}">
+      Feed
+    </a>
+    <a href="{% url 'hub:community_detail' community.slug %}?tab=courses"
+       class="rounded-full px-4 py-1.5 text-sm font-medium transition
+       {% if active_community_tab == 'courses' %}bg-gray-100 text-gray-950 font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %}">
+      Courses
+    </a>
+    <a href="{% url 'hub:community_detail' community.slug %}?tab=events"
+       class="rounded-full px-4 py-1.5 text-sm font-medium transition
+       {% if active_community_tab == 'events' %}bg-gray-100 text-gray-950 font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %}">
+      Events
+    </a>
+    <a href="{% url 'hub:community_detail' community.slug %}?tab=members"
+       class="rounded-full px-4 py-1.5 text-sm font-medium transition
+       {% if active_community_tab == 'members' %}bg-gray-100 text-gray-950 font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %}">
+      Members
+    </a>
+    <a href="{% url 'hub:community_detail' community.slug %}?tab=leaderboard"
+       class="rounded-full px-4 py-1.5 text-sm font-medium transition
+       {% if active_community_tab == 'leaderboard' %}bg-gray-100 text-gray-950 font-semibold{% else %}text-gray-500 hover:text-gray-900{% endif %}">
+      Leaderboard
+    </a>
+  </nav>
+  {% else %}
+  <div class="flex min-w-0 flex-1 items-center">
+    {% if active_page == "settings" %}
+      <div class="flex min-w-0 items-center gap-2.5">
+        <span class="text-sm font-black tracking-tight text-gray-950">Settings</span>
+        <i class="fa-solid fa-chevron-right text-[9px] text-gray-300"></i>
+        <span class="truncate text-sm font-semibold text-gray-500">{% if settings_tab == "account" %}Account{% elif settings_tab == "personalization" %}Personalization{% elif settings_tab == "payments" %}Payments{% elif settings_tab == "subscriptions" %}Subscription{% endif %}</span>
+      </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="flex items-center gap-1 shrink-0">
+    {% if not active_subscription or active_subscription.plan.slug == 'basic' %}
+      <a href="{% url 'hub:dashboard_section' 'subscriptions' %}" class="mr-1 sm:mr-2 inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-blue-700">
+        <i class="fa-solid fa-arrow-up text-[10px]"></i> <span class="hidden sm:inline">Upgrade</span>
+      </a>
+    {% endif %}
+
+    <!-- Friends -->
+    <div class="relative">
+      <button id="friends-btn" type="button" class="flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Friends">
+        <i class="fa-solid fa-user-group text-sm"></i>
+      </button>
+      <div id="friends-dropdown" class="absolute right-0 top-full z-50 mt-2 hidden" style="width:420px;">
+        <div class="flex flex-col rounded-2xl border border-gray-200 bg-white shadow-2xl ring-1 ring-black/5" style="height:520px;">
+          <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+            <h3 class="text-base font-bold text-gray-950">Friends</h3>
+            <button type="button" id="friends-close" class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700">
+              <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-0 border-b border-gray-100 px-5">
+            <button type="button" data-friend-tab="discover" class="friend-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-950 transition">
+              Discover Friends
+              <span class="absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-gray-950"></span>
+            </button>
+            <button type="button" data-friend-tab="myfriends" class="friend-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-400 transition hover:text-gray-700">
+              My Friends
+              <span id="myfriends-count" class="ml-1 rounded-full bg-gray-100 px-1.5 py-px text-[10px] font-bold text-gray-500">{{ user_following|length }}</span>
+            </button>
+            <button type="button" data-friend-tab="requests" class="friend-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-400 transition hover:text-gray-700">
+              Requests
+              {% with received_count=friend_requests_received|length sent_count=friend_requests_sent|length %}
+              {% with req_count=received_count|add:sent_count %}
+              {% if req_count > 0 %}
+              <span id="requests-count" class="ml-1 rounded-full bg-blue-100 px-1.5 py-px text-[10px] font-bold text-blue-600">{{ req_count }}</span>
+              {% endif %}
+              {% endwith %}
+              {% endwith %}
+            </button>
+          </div>
+
+          <div id="friend-tab-discover" class="flex flex-1 flex-col min-h-0">
+            <div class="px-4 pt-3 pb-2">
+              <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 transition focus-within:border-gray-400">
+                <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+                <input type="text" id="friend-search-discover" placeholder="Search by name, username, skills..." class="flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400" />
+              </div>
+            </div>
+
+            <div id="discover-suggestions" class="flex-1 overflow-y-auto px-4 pb-3 hidden">
+              <h4 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-2">Suggested</h4>
+              <div id="discover-list" class="space-y-1">
+                {% if suggested_users %}
+                  {% for sug_user in suggested_users %}
+                  <div class="friend-card flex items-center gap-2.5 rounded-lg px-2 py-2 transition hover:bg-gray-50" data-name="{{ sug_user.username }} {{ sug_user.first_name }} {{ sug_user.last_name }}">
+                    <a href="{% url 'hub:user_profile' username=sug_user.username %}" class="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                      {% if sug_user.profile.profile_image_url %}<img src="{{ sug_user.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}<span class="flex h-full w-full items-center justify-center">{{ sug_user.username|first|upper }}</span>{% endif %}
+                    </a>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center gap-1.5">
+                        <p class="truncate text-sm font-semibold text-gray-900">{{ sug_user.username }}</p>
+                        {% if sug_user.first_name %}<span class="text-xs text-gray-400">&middot; {{ sug_user.first_name }}</span>{% endif %}
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <button type="button" data-friend-action="send" data-friend-userid="{{ sug_user.id }}" class="rounded-lg bg-gray-900 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-gray-800"><i class="fa-solid fa-plus mr-1 text-[9px]"></i>Add</button>
+                      <button type="button" data-friend-action="cancel" data-friend-userid="{{ sug_user.id }}" class="rounded-lg border border-gray-200 px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 transition hover:bg-gray-100 hidden">Cancel</button>
+                    </div>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                <div class="py-9 text-center">
+                  <p class="text-sm font-semibold text-gray-900">No suggestions available</p>
+                  <p class="mt-1 text-xs text-gray-400">Start connecting with community members.</p>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div id="friend-tab-requests" class="hidden flex-1 flex-col min-h-0">
+            <div class="flex-1 overflow-y-auto px-4 pb-3">
+              {% if friend_requests_received %}
+              <div class="py-3">
+                <h4 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Incoming Requests <span class="ml-1 rounded-full bg-blue-100 px-1.5 py-px text-[10px] font-bold text-blue-600">{{ friend_requests_received|length }}</span></h4>
+                <div class="mt-2 space-y-1">
+                  {% for req_user in friend_requests_received %}
+                  <div class="flex items-center gap-2.5 rounded-lg px-2 py-2 transition hover:bg-gray-50">
+                    <a href="{% url 'hub:user_profile' username=req_user.username %}" class="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                      {% if req_user.profile.profile_image_url %}<img src="{{ req_user.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}<span class="flex h-full w-full items-center justify-center">{{ req_user.username|first|upper }}</span>{% endif %}
+                    </a>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-semibold text-gray-900">{{ req_user.username }}</p>
+                      {% if req_user.first_name %}<p class="text-xs text-gray-400">{{ req_user.first_name }}</p>{% endif %}
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <button type="button" data-friend-action="accept" data-friend-userid="{{ req_user.id }}" class="rounded-lg bg-gray-900 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-gray-800">Accept</button>
+                      <button type="button" data-friend-action="decline" data-friend-userid="{{ req_user.id }}" class="rounded-lg border border-gray-200 px-3 py-1.5 text-[11px] font-semibold text-gray-600 transition hover:bg-gray-100">Decline</button>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+
+              {% if friend_requests_sent %}
+              <div class="py-3 border-t border-gray-50">
+                <h4 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">Sent Requests <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-px text-[10px] font-bold text-amber-600">{{ friend_requests_sent|length }}</span></h4>
+                <div class="mt-2 space-y-1">
+                  {% for sent_user in friend_requests_sent %}
+                  <div class="flex items-center gap-2.5 rounded-lg px-2 py-2">
+                    <a href="{% url 'hub:user_profile' username=sent_user.username %}" class="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                      {% if sent_user.profile.profile_image_url %}<img src="{{ sent_user.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}<span class="flex h-full w-full items-center justify-center">{{ sent_user.username|first|upper }}</span>{% endif %}
+                    </a>
+                    <div class="min-w-0 flex-1">
+                      <p class="text-sm font-semibold text-gray-900">{{ sent_user.username }}</p>
+                      <p class="text-[10px] text-amber-500 font-medium">Pending &middot; Cancel request</p>
+                    </div>
+                    <button type="button" data-friend-action="cancel" data-friend-userid="{{ sent_user.id }}" class="rounded-lg border border-gray-200 px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 transition hover:bg-gray-100">Cancel</button>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+
+              {% if not friend_requests_received and not friend_requests_sent %}
+              <div class="py-9 text-center">
+                <p class="text-sm font-semibold text-gray-900">No requests</p>
+                <p class="mt-1 text-xs text-gray-400">Friend requests will appear here.</p>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div id="friend-tab-myfriends" class="hidden flex-1 flex-col min-h-0">
+            <div class="px-4 pt-3 pb-2">
+              <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 transition focus-within:border-gray-400">
+                <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+                <input type="text" id="friend-search-myfriends" placeholder="Search friends..." class="flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400" />
+              </div>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-3">
+              <h4 class="text-[11px] font-bold text-gray-500 uppercase tracking-wide mb-2">All Friends</h4>
+              <div id="myfriends-list" class="space-y-1">
+                {% if user_following %}
+                  {% for friend in user_following %}
+                  <div class="friend-card flex items-center gap-2.5 rounded-lg px-2 py-2 transition hover:bg-gray-50" data-name="{{ friend.username }} {{ friend.first_name }} {{ friend.last_name }}">
+                    <div class="relative shrink-0">
+                      <a href="{% url 'hub:user_profile' username=friend.username %}" class="h-9 w-9 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700 block">
+                        {% if friend.profile.profile_image_url %}<img src="{{ friend.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}<span class="flex h-full w-full items-center justify-center">{{ friend.username|first|upper }}</span>{% endif %}
+                      </a>
+                      <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-500"></span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center gap-1.5">
+                        <p class="truncate text-sm font-semibold text-gray-900">{{ friend.username }}</p>
+                        <span class="text-[10px] text-green-500 font-medium">Online</span>
+                      </div>
+                      {% if friend.first_name %}<p class="text-xs text-gray-400">{{ friend.first_name }}{% if friend.profile.bio %} &middot; {{ friend.profile.bio|truncatechars:30 }}{% endif %}</p>{% endif %}
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <a href="{% url 'hub:dashboard_section' 'messages' %}?user_q={{ friend.username }}" class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700" title="Message"><i class="fa-regular fa-comment text-xs"></i></a>
+                      <a href="{% url 'hub:user_profile' username=friend.username %}" class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700" title="View profile"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>
+                      <button type="button" data-friend-action="remove" data-friend-userid="{{ friend.id }}" class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-red-100 hover:text-red-600" title="Remove friend"><i class="fa-solid fa-user-minus text-xs"></i></button>
+                    </div>
+                  </div>
+                  {% endfor %}
+                {% else %}
+                <div class="py-9 text-center">
+                  <p class="text-sm font-semibold text-gray-900">No friends yet</p>
+                  <p class="mt-1 text-xs text-gray-400">Start connecting with community members.</p>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="relative">
+      <button id="bell-btn" type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" aria-label="Notifications">
+        <i class="fa-solid fa-bell text-base"></i>
+        {% if notification_count > 0 %}
+          <span data-notification-count="true" class="absolute -right-0.5 -top-0.5 flex min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 py-0.5 text-[9px] font-bold leading-none text-white ring-2 ring-white">{{ notification_count }}</span>
+        {% endif %}
+      </button>
+      <div id="notif-dropdown" class="absolute right-0 top-full z-50 mt-2 hidden" style="width:420px;">
+        <div class="flex flex-col rounded-2xl border border-gray-200 bg-white shadow-2xl ring-1 ring-black/5" style="height:520px;">
+          <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+            <div class="flex items-center gap-3">
+              <h3 class="text-base font-bold text-gray-950">Notifications</h3>
+              {% if notification_count > 0 %}
+                <span id="notif-new-count" class="rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold text-red-600">{{ notification_count }} new</span>
+              {% endif %}
+            </div>
+            <div class="flex items-center gap-1">
+              <button type="button" id="notif-mark-all" class="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Mark all as read">
+                <i class="fa-solid fa-check-double mr-1 text-[10px]"></i> Mark all read
+              </button>
+              <a href="{% url 'hub:dashboard_section' 'notifications' %}" class="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Open notifications page">
+                <i class="fa-solid fa-up-right-from-square text-[10px]"></i>
+              </a>
+              <a href="{% url 'hub:dashboard_section' 'settings' %}?tab=personalization#notification-preferences" class="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Notification settings">
+                <i class="fa-solid fa-gear text-[10px]"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-0 border-b border-gray-100 px-5">
+            <button type="button" data-notif-tab="inbox" class="notif-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-950 transition">
+              Inbox
+              <span class="notif-tab-indicator absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-gray-950"></span>
+            </button>
+            <button type="button" data-notif-tab="mentions" class="notif-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-400 transition hover:text-gray-700">
+              Mentions
+            </button>
+            <button type="button" data-notif-tab="following" class="notif-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-400 transition hover:text-gray-700">
+              Following
+            </button>
+            <button type="button" data-notif-tab="all" class="notif-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-400 transition hover:text-gray-700">
+              All
+            </button>
+            <button type="button" data-notif-tab="archived" class="notif-tab relative px-3 py-2.5 text-[12px] font-semibold text-gray-400 transition hover:text-gray-700">
+              Archived
+            </button>
+          </div>
+
+          <div id="notif-list" class="flex-1 overflow-y-auto">
+            {% if notifications %}
+              {% for notif in notifications %}
+                <div class="notif-item group flex items-start gap-3 px-4 py-3 transition hover:bg-gray-50 {% if not notif.is_read and not notif.is_archived %}bg-gray-50{% endif %}" data-notif-id="{{ notif.id }}" data-notif-type="{% if notif.notification_type %}{{ notif.notification_type }}{% else %}general{% endif %}" data-notif-read="{% if not notif.is_read %}true{% else %}false{% endif %}" data-notif-archived="{% if notif.is_archived %}true{% else %}false{% endif %}">
+                  <div class="relative shrink-0">
+                    {% if notif.actor.profile.profile_image_url %}
+                      <img src="{{ notif.actor.profile.profile_image_url }}" alt="" class="h-9 w-9 rounded-full object-cover" />
+                    {% elif notif.actor %}
+                      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold text-gray-600">{{ notif.actor.username|first|upper }}</div>
+                    {% else %}
+                      <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-400"><i class="fa-solid fa-bell text-xs"></i></div>
+                    {% endif %}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="text-[13px] leading-[18px] text-gray-600">
+                      <span class="font-semibold text-gray-900">{{ notif.title }}</span>
+                      {% if notif.actor %}<span class="font-semibold text-gray-900"> · {{ notif.actor.username }}</span>{% endif %}
+                      <span class="block">{{ notif.body|truncatechars:100 }}</span>
+                    </p>
+                    <p class="mt-1 text-[11px] text-gray-400">{{ notif.created_at|timesince }} ago</p>
+                  </div>
+                  <div class="notif-meta flex shrink-0 items-center gap-1.5">
+                    {% if not notif.is_read %}
+                      <span class="notif-unread-dot h-2 w-2 shrink-0 rounded-full bg-blue-500"></span>
+                    {% endif %}
+                    <div class="notif-actions flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                      {% if notif.is_read %}
+                        <button type="button" data-notif-action="unread" data-notif-pk="{{ notif.id }}" class="notif-read-action flex h-6 w-6 items-center justify-center rounded text-gray-400 transition hover:bg-gray-200 hover:text-gray-700" title="Mark as unread"><i class="fa-regular fa-envelope text-[10px]"></i></button>
+                      {% else %}
+                        <button type="button" data-notif-action="read" data-notif-pk="{{ notif.id }}" class="notif-read-action flex h-6 w-6 items-center justify-center rounded text-gray-400 transition hover:bg-gray-200 hover:text-gray-700" title="Mark as read"><i class="fa-solid fa-envelope-open text-[10px]"></i></button>
+                      {% endif %}
+                      <button type="button" data-notif-action="archive" data-notif-pk="{{ notif.id }}" class="flex h-6 w-6 items-center justify-center rounded text-gray-400 transition hover:bg-gray-200 hover:text-gray-700" title="Archive"><i class="fa-solid fa-box-archive text-[10px]"></i></button>
+                      <button type="button" data-notif-action="delete" data-notif-pk="{{ notif.id }}" class="flex h-6 w-6 items-center justify-center rounded text-gray-400 transition hover:bg-red-100 hover:text-red-600" title="Delete"><i class="fa-solid fa-xmark text-[11px]"></i></button>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div id="notif-empty" class="flex flex-1 flex-col items-center justify-center px-5 py-16 text-center">
+                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
+                  <i class="fa-regular fa-bell text-xl text-gray-300"></i>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-gray-900">No notifications</p>
+                <p class="mt-1 text-[13px] text-gray-400">Notifications will show up here.</p>
+              </div>
+              {% endif %}
+            <div id="notif-filter-empty" class="hidden px-5 py-16 text-center text-sm text-gray-400">No notifications in this view.</div>
+          </div>
+
+          <div class="border-t border-gray-100 px-5 py-3">
+            <a href="{% url 'hub:dashboard_section' 'notifications' %}" class="flex items-center justify-center gap-2 rounded-xl bg-gray-50 py-2.5 text-xs font-bold text-gray-700 transition hover:bg-gray-100 hover:text-gray-950">
+              View all notifications <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Direct Messages -->
+    <div class="relative">
+      <button id="messages-btn" type="button" class="relative flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Messages">
+        <i class="fa-regular fa-comment text-sm"></i>
+        {% if unread_message_count > 0 %}
+          <span class="absolute -right-0.5 -top-0.5 flex min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 py-0.5 text-[9px] font-bold leading-none text-white ring-2 ring-white">{{ unread_message_count }}</span>
+        {% endif %}
+      </button>
+      <div id="messages-dropdown" class="absolute right-0 top-full z-50 mt-2 hidden" style="width:420px;">
+        <div class="flex flex-col rounded-2xl border border-gray-200 bg-white shadow-2xl ring-1 ring-black/5" style="height:520px;">
+
+          <!-- Friend List View -->
+          <div id="dm-friend-view" class="flex flex-col h-full">
+            <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+              <h3 class="text-base font-bold text-gray-950">Direct Messages</h3>
+            </div>
+            <div class="px-4 pt-3 pb-2">
+              <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 transition focus-within:border-gray-400">
+                <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+                <input type="text" id="dm-search" placeholder="Search friends to chat..." class="flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-400" />
+              </div>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-3">
+              <div id="dm-list" class="space-y-1">
+                {% if user_following %}
+                  {% for friend in user_following %}
+                  <button type="button" class="friend-card flex w-full items-center gap-2.5 rounded-lg px-2 py-2 transition hover:bg-gray-50 text-left" data-name="{{ friend.username }} {{ friend.first_name }} {{ friend.last_name }}" data-dm-userid="{{ friend.id }}" data-dm-username="{{ friend.username }}" data-dm-avatar="{% if friend.profile.profile_image_url %}{{ friend.profile.profile_image_url }}{% endif %}" data-dm-displayname="{{ friend.first_name|default:friend.username }}">
+                    <div class="relative shrink-0">
+                      <div class="h-9 w-9 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700 flex items-center justify-center">
+                        {% if friend.profile.profile_image_url %}<img src="{{ friend.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ friend.username|first|upper }}{% endif %}
+                      </div>
+                      <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-500"></span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate text-sm font-semibold text-gray-900">{{ friend.username }}</p>
+                      {% with last_msg=dm_previews|get:friend.id %}
+                        {% if last_msg %}
+                          <p class="truncate text-xs text-gray-400">{{ last_msg }}</p>
+                        {% elif friend.first_name %}
+                          <p class="text-xs text-gray-400">{{ friend.first_name }}</p>
+                        {% endif %}
+                      {% endwith %}
+                    </div>
+                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400">
+                      <i class="fa-regular fa-comment text-xs"></i>
+                    </div>
+                  </button>
+                  {% endfor %}
+                {% else %}
+                  <div class="px-4 py-9 text-center">
+                    <p class="text-sm font-bold text-gray-950">No messages yet</p>
+                    <p class="mt-1 text-xs text-gray-500">Start a conversation with someone.</p>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat View (hidden by default) -->
+          <div id="dm-chat-view" class="hidden flex flex-col h-full">
+            <div class="flex items-center gap-3 border-b border-gray-100 px-4 py-3">
+              <button id="dm-back-btn" type="button" class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+              </button>
+              <div class="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700 flex items-center justify-center">
+                <img id="dm-chat-avatar" src="" alt="" class="h-full w-full object-cover hidden" />
+                <span id="dm-chat-initial"></span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p id="dm-chat-name" class="truncate text-sm font-bold text-gray-900"></p>
+              </div>
+            </div>
+            <div id="dm-messages" class="flex-1 overflow-y-auto px-4 py-3 space-y-3"></div>
+            <div class="border-t border-gray-100 px-4 py-3">
+              <div class="flex items-center gap-2">
+                <input type="text" id="dm-input" placeholder="Type a message..." class="flex-1 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-900 outline-none transition focus:border-gray-400 placeholder:text-gray-400" />
+                <button id="dm-send-btn" type="button" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-gray-800">
+                  <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer - visible only in friend list view -->
+          <a id="dm-footer-link" href="{% url 'hub:dashboard_section' 'messages' %}" class="flex items-center justify-center gap-2 border-t border-gray-100 px-5 py-3 text-sm font-semibold text-gray-500 transition hover:bg-gray-50 hover:text-gray-900">
+            View all messages <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookmarks -->
+    <div class="relative">
+      <button id="bookmark-btn" type="button" class="flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Bookmarks">
+        <i class="fa-regular fa-bookmark text-sm"></i>
+      </button>
+      <div id="bookmarks-dropdown" class="hidden fixed sm:absolute right-0 top-full z-50 mt-2 w-[420px] max-h-[520px]">
+        <div class="flex h-[520px] flex-col rounded-xl border border-gray-200 bg-white shadow-xl ring-1 ring-black/5">
+          <div class="flex items-center justify-between border-b border-gray-100 px-4 py-3">
+            <h3 class="text-sm font-bold text-gray-950">Saved Posts</h3>
+            <button id="bookmarks-close" type="button" class="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-600">
+              <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+          </div>
+          <div class="flex-1 overflow-y-auto">
+            {% if bookmarked_posts %}
+              {% for bm in bookmarked_posts %}
+              <div class="flex items-start gap-3 border-b border-gray-50 px-4 py-3 transition hover:bg-gray-50">
+                <a href="{% url 'hub:community_detail' bm.post.community.slug %}?tab=posts" class="flex items-start gap-3 min-w-0 flex-1">
+                  <div class="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
+                    {% if bm.post.attachment_is_image and bm.post.attachment_display_url %}
+                      <img src="{{ bm.post.attachment_display_url }}" alt="" class="h-full w-full object-cover" />
+                    {% else %}
+                      <i class="fa-regular fa-file-lines text-sm text-gray-400"></i>
+                    {% endif %}
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-bold text-gray-900">{{ bm.post.title|default:bm.post.body|truncatewords:8 }}</p>
+                    <p class="mt-0.5 text-xs text-gray-400">{{ bm.post.author_user.username|default:bm.post.display_author }} · {{ bm.post.community.name }}</p>
+                  </div>
+                </a>
+                <form method="post" action="{% url 'hub:dashboard' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="bookmark_post">
+                  <input type="hidden" name="post_id" value="{{ bm.post.id }}">
+                  <button type="submit" class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-amber-500 transition hover:bg-amber-50">
+                    <i class="fa-solid fa-bookmark text-xs"></i>
+                  </button>
+                </form>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-gray-400">
+                  <i class="fa-regular fa-bookmark text-lg"></i>
+                </div>
+                <p class="mt-3 text-sm font-bold text-gray-950">No saved posts yet</p>
+                <p class="mt-1 text-xs text-gray-500">Bookmark posts from communities to find them later.</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button id="dark-toggle" type="button" class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" aria-label="Toggle dark mode">
+      <i class="fa-solid fa-moon text-sm"></i>
+    </button>
+  </div>
+</header>
+
+{% include "user-dashboard/includes/flash_messages.html" %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  function getCSRFToken() {
+    var cookieMatch = document.cookie.match(/(^|;)\s*csrftoken=([^;]+)/);
+    if (cookieMatch) return cookieMatch[2];
+    var tokenInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    return tokenInput ? tokenInput.value : '';
+  }
+
+  function closeAllDropdowns(except) {
+    var ids = ["notif-dropdown", "friends-dropdown", "messages-dropdown", "community-nav-menu", "bookmarks-dropdown"];
+    ids.forEach(function(id) {
+      if (except && id.indexOf(except) !== -1) return;
+      var el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    });
+  }
+
+  // Community nav dropdown
+  var communityNavBtn = document.getElementById("community-nav-btn");
+  var communityNavMenu = document.getElementById("community-nav-menu");
+  if (communityNavBtn && communityNavMenu) {
+    communityNavBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      closeAllDropdowns("community-nav");
+      communityNavMenu.classList.toggle("hidden");
+    });
+  }
+
+  // Bookmarks
+  var bookmarkBtn = document.getElementById("bookmark-btn");
+  var bookmarkDropdown = document.getElementById("bookmarks-dropdown");
+  var bookmarkClose = document.getElementById("bookmarks-close");
+  if (bookmarkBtn && bookmarkDropdown) {
+    bookmarkBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      closeAllDropdowns("bookmarks");
+      bookmarkDropdown.classList.toggle("hidden");
+    });
+    if (bookmarkClose) {
+      bookmarkClose.addEventListener('click', function() { bookmarkDropdown.classList.add('hidden'); });
+    }
+  }
+
+  // Friends
+  var friendsBtn = document.getElementById("friends-btn");
+  var friendsDropdown = document.getElementById("friends-dropdown");
+  var friendsClose = document.getElementById("friends-close");
+  if (friendsBtn && friendsDropdown) {
+    friendsBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      closeAllDropdowns("friends");
+      friendsDropdown.classList.toggle("hidden");
+    });
+    if (friendsClose) {
+      friendsClose.addEventListener('click', function() { friendsDropdown.classList.add('hidden'); });
+    }
+  }
+
+  // Friends tabs
+  var friendTabs = document.querySelectorAll('.friend-tab');
+  var discoverTab = document.getElementById('friend-tab-discover');
+  var myfriendsTab = document.getElementById('friend-tab-myfriends');
+  var requestsTab = document.getElementById('friend-tab-requests');
+  friendTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      friendTabs.forEach(function(t) {
+        t.classList.remove('text-gray-950');
+        t.classList.add('text-gray-400');
+        var ind = t.querySelector('span:not([id])');
+        if (ind && !t.querySelector('#myfriends-count') && !t.querySelector('#requests-count')) {
+          var underlines = t.querySelectorAll('span.absolute');
+          underlines.forEach(function(u) { if (!u.id) u.remove(); });
+        } else if (ind) {
+          ind.remove();
+        }
+      });
+      tab.classList.add('text-gray-950');
+      tab.classList.remove('text-gray-400');
+      var indicator = document.createElement('span');
+      indicator.className = 'absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-gray-950';
+      tab.appendChild(indicator);
+      var tabName = tab.getAttribute('data-friend-tab');
+      discoverTab.classList.add('hidden');
+      myfriendsTab.classList.add('hidden');
+      if (requestsTab) requestsTab.classList.add('hidden');
+      if (tabName === 'discover') {
+        discoverTab.classList.remove('hidden');
+      } else if (tabName === 'requests') {
+        if (requestsTab) requestsTab.classList.remove('hidden');
+      } else {
+        myfriendsTab.classList.remove('hidden');
+      }
+    });
+  });
+
+  // Friend search
+  var discoverSearch = document.getElementById('friend-search-discover');
+  var myfriendsSearch = document.getElementById('friend-search-myfriends');
+  var dmSearch = document.getElementById('dm-search');
+  function filterFriends(input, listId, showContainer) {
+    if (!input) return;
+    input.addEventListener('input', function() {
+      var q = input.value.toLowerCase().trim();
+      var cards = document.querySelectorAll(listId + ' .friend-card');
+      var visible = 0;
+      cards.forEach(function(card) {
+        var name = (card.getAttribute('data-name') || '').toLowerCase();
+        var match = name.indexOf(q) !== -1;
+        card.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      if (showContainer && q.length > 0) {
+        showContainer.classList.remove('hidden');
+      } else if (showContainer) {
+        showContainer.classList.add('hidden');
+      }
+    });
+  }
+  filterFriends(discoverSearch, '#discover-list', document.getElementById('discover-suggestions'));
+  filterFriends(myfriendsSearch, '#myfriends-list', null);
+  filterFriends(dmSearch, '#dm-list', null);
+
+  // Friend AJAX actions
+  if (friendsDropdown) {
+    friendsDropdown.addEventListener('click', function(event) {
+      var btn = event.target.closest('[data-friend-action]');
+      if (!btn) return;
+      event.stopPropagation();
+      var action = btn.getAttribute('data-friend-action');
+      var targetId = btn.getAttribute('data-friend-userid');
+      var item = btn.closest('[class*="flex items-center gap-2.5 rounded-lg"]');
+      if (action === 'send') {
+        fetch('/api/friends/action/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken()},
+          body: JSON.stringify({action: 'send', target_id: targetId})
+        }).then(function(r) { return r.json(); }).then(function(d) {
+          if (d.ok) {
+            btn.classList.add('hidden');
+            var cancelBtn = item.querySelector('[data-friend-action="cancel"]');
+            if (cancelBtn) cancelBtn.classList.remove('hidden');
+          } else {
+            btn.textContent = d.error || 'Error';
+            setTimeout(function() { btn.textContent = 'Add'; }, 2000);
+          }
+        }).catch(function(e) { console.error('Send friend request failed:', e); });
+      } else if (action === 'accept') {
+        fetch('/api/friends/action/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken()},
+          body: JSON.stringify({action: 'accept', target_id: targetId})
+        }).then(function(r) { return r.json(); }).then(function(d) {
+          if (d.ok && item) {
+            item.style.transition = 'opacity 0.2s ease';
+            item.style.opacity = '0';
+            setTimeout(function() { item.remove(); }, 200);
+          }
+        });
+      } else if (action === 'decline') {
+        fetch('/api/friends/action/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken()},
+          body: JSON.stringify({action: 'decline', target_id: targetId})
+        }).then(function(r) { return r.json(); }).then(function(d) {
+          if (d.ok && item) {
+            item.style.transition = 'opacity 0.2s ease';
+            item.style.opacity = '0';
+            setTimeout(function() { item.remove(); }, 200);
+          }
+        });
+      } else if (action === 'cancel') {
+        fetch('/api/friends/action/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken()},
+          body: JSON.stringify({action: 'cancel', target_id: targetId})
+        }).then(function(r) { return r.json(); }).then(function(d) {
+          if (d.ok) {
+            btn.classList.add('hidden');
+            var addBtn = item.querySelector('[data-friend-action="send"]');
+            if (addBtn) addBtn.classList.remove('hidden');
+          }
+        });
+      } else if (action === 'remove') {
+        fetch('/api/friends/action/', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken()},
+          body: JSON.stringify({action: 'remove', target_id: targetId})
+        }).then(function(r) { return r.json(); }).then(function(d) {
+          if (d.ok && item) {
+            item.style.transition = 'opacity 0.2s ease, max-height 0.2s ease, margin 0.2s ease, padding 0.2s ease';
+            item.style.opacity = '0';
+            setTimeout(function() { item.remove(); }, 200);
+          }
+        });
+      }
+    });
+  }
+
+  // Notifications
+  var bellBtn = document.getElementById("bell-btn");
+  var notifDropdown = document.getElementById("notif-dropdown");
+  if (bellBtn && notifDropdown) {
+    bellBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      closeAllDropdowns("notif");
+      notifDropdown.classList.toggle("hidden");
+    });
+  }
+
+  // Notifications
+  var activeNotifTab = "inbox";
+  var notifTabs = document.querySelectorAll("[data-notif-tab]");
+  var notifList = document.getElementById("notif-list");
+
+  function setNotificationCount(count) {
+    count = Math.max(0, Number(count) || 0);
+    if (bellBtn) {
+      var badge = bellBtn.querySelector("[data-notification-count]");
+      if (count === 0) {
+        if (badge) badge.remove();
+      } else {
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.setAttribute("data-notification-count", "true");
+          badge.className = "absolute -right-0.5 -top-0.5 flex min-w-[18px] items-center justify-center rounded-full bg-red-500 px-1 py-0.5 text-[9px] font-bold leading-none text-white ring-2 ring-white";
+          bellBtn.appendChild(badge);
+        }
+        badge.textContent = count;
+      }
+    }
+
+    var newCount = document.getElementById("notif-new-count");
+    if (count === 0) {
+      if (newCount) newCount.remove();
+    } else {
+      if (!newCount && notifDropdown) {
+        var title = notifDropdown.querySelector("h3");
+        if (title && title.parentElement) {
+          newCount = document.createElement("span");
+          newCount.id = "notif-new-count";
+          newCount.className = "rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold text-red-600";
+          title.parentElement.appendChild(newCount);
+        }
+      }
+      if (newCount) newCount.textContent = count + " new";
+    }
+  }
+
+  function refreshNotificationCount() {
+    if (!notifList) return;
+    var unread = notifList.querySelectorAll('.notif-item[data-notif-read="true"][data-notif-archived="false"]').length;
+    setNotificationCount(unread);
+  }
+
+  function setNotificationReadState(item, isRead) {
+    if (!item) return;
+    item.setAttribute("data-notif-read", isRead ? "false" : "true");
+    item.classList.toggle("bg-gray-50", !isRead && item.getAttribute("data-notif-archived") !== "true");
+
+    var meta = item.querySelector(".notif-meta");
+    var dot = item.querySelector(".notif-unread-dot");
+    var actions = item.querySelector(".notif-actions");
+    if (!isRead && !dot && meta && actions) {
+      dot = document.createElement("span");
+      dot.className = "notif-unread-dot h-2 w-2 shrink-0 rounded-full bg-blue-500";
+      meta.insertBefore(dot, actions);
+    } else if (isRead && dot) {
+      dot.remove();
+    }
+
+    var readAction = item.querySelector(".notif-read-action");
+    if (readAction) {
+      readAction.setAttribute("data-notif-action", isRead ? "unread" : "read");
+      readAction.setAttribute("title", isRead ? "Mark as unread" : "Mark as read");
+      readAction.innerHTML = isRead
+        ? '<i class="fa-regular fa-envelope text-[10px]"></i>'
+        : '<i class="fa-solid fa-envelope-open text-[10px]"></i>';
+    }
+  }
+
+  function applyNotificationTab() {
+    if (!notifList) return;
+    var visible = 0;
+    notifList.querySelectorAll(".notif-item").forEach(function(item) {
+      var archived = item.getAttribute("data-notif-archived") === "true";
+      var type = item.getAttribute("data-notif-type") || "general";
+      var show = activeNotifTab === "archived"
+        ? archived
+        : !archived && (activeNotifTab === "all" || activeNotifTab === "inbox" || (activeNotifTab === "mentions" && type === "mention") || (activeNotifTab === "following" && type === "follow"));
+      item.classList.toggle("hidden", !show);
+      if (show) visible += 1;
+    });
+    var filterEmpty = document.getElementById("notif-filter-empty");
+    if (filterEmpty) filterEmpty.classList.toggle("hidden", visible !== 0 || notifList.querySelectorAll(".notif-item").length === 0);
+  }
+
+  notifTabs.forEach(function(tab) {
+    tab.addEventListener("click", function() {
+      activeNotifTab = tab.getAttribute("data-notif-tab") || "inbox";
+      notifTabs.forEach(function(other) {
+        other.classList.toggle("text-gray-950", other === tab);
+        other.classList.toggle("text-gray-400", other !== tab);
+        other.classList.toggle("hover:text-gray-700", other !== tab);
+        other.querySelectorAll(".notif-tab-indicator").forEach(function(indicator) { indicator.remove(); });
+      });
+      var indicator = document.createElement("span");
+      indicator.className = "notif-tab-indicator absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-gray-950";
+      tab.appendChild(indicator);
+      applyNotificationTab();
+    });
+  });
+
+  if (notifList) {
+    applyNotificationTab();
+    notifList.addEventListener("click", function(event) {
+      var btn = event.target.closest("[data-notif-action]");
+      if (!btn) return;
+      event.stopPropagation();
+      var action = btn.getAttribute("data-notif-action");
+      var pk = btn.getAttribute("data-notif-pk");
+      var item = btn.closest(".notif-item");
+      fetch("/api/notifications/action/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "X-CSRFToken": getCSRFToken()},
+        body: JSON.stringify({action: action, pk: pk})
+      }).then(function(response) { return response.json(); }).then(function(data) {
+        if (!data.ok || !item) return;
+        if (action === "read" || action === "unread") {
+          setNotificationReadState(item, action === "read");
+          refreshNotificationCount();
+        } else if (action === "archive") {
+          item.setAttribute("data-notif-archived", "true");
+          item.classList.remove("bg-gray-50");
+          applyNotificationTab();
+          refreshNotificationCount();
+        } else if (action === "delete") {
+          item.remove();
+          applyNotificationTab();
+          refreshNotificationCount();
+        }
+      });
+    });
+  }
+
+  // Mark all notifications as read without removing them from the list.
+  var markAllBtn = document.getElementById("notif-mark-all");
+  if (markAllBtn) {
+    markAllBtn.addEventListener("click", function() {
+      fetch("/api/notifications/action/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "X-CSRFToken": getCSRFToken()},
+        body: JSON.stringify({action: "mark_all_read"})
+      }).then(function(response) { return response.json(); }).then(function(data) {
+        if (!data.ok || !notifList) return;
+        notifList.querySelectorAll(".notif-item").forEach(function(item) { setNotificationReadState(item, true); });
+        setNotificationCount(0);
+      });
+    });
+  }
+
+  // Messages
+  var messagesBtn = document.getElementById("messages-btn");
+  var messagesDropdown = document.getElementById("messages-dropdown");
+  if (messagesBtn && messagesDropdown) {
+    messagesBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      closeAllDropdowns("messages");
+      messagesDropdown.classList.toggle("hidden");
+    });
+  }
+
+  // DM inline chat
+  var dmFriendView = document.getElementById("dm-friend-view");
+  var dmChatView = document.getElementById("dm-chat-view");
+  var dmBackBtn = document.getElementById("dm-back-btn");
+  var dmSendBtn = document.getElementById("dm-send-btn");
+  var dmInput = document.getElementById("dm-input");
+  var dmMessages = document.getElementById("dm-messages");
+  var dmChatName = document.getElementById("dm-chat-name");
+  var dmChatAvatar = document.getElementById("dm-chat-avatar");
+  var dmChatInitial = document.getElementById("dm-chat-initial");
+  var dmFooterLink = document.getElementById("dm-footer-link");
+  var dmCurrentUserId = null;
+
+  document.getElementById("dm-list").addEventListener("click", function(e) {
+    var btn = e.target.closest("[data-dm-userid]");
+    if (!btn) return;
+    e.preventDefault();
+    var userId = btn.getAttribute("data-dm-userid");
+    var username = btn.getAttribute("data-dm-username");
+    var avatar = btn.getAttribute("data-dm-avatar");
+    var displayName = btn.getAttribute("data-dm-displayname");
+    dmCurrentUserId = userId;
+    dmChatName.textContent = displayName || username;
+    if (avatar) {
+      dmChatAvatar.src = avatar;
+      dmChatAvatar.classList.remove("hidden");
+      dmChatInitial.classList.add("hidden");
+    } else {
+      dmChatAvatar.classList.add("hidden");
+      dmChatInitial.textContent = username.charAt(0).toUpperCase();
+      dmChatInitial.classList.remove("hidden");
+    }
+    dmFriendView.classList.add("hidden");
+    dmChatView.classList.remove("hidden");
+    if (dmFooterLink) dmFooterLink.classList.add("hidden");
+    dmMessages.innerHTML = '<div class="flex justify-center py-8"><i class="fa-solid fa-spinner fa-spin text-gray-300"></i></div>';
+    fetch("/api/dm/chat/" + userId + "/")
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data.ok) { dmMessages.innerHTML = '<p class="text-center text-xs text-gray-400 py-8">Could not load messages.</p>'; return; }
+        renderDmMessages(data.messages);
+      });
+  });
+
+  if (dmBackBtn) {
+    dmBackBtn.addEventListener("click", function() {
+      dmChatView.classList.add("hidden");
+      dmFriendView.classList.remove("hidden");
+      if (dmFooterLink) dmFooterLink.classList.remove("hidden");
+      dmCurrentUserId = null;
+    });
+  }
+
+  function renderDmMessages(msgs) {
+    if (!msgs.length) { dmMessages.innerHTML = '<p class="text-center text-xs text-gray-400 py-8">No messages yet. Say hello!</p>'; return; }
+    var html = "";
+    msgs.forEach(function(m) {
+      var align = m.is_sent ? "justify-end" : "justify-start";
+      var bubble = m.is_sent ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900";
+      html += '<div class="flex ' + align + '"><div class="max-w-[75%] rounded-2xl px-4 py-2 text-sm ' + bubble + '">' + escapeHtml(m.body) + '<p class="mt-1 text-[10px] opacity-50">' + m.time + '</p></div></div>';
+    });
+    dmMessages.innerHTML = html;
+    dmMessages.scrollTop = dmMessages.scrollHeight;
+  }
+
+  function escapeHtml(t) { var d = document.createElement("div"); d.appendChild(document.createTextNode(t)); return d.innerHTML; }
+
+  function sendDmMessage() {
+    var body = (dmInput.value || "").trim();
+    if (!body || !dmCurrentUserId) return;
+    dmInput.value = "";
+    var align = "justify-end";
+    var bubble = "bg-gray-900 text-white";
+    var now = new Date();
+    var timeStr = now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+    dmMessages.innerHTML += '<div class="flex ' + align + '"><div class="max-w-[75%] rounded-2xl px-4 py-2 text-sm ' + bubble + '">' + escapeHtml(body) + '<p class="mt-1 text-[10px] opacity-50">' + timeStr + '</p></div></div>';
+    dmMessages.scrollTop = dmMessages.scrollHeight;
+    fetch("/api/dm/chat/" + dmCurrentUserId + "/", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "X-CSRFToken": getCSRFToken()},
+      body: JSON.stringify({body: body})
+    });
+  }
+
+  if (dmSendBtn) dmSendBtn.addEventListener("click", sendDmMessage);
+  if (dmInput) dmInput.addEventListener("keydown", function(e) { if (e.key === "Enter") { e.preventDefault(); sendDmMessage(); } });
+
+  // Close dropdowns on outside click
+  document.addEventListener("click", function (event) {
+    var dropdowns = ["notif-dropdown", "friends-dropdown", "messages-dropdown", "community-nav-menu", "bookmarks-dropdown"];
+    dropdowns.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el || el.classList.contains("hidden")) return;
+      var map = {
+        "notif-dropdown": "bell-btn",
+        "friends-dropdown": "friends-btn",
+        "messages-dropdown": "messages-btn",
+        "community-nav-menu": "community-nav-btn",
+        "bookmarks-dropdown": "bookmark-btn"
+      };
+      var trigger = document.getElementById(map[id]);
+      if (trigger && trigger.contains(event.target)) return;
+      if (el.contains(event.target)) return;
+      el.classList.add("hidden");
+    });
+  });
+
+});
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("form[data-dirty-form]").forEach(function (form) {
+      var actions = form.querySelector("[data-dirty-actions]");
+      if (!actions) return;
+
+      function formSignature() {
+        var values = [];
+        new FormData(form).forEach(function (value, key) {
+          values.push([key, value instanceof File ? value.name : value]);
+        });
+        return JSON.stringify(values);
+      }
+
+      var initialSignature = formSignature();
+      function updateDirtyState() {
+        actions.classList.toggle("hidden", formSignature() === initialSignature);
+      }
+
+      form.addEventListener("input", updateDirtyState);
+      form.addEventListener("change", updateDirtyState);
+      form.addEventListener("submit", function () {
+        actions.classList.add("hidden");
+      });
+      updateDirtyState();
+    });
+  });
+</script>
+<script>
+  (function () {
+    var preference = "{{ profile.personalization.theme_preference|default:'system' }}";
+    var isDark = preference === "dark";
+
+    if (preference === "system") {
+      try {
+        var savedTheme = localStorage.getItem("dark-mode");
+        isDark = savedTheme === null
+          ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          : savedTheme === "true";
+      } catch (error) {
+        isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      }
+    }
+
+    document.documentElement.classList.toggle("dark", isDark);
+    document.getElementById("dark-toggle")?.addEventListener("click", function () {
+      document.documentElement.classList.toggle("dark");
+      localStorage.setItem("dark-mode", document.documentElement.classList.contains("dark"));
+    });
+  })();
+</script>

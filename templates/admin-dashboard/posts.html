@@ -1,0 +1,55 @@
+<section id="posts" class="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+  <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="text-lg font-bold">Posts</h2>
+        <p class="mt-1 text-sm text-gray-500">Review and remove community activity.</p>
+      </div>
+    </div>
+
+    <div class="mt-6 divide-y divide-gray-100">
+      {% for post in posts %}
+        <article class="py-5 first:pt-0 last:pb-0">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h3 class="font-semibold leading-6 text-gray-900">{{ post.title }}</h3>
+              <p class="mt-1 text-sm leading-6 text-gray-500">{{ post.body|truncatewords:24 }}</p>
+              <p class="mt-3 text-xs text-gray-400">Posted in {{ post.community|default:"General" }} by {{ post.display_author }} on {{ post.created_at|date:"M j, Y" }}</p>
+            </div>
+            <form method="post" action="{% url 'hub:dashboard_section' section='posts' %}">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete_post" />
+              <input type="hidden" name="post_id" value="{{ post.id }}" />
+              <button type="submit" class="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-50">Delete</button>
+            </form>
+          </div>
+        </article>
+      {% empty %}
+        <p class="rounded-lg border border-dashed border-gray-200 p-8 text-center text-sm text-gray-500">No posts yet.</p>
+      {% endfor %}
+    </div>
+  </article>
+
+  <aside id="create-post" class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-6">
+    <h2 class="text-lg font-bold">Create Post</h2>
+    <p class="mt-1 text-sm text-gray-500">Publish as any active user.</p>
+    <form method="post" action="{% url 'hub:dashboard_section' section='posts' %}" class="mt-5 space-y-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create_post" />
+      {{ post_form.community }}
+      {{ post_form.author_user }}
+      {{ post_form.title }}
+      {{ post_form.category }}
+      {{ post_form.content_type }}
+      {{ post_form.body }}
+      {{ post_form.attachment_url }}
+      <label class="flex items-center gap-3 text-sm font-medium text-gray-700">{{ post_form.is_pinned }} Pin this post</label>
+      {% for field in post_form %}
+        {% for error in field.errors %}
+          <p class="text-xs text-red-500">{{ error }}</p>
+        {% endfor %}
+      {% endfor %}
+      <button type="submit" class="w-full rounded-xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800">Publish Post</button>
+    </form>
+  </aside>
+</section>

@@ -1,0 +1,43 @@
+[28/Jul/2026 07:16:27] "GET / HTTP/1.1" 200 97096
+[28/Jul/2026 07:16:27,902] - Broken pipe from ('127.0.0.1', 52963)
+[28/Jul/2026 07:16:41] "GET / HTTP/1.1" 200 97096
+[28/Jul/2026 07:16:41,576] - Broken pipe from ('127.0.0.1', 52971)
+[28/Jul/2026 07:16:58] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 264142
+[28/Jul/2026 07:17:00] "GET /dashboard/communities/audrey-store/?room=12 HTTP/1.1" 200 277059
+[28/Jul/2026 07:17:08] "GET /dashboard/communities/audrey-store/?room=10 HTTP/1.1" 200 270718
+[28/Jul/2026 07:17:14] "GET /dashboard/communities/audrey-store/?room=14 HTTP/1.1" 200 274446
+[28/Jul/2026 07:17:27] "GET /dashboard/communities/audrey-store/?room=11 HTTP/1.1" 200 273331
+[28/Jul/2026 07:17:28] "GET /dashboard/communities/audrey-store/?room=13 HTTP/1.1" 200 275082
+[28/Jul/2026 07:17:32] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 07:17:33] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 264142
+[28/Jul/2026 07:17:34] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 07:28:48] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 07:28:49] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 07:28:52] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 264142
+[28/Jul/2026 07:29:18] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 07:29:23] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 08:13:14] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 08:13:16] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 264142
+[28/Jul/2026 08:13:17] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 08:13:37] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 08:13:40] "POST /logout/ HTTP/1.1" 302 0
+[28/Jul/2026 08:13:40] "GET /signin/ HTTP/1.1" 200 5174
+[28/Jul/2026 08:13:41] "POST /signin/ HTTP/1.1" 302 0
+[28/Jul/2026 08:13:41] "GET /dashboard/communities/audrey-store/ HTTP/1.1" 200 264142
+[28/Jul/2026 08:13:42] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 08:13:55] "POST /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 302 0
+[28/Jul/2026 08:13:55] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 281343
+[28/Jul/2026 08:13:55] "GET /media/community_attachments/WhatsApp_Video_2026-07-19_at_11.44.37_AM.mp4 HTTP/1.1" 200 5557848
+[28/Jul/2026 08:13:58] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 178470
+[28/Jul/2026 08:13:59] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 281098
+[28/Jul/2026 08:13:59] "GET /media/community_attachments/WhatsApp_Video_2026-07-19_at_11.44.37_AM.mp4 HTTP/1.1" 200 5557848
+[28/Jul/2026 08:14:00] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 178470
+[28/Jul/2026 08:14:02,288] - Broken pipe from ('127.0.0.1', 54758)
+[28/Jul/2026 08:14:02] "GET /media/community_attachments/WhatsApp_Video_2026-07-19_at_11.44.37_AM.mp4 HTTP/1.1" 200 5557848
+[28/Jul/2026 08:14:09] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 281098
+[28/Jul/2026 08:14:09] "GET /media/community_attachments/WhatsApp_Video_2026-07-19_at_11.44.37_AM.mp4 HTTP/1.1" 304 0
+[28/Jul/2026 08:14:15] "POST /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 302 0
+[28/Jul/2026 08:14:15] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 264398
+[28/Jul/2026 08:14:17] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362
+[28/Jul/2026 08:14:19] "GET /dashboard/communities/audrey-store/?tab=posts HTTP/1.1" 200 264142
+[28/Jul/2026 08:14:20] "GET /dashboard/communities/audrey-store/?tab=courses HTTP/1.1" 200 177362

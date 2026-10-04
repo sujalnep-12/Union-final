@@ -1,0 +1,686 @@
+﻿{% load static %}
+<style>
+  :root {
+    --premium-avatar-gradient: conic-gradient(from 220deg, #f59e0b, #ec4899 32%, #8b5cf6 62%, #06b6d4 82%, #f59e0b);
+    --sidebar-width: 260px;
+    --dashboard-gap: 10px;
+    --sidebar-z: 40;
+  }
+
+  #dashboard-sidebar {
+    width: var(--sidebar-width);
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 1024px) {
+    body.sidebar-expanded #app-header { left: calc(var(--sidebar-width) + var(--dashboard-gap)) !important; }
+    body.sidebar-expanded .app-sidebar-content { margin-left: calc(var(--sidebar-width) + var(--dashboard-gap)) !important; }
+
+    body.sidebar-collapsed #dashboard-sidebar {
+      width: 68px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+    body.sidebar-collapsed #dashboard-sidebar > div:first-child { padding-left: 0 !important; padding-right: 0 !important; border-bottom: none !important; height: auto !important; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-header-inner { justify-content: center; padding: 12px 0 0 0 !important; gap: 0 !important; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-brand-text,
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-collapse-btn { display: none !important; }
+    body.sidebar-collapsed #dashboard-sidebar nav { display: flex !important; flex-direction: column; align-items: center; padding: 0 !important; gap: 4px; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-logo-link { margin: 0 0 28px 0 !important; height: 36px; width: 36px; border-radius: 10px; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-section-label { display: none !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-nav-expanded > div { display: flex !important; flex-direction: column; align-items: center; gap: 4px; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-item { justify-content: center; padding: 0; height: 36px; width: 36px; border-radius: 10px; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-item .nav-icon { margin: 0; font-size: 15px; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-item > span:not(.nav-icon) { display: none !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-community-item { justify-content: center; padding: 0; height: 36px; width: 36px; border-radius: 10px; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-community-item span:last-child { display: none !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-profile-expanded { display: none !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-profile-collapsed { display: flex !important; justify-content: center; padding: 8px 0 !important; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-profile-collapsed button { padding: 0 !important; width: auto !important; margin: 0 !important; }
+    body.sidebar-collapsed #dashboard-sidebar #sidebar-profile-menu {
+      left: calc(100% + 8px) !important;
+      right: auto !important;
+      bottom: 0 !important;
+      margin-bottom: 0 !important;
+      transform: translateY(8px);
+    }
+    body.sidebar-collapsed #dashboard-sidebar #sidebar-profile-menu.open { transform: translateY(0); }
+    body.sidebar-collapsed #dashboard-sidebar > div:last-child { padding-top: 8px !important; }
+    body.sidebar-collapsed #app-header { left: calc(68px + var(--dashboard-gap)) !important; }
+    body.sidebar-collapsed .app-sidebar-content { margin-left: calc(68px + var(--dashboard-gap)) !important; }
+
+    /* Keep the expanded logo static; use hover as the expand affordance when collapsed. */
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-logo-link,
+    body.sidebar-expanded #dashboard-sidebar .sidebar-logo-link {
+      position: relative;
+    }
+    body.sidebar-expanded #dashboard-sidebar .sidebar-logo-icon {
+      display: none !important;
+    }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-logo-link img {
+      transition: opacity 120ms ease;
+    }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-logo-link:hover img {
+      opacity: 0;
+    }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-logo-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 120ms ease;
+      pointer-events: none;
+      color: #374151;
+    }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-logo-link:hover .sidebar-logo-icon {
+      opacity: 1;
+    }
+    body.sidebar-collapsed #dashboard-sidebar .sidebar-logo-link:hover {
+      background: #ffffff;
+      outline: 1px solid #e5e7eb;
+    }
+  }
+
+  .sidebar-profile-menu { display: none; opacity: 0; transform: translateY(8px); transition: opacity 150ms ease-out, transform 150ms ease-out; }
+  .sidebar-profile-menu.open { display: block; opacity: 1; transform: translateY(0); }
+  @keyframes dropdown-fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-dropdown { animation: dropdown-fade-in 0.15s ease-out forwards; }
+
+  #sidebar-collapse-btn {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: #374151;
+    background: transparent;
+    margin-left: 24px;
+    margin-right: 6px;
+    transition: background 150ms ease, opacity 150ms ease;
+  }
+  #sidebar-collapse-btn:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #374151;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4b5563;
+    transition: background 150ms ease, color 150ms ease;
+    text-decoration: none;
+  }
+  .sidebar-item:hover {
+    background: #f3f4f6;
+    color: #111827;
+  }
+  .sidebar-item.active {
+    background: #111827;
+    color: #ffffff;
+  }
+  .sidebar-item .nav-icon {
+    width: 20px;
+    text-align: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .sidebar-community-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4b5563;
+    transition: background 150ms ease, color 150ms ease;
+    text-decoration: none;
+  }
+
+  .premium-avatar {
+    padding: 2px !important;
+    border-color: transparent !important;
+    background: var(--premium-avatar-gradient) !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, .96), 0 4px 12px rgba(124, 58, 237, .24) !important;
+  }
+  .sidebar-community-item:hover {
+    background: #f3f4f6;
+    color: #111827;
+  }
+  .dark #dashboard-sidebar .sidebar-community-item > span:first-child { border-color: #41516b !important; }
+</style>
+
+<aside id="dashboard-sidebar" class="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:flex-col lg:bg-white lg:border-r lg:border-gray-200">
+
+  <!-- Header -->
+  <div class="h-14 shrink-0 flex items-center gap-2.5 border-b border-gray-100 px-3">
+    <div class="sidebar-header-inner relative flex items-center gap-2.5 w-full">
+      <a href="{% url 'hub:dashboard' %}" class="sidebar-logo-link flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900" aria-label="Union dashboard">
+        <img src="{% static 'images/union-logo.png' %}" alt="Union" class="h-5 w-5 rounded-lg object-contain" />
+        <span class="sidebar-logo-icon" aria-hidden="true">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="18" rx="2" ry="2" />
+            <line x1="10" y1="3" x2="10" y2="21" />
+          </svg>
+        </span>
+      </a>
+      <span class="sidebar-brand-text min-w-0 flex-1 truncate text-base font-black tracking-tight text-gray-900">Union</span>
+      <button id="sidebar-collapse-btn" class="sidebar-collapse-btn" type="button" title="Collapse sidebar" aria-label="Collapse sidebar">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="18" rx="2" ry="2" />
+          <line x1="10" y1="3" x2="10" y2="21" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden px-2 py-4">
+    <div class="sidebar-nav-expanded space-y-0.5">
+      <a href="{% url 'hub:dashboard' %}" class="sidebar-item {% if active_page == 'overview' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-house"></i></span>
+        <span>Home</span>
+      </a>
+      <a href="{% url 'hub:dashboard_section' 'discover' %}" class="sidebar-item {% if active_page == 'discover' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-compass"></i></span>
+        <span>Discover</span>
+      </a>
+      <a href="{% url 'hub:dashboard_section' 'communities' %}" class="sidebar-item {% if active_page == 'communities' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-layer-group"></i></span>
+        <span>Communities</span>
+      </a>
+      <a href="{% url 'hub:dashboard_section' 'messages' %}" class="sidebar-item {% if active_page == 'messages' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-regular fa-comment"></i></span>
+        <span>Messages</span>
+        {% if unread_message_count > 0 %}
+        <span class="ml-auto rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">{{ unread_message_count }}</span>
+        {% endif %}
+      </a>
+      <a href="{% url 'hub:dashboard_section' 'notifications' %}" class="sidebar-item {% if active_page == 'notifications' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-regular fa-bell"></i></span>
+        <span>Notifications</span>
+        {% if notification_count > 0 %}
+        <span class="ml-auto rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">{{ notification_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+
+    <div class="sidebar-nav-expanded mt-5 border-t border-gray-100 pt-4">
+      <a href="{% url 'hub:dashboard_section' 'studio' %}" class="sidebar-item {% if active_page == 'studio' %}active{% endif %}">
+        <span class="nav-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <span>Creator Studio</span>
+        {% if not studio_started %}<span class="ml-auto rounded-full bg-violet-50 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-violet-600">New</span>{% endif %}
+      </a>
+    </div>
+
+    <div class="sidebar-section-label mt-6 mb-1.5 flex items-center justify-between px-1.5">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Your Communities</span>
+      <a href="{% url 'hub:dashboard_section' 'communities' %}" class="text-[10px] font-bold normal-case tracking-normal text-gray-400 transition hover:text-gray-700">View all</a>
+    </div>
+    <div class="sidebar-nav-expanded space-y-0.5">
+      {% for community in user_communities|slice:":5" %}
+        <a href="{% url 'hub:community_detail' community.slug %}" class="sidebar-community-item" title="{{ community.name }}">
+          <span class="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-300 bg-gray-200 text-[10px] font-bold text-gray-700">
+            {% if community.cover_image_url %}
+              <img src="{{ community.cover_image_url }}" alt="" class="h-full w-full object-cover" />
+            {% else %}
+              {{ community.name|first|upper }}
+            {% endif %}
+          </span>
+          <span class="truncate">{{ community.name }}</span>
+        </a>
+      {% empty %}
+        <a href="{% url 'hub:dashboard_section' 'communities' %}?tab=discover" class="sidebar-community-item text-gray-400">
+          <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-dashed border-gray-300 text-[10px] text-gray-400"><i class="fa-solid fa-compass text-[9px]"></i></span>
+          <span class="truncate">Find a community</span>
+        </a>
+      {% endfor %}
+      <a href="{% url 'hub:create_community' %}" class="sidebar-community-item text-gray-500 transition hover:text-gray-900" title="Create a community">
+        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-gray-50 text-[10px] text-gray-500"><i class="fa-solid fa-plus text-[9px]"></i></span>
+        <span class="truncate">Create a community</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Profile -->
+  <div class="shrink-0 border-t border-gray-200 p-3">
+    <div class="relative">
+      <button id="sidebar-profile-btn" type="button" aria-label="Open profile settings" class="sidebar-profile-expanded sidebar-item w-full cursor-pointer text-left">
+        <div class="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[10px] font-bold text-gray-700
+          {% if active_subscription %}premium-avatar{% endif %}">
+          {% if profile.profile_image_url %}
+            <img src="{{ profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />
+          {% else %}
+            {{ display_name|first|upper }}
+          {% endif %}
+        </div>
+        <span class="truncate flex-1">{{ display_name }}</span>
+        <svg class="h-4 w-4 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm0 2a2 2 0 110 4 2 2 0 010-4zm0-9a10 10 0 100 20 10 10 0 000-20zm0 2a8 8 0 110 16 8 8 0 010-16z"/></svg>
+      </button>
+
+      <button id="sidebar-profile-btn-collapsed" type="button" aria-label="Open profile settings" class="sidebar-profile-collapsed hidden w-full cursor-pointer justify-center py-2 text-left" title="{{ display_name }}">
+        <div class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[10px] font-bold text-gray-700
+          {% if active_subscription %}premium-avatar{% elif profile.kyc_verified %}ring-2 ring-amber-400{% endif %}">
+          {% if profile.profile_image_url %}
+            <img src="{{ profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />
+          {% else %}
+            {{ display_name|first|upper }}
+          {% endif %}
+        </div>
+      </button>
+
+      <div id="sidebar-profile-menu" class="sidebar-profile-menu absolute bottom-full right-0 z-50 mb-2 w-60">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5 animate-dropdown fade-in">
+          <div id="sidebar-account-row" class="group px-3 py-2 cursor-pointer" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false">
+            <div class="flex items-center justify-between rounded-lg px-2 py-2 transition hover:bg-gray-100">
+              <div class="flex items-center gap-2.5">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                  {% if profile.profile_image_url %}<img src="{{ profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ display_name|first|upper }}{% endif %}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1">
+                    <span class="truncate text-sm font-medium text-gray-900">{{ display_name }}</span>
+                    <svg class="h-4 w-4 shrink-0 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <p class="truncate text-xs text-gray-500">{% if active_subscription %}{{ active_subscription.plan.name }}{% else %}Free{% endif %}</p>
+                </div>
+              </div>
+              <svg class="h-4 w-4 shrink-0 text-gray-400 transition group-hover:text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </div>
+          </div>
+          <div class="border-t border-gray-100"></div>
+          <div class="py-1">
+            <a href="{% url 'hub:dashboard_section' 'settings' %}?tab=subscriptions" class="flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm font-semibold text-blue-600 transition hover:bg-blue-50 hover:text-blue-700">
+              <span class="nav-icon"><i class="fa-solid fa-arrow-up"></i></span>
+              Subscription
+            </a>
+            <button id="sidebar-edit-profile-btn" type="button" class="flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-left text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+              <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
+              Profile
+            </button>
+            <a href="{% url 'hub:dashboard_section' 'settings' %}" class="flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+              <span class="nav-icon"><i class="fa-solid fa-gear"></i></span>
+              Settings
+            </a>
+          </div>
+          <div class="border-t border-gray-100"></div>
+          <div class="py-1">
+            <a href="mailto:support@union.com" class="flex items-center justify-between rounded-md px-3 py-1.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+              <div class="flex items-center gap-2.5">
+                <span class="nav-icon"><i class="fa-solid fa-circle-question"></i></span>
+                <span>Help</span>
+              </div>
+              <svg class="h-3 w-3 shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+          </div>
+          <div class="border-t border-gray-100"></div>
+          <div class="py-1">
+            <form method="post" action="{% url 'hub:logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-left text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                Log out
+                <span class="sr-only">Logout</span>
+              </button>
+            </form>
+            <form method="post" action="{% url 'hub:logout' %}" class="hidden" aria-hidden="true">
+              {% csrf_token %}
+              <button type="submit" tabindex="-1">Log out</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div id="sidebar-account-popup" class="hidden fixed z-[60] w-56">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-lg ring-1 ring-black/5">
+          <div class="px-3 pt-3 pb-2">
+            <p class="truncate text-sm font-semibold text-gray-900">{{ user.email }}</p>
+          </div>
+          <div class="px-3 pb-3">
+            <div class="flex items-center gap-2.5 rounded-lg px-2 py-2">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                    {% if profile.profile_image_url %}<img src="{{ profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ display_name|first|upper }}{% endif %}
+                  </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-1">
+                  <span class="truncate text-sm font-medium text-gray-900">{{ display_name }}</span>
+                  <svg class="h-4 w-4 shrink-0 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <p class="truncate text-xs text-gray-500">{% if active_subscription %}{{ active_subscription.plan.name }}{% else %}Free{% endif %}</p>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-gray-100"></div>
+          {% for account in account_switch_users %}
+            {% if account.pk != user.pk %}
+            <div class="border-t border-gray-100 py-1">
+              <form method="post" action="{% url 'hub:switch_account' account.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+                <button type="submit" class="flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-left transition hover:bg-gray-100">
+                  <span class="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                    {% if account.profile.profile_image_url %}<img src="{{ account.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ account.first_name|default:account.username|first|upper }}{% endif %}
+                  </span>
+                  <span class="min-w-0 flex-1 truncate text-sm font-medium text-gray-700">{{ account.first_name|default:account.username }}</span>
+                  <span class="text-xs text-gray-400">Switch</span>
+                </button>
+              </form>
+            </div>
+            {% endif %}
+          {% endfor %}
+          <div class="border-t border-gray-100 py-1">
+            <button id="sidebar-add-account-btn" type="button" class="flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-left text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add account
+            </button>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+<div id="profile-edit-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/25 p-4" role="dialog" aria-modal="true" aria-labelledby="profile-edit-title">
+  <div class="w-full max-w-[450px] rounded-2xl border border-gray-300 bg-white p-4 shadow-2xl sm:p-5">
+    <h2 id="profile-edit-title" class="text-lg font-medium text-gray-900">Edit profile</h2>
+
+    <form method="post" action="{% url 'hub:dashboard_section' 'settings' %}" enctype="multipart/form-data" class="mt-9">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="update_profile_quick" />
+
+      <div class="flex justify-center">
+        <label class="relative cursor-pointer" title="Change profile picture">
+          <span id="profile-edit-avatar" class="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-gray-900 bg-[#879395] text-4xl font-normal text-white shadow-sm ring-2 ring-white
+            {% if active_subscription %}premium-avatar{% endif %}">
+            {% if profile.profile_image_url %}
+              <img id="profile-edit-avatar-image" src="{{ profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />
+            {% else %}
+              <span id="profile-edit-avatar-initials">{{ display_name|first|upper }}</span>
+            {% endif %}
+          </span>
+          <span class="absolute bottom-1 right-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-white text-sm text-gray-600 shadow-sm">
+            <i class="fa-solid fa-camera"></i>
+          </span>
+          <input id="profile-edit-image-input" type="file" name="profile_image" accept="image/*" class="sr-only" />
+        </label>
+      </div>
+
+      <div class="mt-8 space-y-2.5">
+        <div class="h-[58px] rounded-md border border-gray-300 bg-white px-3 pt-2 transition focus-within:border-gray-700 focus-within:ring-2 focus-within:ring-gray-200">
+          <label for="profile-edit-display-name" class="block text-xs leading-none text-gray-700">Display name</label>
+          <input id="profile-edit-display-name" type="text" name="first_name" value="{{ user.first_name }}" autocomplete="name" class="mt-1 block w-full border-0 bg-transparent p-0 text-sm leading-none text-gray-900 outline-none" />
+        </div>
+        <div class="h-[58px] rounded-md border border-gray-300 bg-white px-3 pt-2 transition focus-within:border-gray-700 focus-within:ring-2 focus-within:ring-gray-200">
+          <label for="profile-edit-username" class="block text-xs leading-none text-gray-700">Username</label>
+          <input id="profile-edit-username" type="text" name="username" value="{{ user.username }}" autocomplete="username" class="mt-1 block w-full border-0 bg-transparent p-0 text-sm leading-none text-gray-900 outline-none" />
+        </div>
+      </div>
+
+      <p class="mt-3 text-center text-xs text-gray-400">Your profile helps people recognize you in group chats.</p>
+
+      <div class="mt-4 flex items-center justify-end gap-3">
+        <button type="button" data-profile-edit-close class="rounded-full border border-gray-300 px-3.5 py-2 text-sm font-semibold text-gray-800 transition hover:bg-gray-50">Cancel</button>
+        <button type="submit" class="rounded-full bg-gray-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="sidebar-add-account-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/30 p-4" role="dialog" aria-modal="true" aria-labelledby="sidebar-add-account-title">
+  <div class="relative w-full max-w-[486px] rounded-[22px] border border-gray-300 bg-white px-7 py-8 shadow-2xl sm:px-9 sm:py-10">
+    <button id="sidebar-add-account-close" type="button" class="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full text-gray-900 transition hover:bg-gray-100" aria-label="Close add account dialog">
+      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="pt-7 text-center">
+      <h2 id="sidebar-add-account-title" class="text-3xl font-normal tracking-tight text-gray-950 sm:text-4xl">Log in or sign up</h2>
+      <p class="mx-auto mt-6 max-w-sm text-base leading-7 text-gray-700 sm:text-lg">You’ll get smarter responses and can<br class="hidden sm:block" /> upload files, images, and more.</p>
+    </div>
+    <div class="mt-10 space-y-4">
+      <a href="{% url 'hub:signin' %}?switch_account=1&amp;next={{ request.get_full_path|urlencode }}" class="flex h-16 w-full items-center justify-center gap-3 rounded-full border border-gray-300 text-base font-semibold text-gray-900 transition hover:bg-gray-50">
+        <span class="text-lg font-bold text-[#4285f4]">G</span>
+        Continue with Google
+      </a>
+      <a href="{% url 'hub:signin' %}?switch_account=1&amp;next={{ request.get_full_path|urlencode }}" class="flex h-16 w-full items-center justify-center gap-3 rounded-full border border-gray-300 text-base font-semibold text-gray-900 transition hover:bg-gray-50">
+        <i class="fa-brands fa-apple text-xl"></i>
+        Continue with Apple
+      </a>
+      <a href="{% url 'hub:signin' %}?switch_account=1&amp;next={{ request.get_full_path|urlencode }}" class="flex h-16 w-full items-center justify-center gap-3 rounded-full border border-gray-300 text-base font-semibold text-gray-900 transition hover:bg-gray-50">
+        <i class="fa-solid fa-phone text-sm"></i>
+        Continue with phone
+      </a>
+    </div>
+    <div class="my-9 flex items-center gap-5 text-sm font-medium text-gray-900">
+      <span class="h-px flex-1 bg-gray-300"></span><span>OR</span><span class="h-px flex-1 bg-gray-300"></span>
+    </div>
+    <form method="get" action="{% url 'hub:account_continue' %}" class="space-y-5">
+      <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+      <input type="email" name="email" required autocomplete="email" placeholder="Email address" class="h-[70px] w-full rounded-full border border-gray-500 px-6 text-lg text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-900 focus:ring-2 focus:ring-gray-200" />
+      <button type="submit" class="h-16 w-full rounded-full bg-gray-950 text-base font-bold text-white transition hover:bg-gray-800">Continue</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var sidebar = document.getElementById("dashboard-sidebar");
+    var collapseBtn = document.getElementById("sidebar-collapse-btn");
+    var floating = document.getElementById("sidebar-floating");
+    var profileBtn = document.getElementById("sidebar-profile-btn");
+    var profileBtnCollapsed = document.getElementById("sidebar-profile-btn-collapsed");
+    var profileMenu = document.getElementById("sidebar-profile-menu");
+    var editProfileButton = document.getElementById("sidebar-edit-profile-btn");
+    var profileEditModal = document.getElementById("profile-edit-modal");
+    var profileEditImageInput = document.getElementById("profile-edit-image-input");
+    var profileEditAvatar = document.getElementById("profile-edit-avatar");
+    if (!sidebar) return;
+
+    var collapseIcon = '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2" ry="2" /><line x1="10" y1="3" x2="10" y2="21" /></svg>';
+    var expandIcon = '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2" ry="2" /><line x1="10" y1="3" x2="10" y2="21" /></svg>';
+
+    function getState() {
+      return document.body.classList.contains("sidebar-collapsed") ? "collapsed" : "expanded";
+    }
+
+    function setState(state) {
+      document.body.classList.remove("sidebar-expanded", "sidebar-collapsed");
+      document.body.classList.add(state === "collapsed" ? "sidebar-collapsed" : "sidebar-expanded");
+      if (collapseBtn) {
+        var isCollapsed = state === "collapsed";
+        collapseBtn.innerHTML = isCollapsed ? expandIcon : collapseIcon;
+        collapseBtn.setAttribute("aria-label", isCollapsed ? "Open sidebar" : "Collapse sidebar");
+        collapseBtn.setAttribute("title", isCollapsed ? "Open sidebar" : "Collapse sidebar");
+      }
+      try { localStorage.setItem("sidebar-state", state); } catch (e) {}
+      closeProfileMenu();
+    }
+
+    function closeProfileMenu() {
+      if (profileMenu) profileMenu.classList.remove("open");
+      closeAccountPopup();
+    }
+
+    var initialState = "expanded";
+    try {
+      var saved = localStorage.getItem("sidebar-state");
+      if (saved && ["expanded", "collapsed"].indexOf(saved) !== -1) initialState = saved;
+    } catch (e) {}
+    setState(initialState);
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setState(getState() === "expanded" ? "collapsed" : "expanded");
+      });
+    }
+
+    var logoLink = document.querySelector(".sidebar-logo-link");
+    if (logoLink) {
+      logoLink.addEventListener("click", function(e) {
+        if (getState() === "collapsed") {
+          e.preventDefault();
+          setState("expanded");
+        }
+      });
+    }
+
+    function toggleProfileMenu(btn, menu) {
+      if (!btn || !menu) return;
+      btn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        var wasOpen = menu.classList.contains("open");
+        closeProfileMenu();
+        if (!wasOpen) menu.classList.add("open");
+      });
+    }
+    toggleProfileMenu(profileBtn, profileMenu);
+    toggleProfileMenu(profileBtnCollapsed, profileMenu);
+
+    var accountRow = document.getElementById("sidebar-account-row");
+    var accountPopup = document.getElementById("sidebar-account-popup");
+    var addAccountButton = document.getElementById("sidebar-add-account-btn");
+    var addAccountModal = document.getElementById("sidebar-add-account-modal");
+    var addAccountClose = document.getElementById("sidebar-add-account-close");
+    var accountPopupCloseTimer;
+    function closeAccountPopup() {
+      if (!accountPopup) return;
+      window.clearTimeout(accountPopupCloseTimer);
+      accountPopup.classList.add("hidden");
+      if (accountRow) accountRow.setAttribute("aria-expanded", "false");
+    }
+    function scheduleAccountPopupClose() {
+      window.clearTimeout(accountPopupCloseTimer);
+      accountPopupCloseTimer = window.setTimeout(closeAccountPopup, 180);
+    }
+    function openAccountPopup() {
+      if (!accountPopup || !accountRow) return;
+
+      window.clearTimeout(accountPopupCloseTimer);
+      var rowRect = accountRow.getBoundingClientRect();
+      accountPopup.classList.remove("hidden");
+      var popupWidth = accountPopup.offsetWidth || 224;
+      var popupHeight = accountPopup.offsetHeight || 180;
+      var gap = 8;
+      var left = rowRect.right + gap;
+      if (left + popupWidth > window.innerWidth - gap) {
+        left = Math.max(gap, rowRect.left - popupWidth - gap);
+      }
+      var top = Math.min(Math.max(gap, rowRect.top - 16), window.innerHeight - popupHeight - gap);
+
+      accountPopup.style.left = left + "px";
+      accountPopup.style.top = top + "px";
+      accountRow.setAttribute("aria-expanded", "true");
+    }
+    if (accountRow && accountPopup) {
+      accountRow.addEventListener("mouseenter", openAccountPopup);
+      accountRow.addEventListener("mouseleave", scheduleAccountPopupClose);
+      accountRow.addEventListener("focus", openAccountPopup);
+      accountRow.addEventListener("blur", scheduleAccountPopupClose);
+      accountPopup.addEventListener("mouseenter", function() {
+        window.clearTimeout(accountPopupCloseTimer);
+      });
+      accountPopup.addEventListener("mouseleave", scheduleAccountPopupClose);
+    }
+
+    function closeAddAccountModal() {
+      if (!addAccountModal) return;
+      addAccountModal.classList.add("hidden");
+      addAccountModal.classList.remove("flex");
+    }
+    if (addAccountButton && addAccountModal) {
+      addAccountButton.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeProfileMenu();
+        addAccountModal.classList.remove("hidden");
+        addAccountModal.classList.add("flex");
+      });
+      if (addAccountClose) addAccountClose.addEventListener("click", closeAddAccountModal);
+      addAccountModal.addEventListener("click", function(e) {
+        if (e.target === addAccountModal) closeAddAccountModal();
+      });
+    }
+
+    function closeProfileEditModal() {
+      if (!profileEditModal) return;
+      profileEditModal.classList.add("hidden");
+      profileEditModal.classList.remove("flex");
+    }
+
+    function openProfileEditModal() {
+      if (!profileEditModal) return;
+      closeProfileMenu();
+      profileEditModal.classList.remove("hidden");
+      profileEditModal.classList.add("flex");
+      var displayNameInput = document.getElementById("profile-edit-display-name");
+      if (displayNameInput) window.setTimeout(function() { displayNameInput.focus(); }, 0);
+    }
+
+    window.openProfileModal = openProfileEditModal;
+
+    if (editProfileButton) {
+      editProfileButton.addEventListener("click", function() {
+        openProfileEditModal();
+      });
+    }
+    document.querySelectorAll("[data-profile-edit-close]").forEach(function(button) {
+      button.addEventListener("click", closeProfileEditModal);
+    });
+    if (profileEditModal) {
+      profileEditModal.addEventListener("click", function(e) {
+        if (e.target === profileEditModal) closeProfileEditModal();
+      });
+    }
+    if (profileEditImageInput && profileEditAvatar) {
+      profileEditImageInput.addEventListener("change", function() {
+        var file = this.files && this.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(event) {
+          var image = document.getElementById("profile-edit-avatar-image");
+          if (!image) {
+            profileEditAvatar.textContent = "";
+            image = document.createElement("img");
+            image.id = "profile-edit-avatar-image";
+            image.alt = "";
+            image.className = "h-full w-full object-cover";
+            profileEditAvatar.appendChild(image);
+          }
+          image.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.addEventListener("click", function(e) {
+      if (profileMenu && !profileMenu.contains(e.target) && e.target !== profileBtn && e.target !== profileBtnCollapsed) {
+        closeProfileMenu();
+      }
+      if (accountPopup && !accountPopup.contains(e.target) && !accountRow.contains(e.target)) {
+        scheduleAccountPopupClose();
+      }
+    });
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "Escape") {
+        closeProfileMenu();
+        closeAccountPopup();
+        closeAddAccountModal();
+        closeProfileEditModal();
+      }
+    });
+  })();
+</script>

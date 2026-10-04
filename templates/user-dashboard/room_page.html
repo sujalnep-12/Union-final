@@ -1,0 +1,438 @@
+{% load static %}
+{% load hub_extras %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ room.name }} — {{ community.name }} | Union</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+      [data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 11px; white-space: nowrap; pointer-events: none; }
+
+      html.dark {
+        color-scheme: dark;
+        --room-page: #0b1120;
+        --room-surface: #111827;
+        --room-elevated: #172238;
+        --room-soft: #1e293b;
+        --room-border: #2d3b52;
+        --room-border-strong: #41516b;
+        --room-text: #f8fafc;
+        --room-muted: #94a3b8;
+        --room-subtle: #64748b;
+      }
+      html.dark,
+      html.dark body { background-color: var(--room-page) !important; color: var(--room-text) !important; }
+      html.dark .bg-white { background-color: var(--room-surface) !important; }
+      html.dark .bg-gray-50 { background-color: var(--room-page) !important; }
+      html.dark .bg-gray-100 { background-color: var(--room-soft) !important; }
+      html.dark .bg-gray-200 { background-color: #334155 !important; }
+      html.dark .bg-gray-900 { background-color: #7c3aed !important; }
+      html.dark .bg-gray-950 { background-color: #7c3aed !important; }
+      html.dark .bg-gray-800 { background-color: #475569 !important; }
+      html.dark .bg-violet-100 { background-color: #2b1f4b !important; }
+      html.dark .bg-indigo-100 { background-color: #202d55 !important; }
+      html.dark .bg-blue-100 { background-color: #173d5f !important; }
+      html.dark .text-white,
+      html.dark .text-gray-950,
+      html.dark .text-gray-900,
+      html.dark .text-gray-800 { color: var(--room-text) !important; }
+      html.dark .text-gray-700 { color: #cbd5e1 !important; }
+      html.dark .text-gray-600 { color: var(--room-muted) !important; }
+      html.dark .text-gray-500,
+      html.dark .text-gray-400 { color: var(--room-subtle) !important; }
+      html.dark .text-gray-300 { color: #a9b7ca !important; }
+      html.dark .text-violet-600,
+      html.dark .text-violet-700 { color: #c4b5fd !important; }
+      html.dark .text-indigo-600,
+      html.dark .text-indigo-700 { color: #a5b4fc !important; }
+      html.dark .text-blue-600,
+      html.dark .text-blue-700 { color: #93c5fd !important; }
+      html.dark .border,
+      html.dark .border-gray-100,
+      html.dark .border-gray-200 { border-color: var(--room-border) !important; }
+      html.dark .border-gray-300,
+      html.dark .border-gray-900 { border-color: var(--room-border-strong) !important; }
+      html.dark .hover\:bg-gray-100:hover { background-color: #263449 !important; }
+      html.dark .hover\:bg-gray-800:hover { background-color: #475569 !important; }
+      html.dark input,
+      html.dark select,
+      html.dark textarea { background-color: var(--room-elevated) !important; color: var(--room-text) !important; border-color: var(--room-border) !important; }
+      html.dark input::placeholder,
+      html.dark textarea::placeholder { color: var(--room-subtle) !important; }
+      html.dark button:focus-visible,
+      html.dark a:focus-visible,
+      html.dark input:focus-visible { outline: 2px solid #8b5cf6 !important; outline-offset: 2px; }
+    </style>
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('dark-mode') === 'true') document.documentElement.classList.add('dark');
+        } catch (error) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-gray-50 text-gray-900 antialiased">
+
+    <!-- Top Navbar -->
+    <header class="fixed inset-x-0 top-0 z-40 flex h-14 items-center border-b border-gray-200 bg-white px-4 lg:pl-[68px]">
+      <a href="{% url 'hub:community_detail' community.slug %}?tab=posts" class="flex items-center gap-2 rounded-lg px-2 py-1.5 transition hover:bg-gray-100">
+        <div class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-gray-900 text-xs font-bold text-white">
+          {% if community.cover_image_url %}<img src="{{ community.cover_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}{{ community.name|first|upper }}{% endif %}
+        </div>
+        <span class="text-sm font-bold text-gray-900 max-w-[160px] truncate">{{ community.name }}</span>
+        <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+      </a>
+
+      <nav class="mx-auto hidden items-center gap-1 md:flex">
+        <a href="{% url 'hub:community_detail' community.slug %}?tab=posts" class="rounded-lg px-3 py-1.5 text-sm font-semibold text-gray-500 transition hover:bg-gray-100 hover:text-gray-900">Home</a>
+        <span class="mx-1 h-4 w-px bg-gray-200"></span>
+        <span class="rounded-lg bg-gray-900 px-3 py-1.5 text-sm font-semibold text-white">{{ room.name }}</span>
+      </nav>
+
+      <div class="ml-auto flex items-center gap-2">
+        <button class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900" title="Search">
+          <i class="fa-solid fa-magnifying-glass text-sm"></i>
+        </button>
+        <button class="flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 relative" title="Notifications">
+          <i class="fa-solid fa-bell text-sm"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="lg:ml-16 pt-14">
+      <div class="flex">
+        <!-- Inner sidebar -->
+        <aside class="hidden lg:flex lg:w-56 lg:shrink-0 lg:flex-col lg:border-r lg:border-gray-200 lg:bg-white" style="height: calc(100vh - 56px); position: sticky; top: 56px;">
+          <div class="flex-1 overflow-y-auto px-3 py-4 space-y-6">
+            <!-- Getting started + Feed -->
+            <div>
+              <div class="space-y-0.5">
+                <a href="{% url 'hub:community_detail' community.slug %}?tab=getting_started" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+                  <i class="fa-solid fa-list-check text-xs text-gray-400"></i> Getting started
+                </a>
+                <a href="{% url 'hub:community_detail' community.slug %}?tab=posts" class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+                  <i class="fa-solid fa-bars-staggered text-xs text-gray-400"></i> Feed
+                </a>
+              </div>
+            </div>
+
+            <!-- Rooms -->
+            <div>
+              <div class="rooms-header group relative flex items-center justify-between px-2">
+                <span class="flex items-center gap-2 text-sm font-bold text-gray-900">
+                  <i class="fa-solid fa-people-group text-xs text-gray-400"></i> Rooms
+                  <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+                </span>
+              </div>
+              <div class="mt-1 space-y-px">
+                {% for r in community_rooms %}
+                  <a href="{% url 'hub:community_room' community.slug r.id %}" class="flex items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-[13px] font-medium transition hover:bg-gray-100 {% if r.id == room.id %}bg-gray-100 text-gray-950{% else %}text-gray-600 hover:text-gray-950{% endif %}">
+                    {% if r.icon_image_url %}
+                      <img src="{{ r.icon_image_url }}" alt="" class="h-6 w-6 shrink-0 rounded-full object-cover" />
+                    {% else %}
+                      <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-{{ r.color|default:'gray' }}-100">
+                        <i class="{{ r.icon_class|default:'fa-solid fa-comment-dots' }} text-{{ r.color|default:'gray' }}-600 text-[10px]"></i>
+                      </div>
+                    {% endif %}
+                    <span class="flex-1 truncate">{{ r.name }}</span>
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Links -->
+            <div>
+              <div class="px-2">
+                <span class="flex items-center gap-2 text-sm font-bold text-gray-900">
+                  <i class="fa-solid fa-link text-xs text-gray-400"></i> Links
+                </span>
+              </div>
+              <div class="mt-1 space-y-px">
+                {% for link in community_links %}
+                  <a href="{{ link.url }}" {% if link.open_in_new_tab %}target="_blank" rel="noopener"{% endif %} class="flex items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-[13px] font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-950">
+                    {% if link.icon_image_url %}
+                      <img src="{{ link.icon_image_url }}" alt="" class="h-5 w-5 shrink-0 rounded object-cover" />
+                    {% else %}
+                      <i class="{{ link.icon_class|default:'fa-solid fa-globe' }} text-gray-400 text-[10px]"></i>
+                    {% endif %}
+                    <span class="flex-1 truncate">{{ link.title }}</span>
+                    {% if link.open_in_new_tab %}
+                      <i class="fa-solid fa-arrow-up-right-from-square text-[8px] text-gray-400"></i>
+                    {% endif %}
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <div class="shrink-0 border-t border-gray-200 p-3">
+            <button type="button" class="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 hover:text-gray-950">
+              <i class="fa-solid fa-video text-xs"></i> Go live
+            </button>
+            <p class="mt-2 text-center text-[10px] text-gray-400">Powered by Union</p>
+          </div>
+        </aside>
+
+        <!-- Room Content Area -->
+        <div class="flex-1 min-w-0">
+          {% include 'user-dashboard/rooms/room_renderer_v2.html' %}
+          <div class="hidden" aria-hidden="true">
+          <!-- Room Header -->
+          <div class="sticky top-14 z-30 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3">
+            <div class="flex items-center gap-3">
+              {% if room.icon_image_url %}
+                <img src="{{ room.icon_image_url }}" alt="" class="h-8 w-8 rounded-full object-cover" />
+              {% else %}
+                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-{{ room.color|default:'gray' }}-100">
+                  <i class="{{ room.icon_class|default:'fa-solid fa-comment-dots' }} text-{{ room.color|default:'gray' }}-600 text-xs"></i>
+                </div>
+              {% endif %}
+              <div>
+                <h1 class="text-sm font-bold text-gray-950">{{ room.name }}</h1>
+                {% if room.description %}
+                  <p class="text-xs text-gray-500 max-w-md truncate">{{ room.description }}</p>
+                {% endif %}
+              </div>
+            </div>
+            {% if is_manager %}
+            <div class="flex items-center gap-2">
+              <a href="{% url 'hub:community_detail' community.slug %}?tab=posts" class="rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-600 transition hover:bg-gray-100">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Back to Feed
+              </a>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Room Type Content -->
+          <div class="mx-auto max-w-5xl px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+
+            {% if room.room_type == 'announcements' %}
+              <!-- ANNOUNCEMENTS ROOM -->
+              <div class="mb-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4">
+                <div class="flex items-center gap-2 text-sm font-bold text-amber-800">
+                  <i class="fa-solid fa-thumbtack text-amber-600"></i> Important Announcements
+                </div>
+                <p class="mt-1 text-xs text-amber-700">Official updates from community managers. Pinned announcements appear here.</p>
+              </div>
+              {% if is_manager %}
+              <div class="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+                <div class="flex items-center gap-3">
+                  <div class="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                    {% if profile.profile_image_url %}<img src="{{ profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />{% else %}<span class="flex h-full w-full items-center justify-center">{{ user.username|first|upper }}</span>{% endif %}
+                  </div>
+                  <button type="button" class="flex-1 px-1 text-left text-base text-gray-500 transition hover:text-gray-800">Post an announcement...</button>
+                </div>
+              </div>
+              {% endif %}
+              <div class="space-y-4">
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 text-center text-sm text-gray-400">
+                  <i class="fa-solid fa-bullhorn mb-2 text-2xl text-gray-300"></i>
+                  <p>No announcements yet.</p>
+                </div>
+              </div>
+
+            {% elif room.room_type == 'chat' %}
+              <!-- CHAT ROOM -->
+              <div class="flex gap-0" style="height: calc(100vh - 112px);">
+                <div class="flex-1 flex flex-col min-w-0">
+                  <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+                    <div class="text-center text-sm text-gray-400 py-8">
+                      <i class="fa-solid fa-comments mb-2 text-2xl text-gray-300"></i>
+                      <p>Welcome to {{ room.name }}!</p>
+                      <p class="text-xs mt-1">Start a conversation with your community.</p>
+                    </div>
+                  </div>
+                  <div class="border-t border-gray-200 bg-white p-3">
+                    <div class="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5">
+                      <button class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-plus text-sm"></i></button>
+                      <input type="text" placeholder="Type a message..." class="flex-1 bg-transparent text-sm outline-none placeholder-gray-400" />
+                      <button class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-face-smile text-sm"></i></button>
+                      <button class="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-gray-800">Send</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="hidden w-56 shrink-0 border-l border-gray-200 bg-white p-4 lg:block">
+                  <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wide">Online</h3>
+                  <p class="mt-2 text-xs text-gray-400">No members online yet.</p>
+                </div>
+              </div>
+
+            {% elif room.room_type == 'events' %}
+              <!-- EVENTS ROOM -->
+              <div class="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-bold text-gray-900">Upcoming Events</h2>
+                  <p class="text-sm text-gray-500">Host live sessions, workshops, and community meetups.</p>
+                </div>
+                {% if is_manager %}
+                  <button type="button" class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-gray-800">
+                    <i class="fa-solid fa-plus mr-1 text-xs"></i> New Event
+                  </button>
+                {% endif %}
+              </div>
+              <div class="rounded-2xl border border-dashed border-gray-200 p-8 text-center">
+                <i class="fa-solid fa-calendar-days mb-2 text-3xl text-gray-300"></i>
+                <p class="text-sm text-gray-400">No events scheduled yet.</p>
+              </div>
+
+            {% elif room.room_type == 'resources' %}
+              <!-- RESOURCES ROOM -->
+              <div class="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-bold text-gray-900">Resources & Downloads</h2>
+                  <p class="text-sm text-gray-500">Access files, documents, and learning materials.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2">
+                    <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+                    <input type="text" placeholder="Search resources..." class="bg-transparent text-sm outline-none" />
+                  </div>
+                  {% if is_manager %}
+                    <button type="button" class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-gray-800">
+                      <i class="fa-solid fa-plus mr-1 text-xs"></i> Upload
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="rounded-2xl border border-dashed border-gray-200 p-8 text-center">
+                <i class="fa-solid fa-folder-open mb-2 text-3xl text-gray-300"></i>
+                <p class="text-sm text-gray-400">No resources uploaded yet.</p>
+              </div>
+
+            {% elif room.room_type == 'certifications' %}
+              <!-- CERTIFICATIONS ROOM -->
+              <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900">Certifications</h2>
+                <p class="text-sm text-gray-500">Track your achievements and download certificates.</p>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 text-center">
+                  <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                    <i class="fa-solid fa-award text-2xl text-gray-400"></i>
+                  </div>
+                  <p class="mt-3 text-sm font-semibold text-gray-900">No certifications yet</p>
+                  <p class="mt-1 text-xs text-gray-500">Complete courses to earn badges.</p>
+                </div>
+              </div>
+
+            {% elif room.room_type == 'networking' %}
+              <!-- NETWORKING ROOM -->
+              <div class="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-bold text-gray-900">Networking Hub</h2>
+                  <p class="text-sm text-gray-500">Connect with community members.</p>
+                </div>
+                <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2">
+                  <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+                  <input type="text" placeholder="Search members..." class="bg-transparent text-sm outline-none" />
+                </div>
+              </div>
+              <div class="rounded-2xl border border-dashed border-gray-200 p-8 text-center">
+                <i class="fa-solid fa-user-group mb-2 text-3xl text-gray-300"></i>
+                <p class="text-sm text-gray-400">Browse the member directory to connect.</p>
+              </div>
+
+            {% elif room.room_type == 'jobs' %}
+              <!-- JOBS ROOM -->
+              <div class="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-bold text-gray-900">Jobs & Internships</h2>
+                  <p class="text-sm text-gray-500">Find career opportunities shared by the community.</p>
+                </div>
+                {% if is_manager %}
+                  <button type="button" class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-gray-800">
+                    <i class="fa-solid fa-plus mr-1 text-xs"></i> Post Job
+                  </button>
+                {% endif %}
+              </div>
+              <div class="rounded-2xl border border-dashed border-gray-200 p-8 text-center">
+                <i class="fa-solid fa-briefcase mb-2 text-3xl text-gray-300"></i>
+                <p class="text-sm text-gray-400">No jobs posted yet.</p>
+              </div>
+
+            {% elif room.room_type == 'live' %}
+              <!-- LIVE SESSIONS ROOM -->
+              <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900">Live Sessions</h2>
+                <p class="text-sm text-gray-500">Join live learning sessions, workshops, and community calls.</p>
+              </div>
+              <div class="rounded-2xl border border-dashed border-gray-200 p-8 text-center">
+                <i class="fa-solid fa-video mb-2 text-3xl text-gray-300"></i>
+                <p class="text-sm text-gray-400">No live sessions scheduled.</p>
+              </div>
+
+            {% elif room.room_type == 'topics' %}
+              <!-- TOPICS ROOM (Forum-style) -->
+              <div class="mb-6 flex items-center justify-between">
+                <div>
+                  <h2 class="text-lg font-bold text-gray-900">Topics</h2>
+                  <p class="text-sm text-gray-500">Create topic threads and participate in structured discussions.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2">
+                    <i class="fa-solid fa-magnifying-glass text-xs text-gray-400"></i>
+                    <input type="text" placeholder="Search topics..." class="bg-transparent text-sm outline-none" />
+                  </div>
+                  <button type="button" class="rounded-lg bg-gray-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-gray-800">
+                    <i class="fa-solid fa-plus mr-1 text-xs"></i> New Topic
+                  </button>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 text-center">
+                  <i class="fa-solid fa-comments mb-2 text-3xl text-gray-300"></i>
+                  <p class="text-sm font-semibold text-gray-900">No topics yet</p>
+                  <p class="mt-1 text-xs text-gray-500">Be the first to start a discussion.</p>
+                </div>
+              </div>
+
+            {% else %}
+              <!-- CUSTOM / BLANK ROOM -->
+              <div class="rounded-2xl border border-dashed border-gray-200 p-8 text-center">
+                {% if room.icon_image_url %}
+                  <img src="{{ room.icon_image_url }}" alt="" class="mx-auto h-12 w-12 rounded-full object-cover" />
+                {% else %}
+                  <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-{{ room.color|default:'gray' }}-100">
+                    <i class="{{ room.icon_class|default:'fa-solid fa-comment-dots' }} text-2xl text-{{ room.color|default:'gray' }}-600"></i>
+                  </div>
+                {% endif %}
+                <p class="mt-4 text-sm font-semibold text-gray-900">{{ room.name }}</p>
+                {% if room.description %}
+                  <p class="mt-1 text-xs text-gray-500 max-w-sm mx-auto">{{ room.description }}</p>
+                {% endif %}
+                <p class="mt-4 text-xs text-gray-400">This is a custom room. Content will appear here.</p>
+              </div>
+            {% endif %}
+
+          </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Profile dropdown
+      var profileBtn = document.getElementById('profile-btn');
+      var profileMenu = document.getElementById('profile-menu');
+      if (profileBtn && profileMenu) {
+        profileBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          profileMenu.classList.toggle('hidden');
+        });
+        document.addEventListener('click', function(e) {
+          if (!profileMenu.classList.contains('hidden') && !profileMenu.contains(e.target) && !profileBtn.contains(e.target)) {
+            profileMenu.classList.add('hidden');
+          }
+        });
+      }
+    });
+    </script>
+  </body>
+</html>

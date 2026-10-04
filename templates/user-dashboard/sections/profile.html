@@ -1,0 +1,270 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ profile_user.first_name|default:profile_user.username }} | Union</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+      * { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .dashboard-scrollbar { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+
+      /* ── Sidebar ── */
+      :root {
+        --sidebar-width: 260px;
+        --sidebar-collapsed-width: 64px;
+        --sidebar-transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+        --sidebar-z: 40;
+      }
+
+      #dashboard-sidebar {
+        width: var(--sidebar-width);
+        box-sizing: border-box;
+      }
+
+      @media (min-width: 1024px) {
+        #dashboard-sidebar {
+          transition: width var(--sidebar-transition) !important;
+        }
+        body.sidebar-expanded #app-header { left: var(--sidebar-width) !important; }
+        body.sidebar-expanded .app-sidebar-content { margin-left: var(--sidebar-width) !important; }
+        body.sidebar-expanded .sidebar-header-expanded { display: flex !important; }
+        body.sidebar-expanded .sidebar-header-collapsed { display: none !important; }
+        body.sidebar-expanded .sidebar-nav-expanded { display: block !important; }
+        body.sidebar-expanded .sidebar-nav-collapsed { display: none !important; }
+        body.sidebar-expanded .sidebar-profile-expanded { display: flex !important; }
+        body.sidebar-expanded .sidebar-profile-collapsed { display: none !important; }
+
+        body.sidebar-collapsed #dashboard-sidebar {
+          width: var(--sidebar-collapsed-width) !important;
+        }
+        body.sidebar-collapsed #app-header { left: var(--sidebar-collapsed-width) !important; }
+        body.sidebar-collapsed .app-sidebar-content { margin-left: var(--sidebar-collapsed-width) !important; }
+        body.sidebar-collapsed .sidebar-header-expanded { display: none !important; }
+        body.sidebar-collapsed .sidebar-header-collapsed { display: flex !important; }
+        body.sidebar-collapsed .sidebar-nav-expanded { display: none !important; }
+        body.sidebar-collapsed .sidebar-nav-collapsed { display: flex !important; }
+        body.sidebar-collapsed .sidebar-profile-expanded { display: none !important; }
+        body.sidebar-collapsed .sidebar-profile-collapsed { display: flex !important; }
+      }
+
+      #sidebar-collapse-btn {
+        height: 28px;
+        width: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: #9ca3af;
+        transition: background 150ms ease, color 150ms ease;
+      }
+      #sidebar-collapse-btn:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: #374151;
+      }
+
+      #sidebar-expand-btn {
+        height: 36px;
+        width: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        color: #6b7280;
+        transition: background 150ms ease, color 150ms ease;
+      }
+      #sidebar-expand-btn:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: #374151;
+      }
+
+      .sidebar-icon-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        color: #6b7280;
+        transition: background 150ms ease, color 150ms ease;
+      }
+      .sidebar-icon-btn:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: #111827;
+      }
+      .sidebar-icon-btn.active {
+        background: #111827;
+        color: #ffffff;
+      }
+
+      .sidebar-profile-menu { display: none; opacity: 0; transform: translateY(8px); transition: opacity 150ms ease-out, transform 150ms ease-out; }
+      .sidebar-profile-menu.open { display: block; opacity: 1; transform: translateY(0); }
+      .sidebar-header-expanded { display: flex; }
+      .sidebar-header-collapsed { display: none; }
+      .sidebar-nav-collapsed { display: none; }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/typography.css' %}" />
+  </head>
+
+  <body class="min-h-screen bg-[#f7f8fb] text-slate-900 sidebar-expanded">
+    <div class="min-h-screen">
+{% include "user-dashboard/includes/sidebar.html" %}
+
+<main class="app-sidebar-content px-4 pb-4 pt-14 sm:px-6 lg:ml-[260px] lg:px-8 lg:pb-5 transition-[margin] duration-200">
+  {% include "user-dashboard/includes/header.html" %}
+
+  <div class="mx-auto max-w-4xl">
+    <!-- Back Link -->
+    <a href="javascript:history.back()" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-900">
+      <i class="fa-solid fa-arrow-left text-xs"></i> Back
+    </a>
+
+    <!-- Profile Card -->
+    <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
+      <!-- Cover -->
+      <div class="h-32 bg-gray-900 sm:h-40"></div>
+
+      <!-- Profile Info -->
+      <div class="relative px-6 pb-6 sm:px-8">
+        <!-- Avatar -->
+        <div class="-mt-16 flex items-end gap-5 sm:-mt-20">
+          <div class="h-24 w-24 shrink-0 overflow-hidden rounded-full border-4 border-white bg-gray-200 text-xl font-bold text-gray-700 shadow-lg sm:h-28 sm:w-28">
+            {% if target_profile and target_profile.profile_image_url %}
+              <img src="{{ target_profile.profile_image_url }}" alt="{{ profile_user.username }}" class="h-full w-full object-cover" />
+            {% else %}
+              <span class="flex h-full w-full items-center justify-center">{{ profile_user.username|first|upper }}</span>
+            {% endif %}
+          </div>
+          <div class="min-w-0 flex-1 pb-1">
+            <h1 class="truncate text-xl font-bold text-slate-900 sm:text-2xl">{{ profile_user.first_name|default:profile_user.username }}</h1>
+            <p class="truncate text-sm text-slate-500">@{{ profile_user.username }}</p>
+          </div>
+          <div class="pb-1">
+            {% if subscription %}
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-xs font-bold text-white shadow-sm">
+                <i class="fa-solid fa-crown text-gray-300 text-[10px]"></i>
+                {{ subscription.plan.name }}
+              </span>
+            {% endif %}
+            {% if user != profile_user %}
+              <form method="post" action="{% url 'hub:toggle_follow' username=profile_user.username %}">
+                {% csrf_token %}
+                <button type="submit" class="inline-flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-bold {% if is_following %}bg-gray-900 text-white border-gray-900{% else %}bg-white text-gray-700 border-gray-300 hover:bg-gray-100{% endif %} shadow-sm transition">
+                  {% if is_following %}<i class="fa-solid fa-check"></i> Following{% else %}+ Follow{% endif %}
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Bio & Stats -->
+        <div class="mt-5 grid gap-6 sm:grid-cols-[1fr_auto]">
+          <div>
+            {% if target_profile and target_profile.bio %}
+              <p class="text-sm leading-7 text-slate-600">{{ target_profile.bio }}</p>
+            {% endif %}
+            <div class="mt-3 flex flex-wrap gap-4 text-sm">
+              <span class="text-slate-500">
+                <i class="fa-regular fa-calendar mr-1.5"></i>Joined {{ profile_user.date_joined|date:"M Y" }}
+              </span>
+              {% if target_profile and target_profile.location %}
+                <span class="text-slate-500">
+                  <i class="fa-solid fa-location-dot mr-1.5"></i>{{ target_profile.location }}
+                </span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="flex gap-6 sm:text-right">
+            <div>
+              <p class="text-xl font-bold text-slate-900">{{ post_count }}</p>
+              <p class="text-xs text-slate-500">Posts</p>
+            </div>
+            <div>
+              <p class="text-xl font-bold text-slate-900">{{ member_count }}</p>
+              <p class="text-xs text-slate-500">Communities</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Communities -->
+    {% if communities or managed %}
+      <div class="mt-8">
+        <h2 class="text-base font-bold text-slate-900">Communities</h2>
+        <p class="mt-1 text-xs text-slate-500">Communities {{ profile_user.first_name|default:profile_user.username }} has joined</p>
+        <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {% for c in communities %}
+            <a href="{% url 'hub:community_detail' slug=c.slug %}" class="flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition hover:shadow-md">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-700">
+                {{ c.name|first|upper }}
+              </div>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-slate-900">{{ c.name }}</p>
+                <p class="text-xs text-slate-500">
+                  {% if c.owner_id == profile_user.id %}<span class="font-semibold text-gray-700">Owner</span>
+                  {% else %}Member{% endif %}
+                </p>
+              </div>
+            </a>
+          {% endfor %}
+          {% for c in managed %}
+            {% if c not in communities %}
+              <a href="{% url 'hub:community_detail' slug=c.slug %}" class="flex items-center gap-3 rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition hover:shadow-md">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm font-bold text-gray-700">
+                  {{ c.name|first|upper }}
+                </div>
+                <div class="min-w-0">
+                  <p class="truncate text-sm font-semibold text-slate-900">{{ c.name }}</p>
+                  <p class="text-xs font-semibold text-gray-700">Owner</p>
+                </div>
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Recent Posts -->
+    {% if posts %}
+      <div class="mt-8">
+        <h2 class="text-base font-bold text-slate-900">Recent Posts</h2>
+        <div class="mt-3 space-y-3">
+          {% for post in posts %}
+            <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+              <div class="flex items-start gap-3">
+                <div class="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-gray-200 text-xs font-bold text-gray-700">
+                  {% if post.author_user.profile.profile_image_url %}
+                    <img src="{{ post.author_user.profile.profile_image_url }}" alt="" class="h-full w-full object-cover" />
+                  {% else %}
+                    <span class="flex h-full w-full items-center justify-center">{{ post.display_author|first|upper }}</span>
+                  {% endif %}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-semibold text-slate-900">
+                    {% if post.title %}{{ post.title }}{% endif %}
+                  </p>
+                  <p class="mt-1 text-xs text-slate-500">{{ post.body|truncatechars:120 }}</p>
+                  <div class="mt-2 flex items-center gap-3 text-[11px] text-slate-400">
+                    {% if post.community %}
+                      <span>{{ post.community.name }}</span>
+                      <span>&middot;</span>
+                    {% endif %}
+                    <span>{{ post.created_at|date:"M j, Y" }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</main>
+    </div>
+  </body>
+</html>

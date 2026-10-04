@@ -67,6 +67,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "hub.context_processors.account_switcher",
             ],
         },
     },
@@ -142,6 +143,28 @@ EMAIL_HOST_USER = os.getenv("DJANGO_EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("DJANGO_EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.getenv("DJANGO_EMAIL_USE_TLS", "True").lower() in {"1", "true", "yes", "on"}
 EMAIL_TIMEOUT = int(os.getenv("DJANGO_EMAIL_TIMEOUT", "10"))
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+
+# eSewa ePay V2. The secret must remain server-side.
+ESEWA_ENABLED = os.getenv("ESEWA_ENABLED", "False").lower() in {"1", "true", "yes", "on"}
+ESEWA_PRODUCT_CODE = os.getenv("ESEWA_PRODUCT_CODE", "")
+ESEWA_SECRET_KEY = os.getenv("ESEWA_SECRET_KEY", "")
+ESEWA_FORM_URL = os.getenv("ESEWA_FORM_URL") or (
+    "https://rc-epay.esewa.com.np/api/epay/main/v2/form"
+    if ESEWA_PRODUCT_CODE == "EPAYTEST"
+    else "https://epay.esewa.com.np/api/epay/main/v2/form"
+)
+ESEWA_STATUS_URL = os.getenv("ESEWA_STATUS_URL") or (
+    "https://uat.esewa.com.np/api/epay/transaction/status/"
+    if ESEWA_PRODUCT_CODE == "EPAYTEST"
+    else "https://epay.esewa.com.np/api/epay/transaction/status/"
+)
+ESEWA_ALLOW_SIGNED_CALLBACK_FALLBACK = (
+    DEBUG
+    and os.getenv("ESEWA_ALLOW_SIGNED_CALLBACK_FALLBACK", "True").lower()
+    in {"1", "true", "yes", "on"}
+)
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

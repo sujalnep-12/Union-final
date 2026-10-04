@@ -1,0 +1,204 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Complaint Detail | Union{% endblock %}
+
+{% block sidebar %}
+  <aside class="border-b border-gray-100 bg-white lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r">
+    <div class="flex items-center justify-between px-4 py-4 lg:block lg:px-4 lg:py-8">
+      <a href="{% url 'hub:dashboard' %}" class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100 text-gray-900">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div>
+          <span class="block text-xl font-bold tracking-tight">UNION</span>
+          <span class="block text-xs font-semibold uppercase tracking-wide text-gray-900">Super Admin</span>
+        </div>
+      </a>
+      <form method="post" action="{% url 'hub:logout' %}" class="lg:hidden">
+        {% csrf_token %}
+        <button type="submit" class="rounded-xl border border-gray-200 px-3 py-2 text-xs font-semibold text-gray-600">
+          Logout
+        </button>
+      </form>
+    </div>
+
+    <nav class="flex flex-wrap gap-2 px-4 pb-4 text-sm lg:block lg:space-y-1 lg:pb-0">
+      <a href="{% url 'hub:dashboard' %}" class="flex min-w-max items-center gap-3 rounded-lg px-4 py-3 font-medium text-gray-600 transition hover:bg-gray-50">
+        <i class="fa-solid fa-table-cells-large w-5 text-center"></i>
+        Overview
+      </a>
+      <a href="{% url 'hub:policy_enforcement' %}" class="flex min-w-max items-center gap-3 rounded-lg bg-gray-100 px-4 py-3 font-medium text-gray-900">
+        <i class="fa-solid fa-shield-halved w-5 text-center"></i>
+        Policy Enforcement
+      </a>
+
+      <div class="hidden lg:block lg:pt-9">
+        <form method="post" action="{% url 'hub:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left font-medium text-gray-600 transition hover:bg-gray-50">
+            <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center"></i>
+            Logout
+          </button>
+        </form>
+      </div>
+    </nav>
+  </aside>
+{% endblock %}
+
+{% block content %}
+  <header class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wide text-gray-900">Administration</p>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Complaint Details</h1>
+      <p class="mt-2 text-sm text-gray-500 sm:text-base">{{ today|date:"l, F j, Y" }}</p>
+    </div>
+    <a href="{% url 'hub:policy_enforcement' %}" class="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-gray-200 transition hover:bg-gray-50">
+      Back to Complaints
+    </a>
+  </header>
+
+  {% if messages %}
+    <div class="mt-5 space-y-2">
+      {% for message in messages %}
+        <div class="rounded-xl border px-4 py-3 text-sm {% if message.tags == 'success' %}border-gray-200 bg-gray-50 text-gray-700{% else %}border-red-200 bg-red-50 text-red-700{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="mt-7 grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <!-- Complaint Details -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Overview Card -->
+      <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+        <div class="mb-5 flex items-start justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">{{ complaint.title }}</h2>
+            <p class="mt-2 text-sm text-gray-500">Filed on {{ complaint.created_at|date:"M d, Y" }}</p>
+          </div>
+          <span class="rounded-full px-3 py-1 text-xs font-semibold 
+            {% if complaint.status == 'pending' %}bg-red-50 text-red-700
+            {% elif complaint.status == 'under_review' %}bg-yellow-50 text-yellow-700
+            {% elif complaint.status == 'resolved' %}bg-gray-50 text-gray-700
+            {% else %}bg-gray-50 text-gray-700{% endif %}">
+            {{ complaint.get_status_display }}
+          </span>
+        </div>
+
+        <div class="space-y-4 border-t border-gray-100 pt-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-semibold uppercase text-gray-400">Category</p>
+              <p class="mt-1 text-sm font-medium text-gray-900">{{ complaint.get_category_display }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase text-gray-400">Priority</p>
+              <p class="mt-1 text-sm font-medium">
+                <span class="rounded-full px-2 py-1 text-xs font-semibold 
+                  {% if complaint.priority == 'critical' %}bg-red-100 text-red-700
+                  {% elif complaint.priority == 'high' %}bg-orange-100 text-orange-700
+                  {% elif complaint.priority == 'medium' %}bg-yellow-100 text-yellow-700
+                  {% else %}bg-blue-100 text-blue-700{% endif %}">
+                  {{ complaint.get_priority_display }}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase text-gray-400">Complainant</p>
+            <p class="mt-1 text-sm font-medium text-gray-900">
+              {{ complaint.complainant.first_name|default:complaint.complainant.username }}
+              <span class="text-gray-500">&lt;{{ complaint.complainant.email }}&gt;</span>
+            </p>
+          </div>
+
+          {% if complaint.reported_user %}
+            <div>
+              <p class="text-xs font-semibold uppercase text-gray-400">Reported User</p>
+              <p class="mt-1 text-sm font-medium text-gray-900">
+                {{ complaint.reported_user.first_name|default:complaint.reported_user.username }}
+                <span class="text-gray-500">&lt;{{ complaint.reported_user.email }}&gt;</span>
+              </p>
+            </div>
+          {% endif %}
+
+          {% if complaint.reported_post %}
+            <div>
+              <p class="text-xs font-semibold uppercase text-gray-400">Reported Post</p>
+              <p class="mt-1 text-sm font-medium text-gray-900">{{ complaint.reported_post.title }}</p>
+              <p class="text-xs text-gray-500">in {{ complaint.reported_post.community.name }}</p>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="mt-5 border-t border-gray-100 pt-4">
+          <p class="text-xs font-semibold uppercase text-gray-400">Description</p>
+          <p class="mt-2 text-sm text-gray-700">{{ complaint.description }}</p>
+        </div>
+
+        {% if complaint.resolution_notes %}
+          <div class="mt-5 border-t border-gray-100 pt-4">
+            <p class="text-xs font-semibold uppercase text-gray-400">Resolution Notes</p>
+            <p class="mt-2 text-sm text-gray-700">{{ complaint.resolution_notes }}</p>
+          </div>
+        {% endif %}
+      </article>
+    </div>
+
+    <!-- Actions Sidebar -->
+    <div class="space-y-6">
+      <!-- Update Status -->
+      <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+        <h3 class="text-sm font-bold text-gray-900">Update Status</h3>
+        <form method="post" class="mt-4 space-y-3">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_status" />
+          <select name="status" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-gray-500 focus:ring-4 focus:ring-gray-200">
+            {% for value, label in complaint.STATUS_CHOICES %}
+              <option value="{{ value }}" {% if complaint.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="w-full rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800">
+            Update Status
+          </button>
+        </form>
+      </article>
+
+      <!-- Assign To -->
+      <article class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-gray-100 sm:p-7">
+        <h3 class="text-sm font-bold text-gray-900">Assign To</h3>
+        <form method="post" class="mt-4 space-y-3">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="assign" />
+          <select name="assigned_to" class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-gray-500 focus:ring-4 focus:ring-gray-200">
+            <option value="">Select staff member</option>
+            {% for staff_member in form.assigned_to.field.queryset %}
+              <option value="{{ staff_member.id }}">{{ staff_member.first_name|default:staff_member.username }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="w-full rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800">
+            Assign
+          </button>
+        </form>
+      </article>
+
+      <!-- Suspend User Action -->
+      {% if complaint.reported_user and complaint.reported_user.is_active %}
+        <article class="rounded-lg bg-red-50 p-5 shadow-sm ring-1 ring-red-100 sm:p-7">
+          <h3 class="text-sm font-bold text-red-900">Suspend User</h3>
+          <p class="mt-2 text-xs text-red-700">Take immediate action against reported user.</p>
+          <form method="post" class="mt-4 space-y-3">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="suspend_user" />
+            <textarea name="reason" placeholder="Suspension reason..." rows="3" class="w-full rounded-xl border border-red-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-red-400 focus:ring-4 focus:ring-red-100 resize-none"></textarea>
+            <button type="submit" class="w-full rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700">
+              Suspend User
+            </button>
+          </form>
+        </article>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

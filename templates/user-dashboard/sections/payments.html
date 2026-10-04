@@ -1,0 +1,172 @@
+{% if active_page == "payments" %}
+<section id="payments" class="{% if embedded_settings %}space-y-6{% else %}mt-6 space-y-6{% endif %}">
+  <header class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-6 text-white shadow-sm sm:p-8">
+    <div class="pointer-events-none absolute -right-12 -top-20 h-64 w-64 rounded-full bg-emerald-400/20 blur-3xl"></div>
+    <div class="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-emerald-100 ring-1 ring-white/15">
+          <i class="fa-solid fa-wallet"></i> Money center
+        </span>
+        <h1 class="mt-4 text-3xl font-black tracking-tight sm:text-4xl">Payments &amp; payouts</h1>
+        <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-300">Track payments received by every community you run, review member receipts, and keep your creator payout details ready in one place.</p>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <a href="#payout-settings" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-black text-slate-950 transition hover:bg-emerald-50"><i class="fa-solid fa-arrow-down"></i>{% if payout_account_connected %}Edit payout details{% else %}Set up payout details{% endif %}</a>
+          <a href="{% url 'hub:dashboard_section' 'discover' %}" class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-xs font-black text-white ring-1 ring-white/15 transition hover:bg-white/20"><i class="fa-solid fa-arrow-right"></i>Test a paid community join</a>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm lg:min-w-64">
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-xs font-bold text-slate-300">eSewa collection</span>
+          <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-black {% if esewa_enabled %}bg-emerald-400/20 text-emerald-200{% else %}bg-amber-400/20 text-amber-200{% endif %}">
+            <span class="h-1.5 w-1.5 rounded-full {% if esewa_enabled %}bg-emerald-300{% else %}bg-amber-300{% endif %}"></span>
+            {% if esewa_enabled %}Ready{% else %}Setup needed{% endif %}
+          </span>
+        </div>
+        <p class="mt-2 text-xs leading-5 text-slate-300">{% if esewa_enabled %}Paid joins use ePay V2 and are verified before access is granted.{% else %}Paid joins stay in local mode until the server has merchant credentials.{% endif %}</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <article class="rounded-2xl border border-violet-100 bg-violet-50 p-5">
+      <div class="flex items-center justify-between"><p class="text-xs font-black uppercase tracking-wide text-violet-600">Creator earnings</p><i class="fa-solid fa-chart-line text-violet-500"></i></div>
+      <p class="mt-3 text-2xl font-black tracking-tight text-violet-950">Rs. {{ creator_earnings|floatformat:2 }}</p>
+      <p class="mt-1 text-xs text-violet-700">Verified community access + support</p>
+    </article>
+    <article class="rounded-2xl border border-emerald-100 bg-emerald-50 p-5">
+      <div class="flex items-center justify-between"><p class="text-xs font-black uppercase tracking-wide text-emerald-700">Payout readiness</p><i class="fa-solid {% if payout_account_connected %}fa-circle-check text-emerald-600{% else %}fa-circle-exclamation text-amber-600{% endif %}"></i></div>
+      <p class="mt-3 text-lg font-black tracking-tight text-emerald-950">{% if payout_account_connected %}Details saved{% else %}Setup needed{% endif %}</p>
+      <p class="mt-1 text-xs text-emerald-700">{% if payout_account_connected %}Ready for future settlement{% else %}Add a bank or wallet below{% endif %}</p>
+    </article>
+    <article class="rounded-2xl border border-sky-100 bg-sky-50 p-5">
+      <div class="flex items-center justify-between"><p class="text-xs font-black uppercase tracking-wide text-sky-700">Membership revenue</p><i class="fa-solid fa-users text-sky-600"></i></div>
+      <p class="mt-3 text-2xl font-black tracking-tight text-sky-950">Rs. {{ creator_membership_revenue|floatformat:2 }}</p>
+      <p class="mt-1 text-xs text-sky-700">Paid community joins</p>
+    </article>
+    <article class="rounded-2xl border border-amber-100 bg-amber-50 p-5">
+      <div class="flex items-center justify-between"><p class="text-xs font-black uppercase tracking-wide text-amber-700">Member support</p><i class="fa-solid fa-hand-holding-heart text-amber-600"></i></div>
+      <p class="mt-3 text-2xl font-black tracking-tight text-amber-950">Rs. {{ creator_donation_revenue|floatformat:2 }}</p>
+      <p class="mt-1 text-xs text-amber-700">Successful post donations</p>
+    </article>
+  </div>
+
+  <article id="payout-settings" class="scroll-mt-6 overflow-hidden rounded-2xl border-2 {% if payout_account_connected %}border-emerald-200{% else %}border-violet-200{% endif %} bg-white shadow-sm">
+    <div class="flex flex-col gap-4 border-b border-gray-100 {% if payout_account_connected %}bg-emerald-50/70{% else %}bg-violet-50/70{% endif %} p-5 sm:flex-row sm:items-start sm:justify-between sm:p-7">
+      <div class="flex items-start gap-3">
+        <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl {% if payout_account_connected %}bg-emerald-100 text-emerald-700{% else %}bg-violet-100 text-violet-700{% endif %}"><i class="fa-solid fa-building-columns"></i></span>
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-[0.18em] {% if payout_account_connected %}text-emerald-700{% else %}text-violet-700{% endif %}">Creator payout profile</span>
+          <h2 class="mt-1 text-xl font-black tracking-tight text-gray-950">{% if payout_account_connected %}Your payout details{% else %}Add your payout details{% endif %}</h2>
+          <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600">Add the bank or wallet where earnings from all your communities should be settled. You can update these details at any time.</p>
+        </div>
+      </div>
+      <span class="inline-flex w-fit items-center gap-2 rounded-full {% if payout_account_connected %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-800{% endif %} px-3 py-1.5 text-xs font-black"><i class="fa-solid {% if payout_account_connected %}fa-circle-check{% else %}fa-circle-exclamation{% endif %}"></i>{% if payout_account_connected %}Ready for settlement{% else %}Setup needed{% endif %}</span>
+    </div>
+    <div class="grid gap-6 p-5 sm:p-7 lg:grid-cols-[minmax(220px,0.7fr)_minmax(0,1.3fr)]">
+      <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4 sm:p-5">
+        <div class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-sm font-black text-gray-700">{{ display_name|first|upper }}</span>
+          <div class="min-w-0"><p class="truncate text-sm font-black text-gray-950">{{ display_name }}</p><p class="truncate text-xs text-gray-500">{{ user.email }}</p></div>
+        </div>
+        <div class="mt-5 space-y-3 text-xs leading-5 text-gray-600">
+          <p class="flex items-start gap-2"><i class="fa-solid fa-lock mt-1 text-emerald-600"></i><span>Your payout details are private and used only for creator settlement.</span></p>
+          <p class="flex items-start gap-2"><i class="fa-solid fa-circle-info mt-1 text-violet-600"></i><span>Use either a bank account, eSewa wallet, or Khalti ID. You do not need to fill every option.</span></p>
+          <p class="flex items-start gap-2"><i class="fa-solid {% if profile.kyc_verified %}fa-circle-check text-emerald-600{% else %}fa-circle-exclamation text-amber-600{% endif %} mt-1"></i><span>{% if profile.kyc_verified %}Identity verification is complete.{% else %}Complete identity verification before receiving a payout.{% endif %}</span></p>
+        </div>
+      </div>
+      <form method="post" action="{% if embedded_settings %}{% url 'hub:dashboard_section' 'settings' %}?tab=payments#payout-settings{% else %}{% url 'hub:dashboard_section' 'payments' %}#payout-settings{% endif %}" class="space-y-5" data-dirty-form>
+        {% csrf_token %}<input type="hidden" name="action" value="save_payment_settings" />
+        {% if payment_settings_form.non_field_errors %}<div class="rounded-xl bg-rose-50 px-4 py-3 text-xs font-semibold text-rose-700">{{ payment_settings_form.non_field_errors }}</div>{% endif %}
+        <div>
+          <div class="mb-3 flex items-center gap-2"><span class="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-100 text-xs font-bold text-violet-700">1</span><div><h3 class="text-sm font-black text-gray-950">Bank account <span class="font-medium text-gray-400">(optional)</span></h3><p class="text-[11px] text-gray-500">Recommended for larger creator payouts.</p></div></div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div><label for="{{ payment_settings_form.bank_name.id_for_label }}" class="mb-1.5 block text-xs font-bold text-gray-700">Bank name</label>{{ payment_settings_form.bank_name }}{% if payment_settings_form.bank_name.errors %}<p class="mt-1 text-[11px] text-rose-600">{{ payment_settings_form.bank_name.errors|striptags }}</p>{% endif %}</div>
+            <div><label for="{{ payment_settings_form.bank_account_holder.id_for_label }}" class="mb-1.5 block text-xs font-bold text-gray-700">Account holder name</label>{{ payment_settings_form.bank_account_holder }}{% if payment_settings_form.bank_account_holder.errors %}<p class="mt-1 text-[11px] text-rose-600">{{ payment_settings_form.bank_account_holder.errors|striptags }}</p>{% endif %}</div>
+            <div class="sm:col-span-2"><label for="{{ payment_settings_form.bank_account_number.id_for_label }}" class="mb-1.5 block text-xs font-bold text-gray-700">Account number</label>{{ payment_settings_form.bank_account_number }}{% if payment_settings_form.bank_account_number.errors %}<p class="mt-1 text-[11px] text-rose-600">{{ payment_settings_form.bank_account_number.errors|striptags }}</p>{% endif %}</div>
+          </div>
+        </div>
+        <div class="border-t border-gray-100 pt-5">
+          <div class="mb-3 flex items-center gap-2"><span class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-xs font-bold text-emerald-700">2</span><div><h3 class="text-sm font-black text-gray-950">Wallet payout <span class="font-medium text-gray-400">(optional)</span></h3><p class="text-[11px] text-gray-500">Add one wallet ID if you prefer mobile settlement.</p></div></div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div><label for="{{ payment_settings_form.esewa_id.id_for_label }}" class="mb-1.5 block text-xs font-bold text-gray-700">eSewa ID / phone number</label>{{ payment_settings_form.esewa_id }}{% if payment_settings_form.esewa_id.errors %}<p class="mt-1 text-[11px] text-rose-600">{{ payment_settings_form.esewa_id.errors|striptags }}</p>{% endif %}</div>
+            <div><label for="{{ payment_settings_form.khalti_id.id_for_label }}" class="mb-1.5 block text-xs font-bold text-gray-700">Khalti ID / phone number</label>{{ payment_settings_form.khalti_id }}{% if payment_settings_form.khalti_id.errors %}<p class="mt-1 text-[11px] text-rose-600">{{ payment_settings_form.khalti_id.errors|striptags }}</p>{% endif %}</div>
+          </div>
+        </div>
+        <div data-dirty-actions class="fixed bottom-4 right-4 z-40 hidden"><button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gray-950 px-4 py-2.5 text-sm font-bold text-white shadow-lg transition hover:bg-gray-800"><i class="fa-solid fa-check text-xs"></i>Save</button></div>
+      </form>
+    </div>
+  </article>
+
+  <article class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7">
+    <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+      <div>
+        <span class="text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">Creator side</span>
+        <h2 class="mt-1 text-xl font-black tracking-tight text-gray-950">Community transaction ledger</h2>
+        <p class="mt-1 text-sm text-gray-500">{% if studio_payment_community %}Transactions received by {{ studio_payment_community.name }}.{% else %}Transactions received across all communities you manage.{% endif %}</p>
+      </div>
+      {% if studio_payment_community %}<a href="{% url 'hub:dashboard_section' 'payments' %}" class="text-xs font-bold text-violet-700 hover:text-violet-900">View all communities <i class="fa-solid fa-arrow-right ml-1 text-[10px]"></i></a>{% endif %}
+    </div>
+    <div class="mt-4 flex flex-wrap items-center gap-2">
+      <span class="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700">Rs. {{ studio_creator_transaction_total|floatformat:2 }} successful</span>
+      <span class="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-600">Latest {{ studio_creator_transactions|length }} transactions</span>
+    </div>
+    <div class="mt-5 overflow-x-auto rounded-xl border border-gray-100">
+      <div class="min-w-[700px]">
+        <div class="grid grid-cols-[minmax(0,1fr)_150px_110px_100px] gap-3 bg-gray-50 px-4 py-3 text-[10px] font-bold uppercase tracking-wide text-gray-400"><span>Community / member</span><span>Gateway &amp; date</span><span>Status</span><span class="text-right">Amount</span></div>
+        {% for transaction in studio_creator_transactions %}
+          <div class="grid grid-cols-[minmax(0,1fr)_150px_110px_100px] items-center gap-3 border-t border-gray-100 px-4 py-3 text-sm">
+            <div class="min-w-0"><p class="truncate font-bold text-gray-950">{{ transaction.community.name }}</p><p class="mt-0.5 truncate text-xs text-gray-500">{{ transaction.user.get_full_name|default:transaction.user.username }}</p></div>
+            <div><p class="text-xs font-semibold text-gray-700">{{ transaction.get_gateway_display }}</p><p class="mt-0.5 text-[11px] text-gray-400">{{ transaction.created_at|date:"M j, Y" }}</p></div>
+            <span class="w-fit rounded-full px-2.5 py-1 text-[10px] font-black uppercase {% if transaction.status == 'success' %}bg-emerald-50 text-emerald-700{% elif transaction.status == 'failed' %}bg-rose-50 text-rose-700{% else %}bg-amber-50 text-amber-700{% endif %}">{{ transaction.get_status_display }}</span>
+            <span class="text-right font-black text-gray-950">Rs. {{ transaction.amount|floatformat:2 }}</span>
+          </div>
+        {% empty %}
+          <div class="border-t border-gray-100 px-5 py-10 text-center"><i class="fa-solid fa-receipt text-2xl text-gray-300"></i><p class="mt-3 text-sm font-bold text-gray-700">No community transactions yet</p><p class="mt-1 text-xs text-gray-500">Successful paid joins will appear here with their community and member details.</p></div>
+        {% endfor %}
+      </div>
+    </div>
+  </article>
+
+  <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+    <article class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7">
+      <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div>
+          <span class="text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">Member side</span>
+          <h2 class="mt-1 text-xl font-black tracking-tight text-gray-950">Payment history</h2>
+          <p class="mt-1 text-sm text-gray-500">Your payments and verified eSewa references.</p>
+        </div>
+        <span class="rounded-full bg-gray-100 px-3 py-1 text-[10px] font-black uppercase tracking-wide text-gray-500">Latest 8</span>
+      </div>
+      <div class="mt-5 space-y-3">
+        {% for transaction in transactions %}
+          <div class="flex items-start gap-4 rounded-xl border border-gray-100 p-4 transition hover:border-emerald-200 hover:bg-emerald-50/20">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl {% if transaction.status == 'success' %}bg-emerald-50 text-emerald-600{% elif transaction.status == 'failed' %}bg-rose-50 text-rose-600{% else %}bg-amber-50 text-amber-600{% endif %}">
+              <i class="fa-solid {% if transaction.status == 'success' %}fa-check{% elif transaction.status == 'failed' %}fa-xmark{% else %}fa-clock{% endif %} text-sm"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-black text-gray-950">{% if transaction.community %}{{ transaction.community.name }}{% elif transaction.plan %}{{ transaction.plan.name }} Plan{% else %}Platform payment{% endif %}</p>
+              <p class="mt-1 text-xs text-gray-500">Rs. {{ transaction.amount|floatformat:2 }} &middot; {{ transaction.get_gateway_display }} &middot; {{ transaction.created_at|date:"M j, Y" }}</p>
+              {% if transaction.reference_code %}<p class="mt-1 truncate text-[11px] font-semibold text-gray-400">Reference: {{ transaction.reference_code }}</p>{% elif transaction.transaction_uuid %}<p class="mt-1 truncate text-[11px] text-gray-400">Order: {{ transaction.transaction_uuid }}</p>{% endif %}
+            </div>
+            <span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black uppercase {% if transaction.status == 'success' %}bg-emerald-50 text-emerald-700{% elif transaction.status == 'failed' %}bg-rose-50 text-rose-700{% else %}bg-amber-50 text-amber-700{% endif %}">{{ transaction.get_status_display }}</span>
+          </div>
+        {% empty %}
+          <div class="rounded-xl border border-dashed border-gray-200 px-5 py-12 text-center"><i class="fa-solid fa-receipt text-2xl text-gray-300"></i><p class="mt-3 text-sm font-bold text-gray-700">No payment activity yet</p><p class="mt-1 text-xs text-gray-500">Your community purchases will appear here after checkout.</p></div>
+        {% endfor %}
+      </div>
+    </article>
+
+    <aside class="space-y-6">
+      <article class="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 sm:p-6">
+        <div class="flex items-center gap-3"><span class="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-emerald-600 shadow-sm"><i class="fa-solid fa-shield-halved"></i></span><h2 class="text-sm font-black text-emerald-950">How eSewa checkout works</h2></div>
+        <ol class="mt-4 space-y-3 text-xs leading-5 text-emerald-900">
+          <li class="flex gap-3"><span class="font-black">01</span><span>Member chooses <strong>Pay &amp; Join</strong>.</span></li>
+          <li class="flex gap-3"><span class="font-black">02</span><span>eSewa verifies the payment and returns a signed response.</span></li>
+          <li class="flex gap-3"><span class="font-black">03</span><span>Union checks the transaction status before creating membership access.</span></li>
+        </ol>
+        <div class="mt-4 rounded-xl border border-emerald-200 bg-white/70 px-3 py-2.5 text-[11px] leading-4 text-emerald-800">{% if esewa_enabled %}eSewa ePay V2 is configured on this server.{% else %}Ask the administrator to configure merchant credentials before testing a paid join.{% endif %}</div>
+      </article>
+    </aside>
+  </div>
+</section>
+{% endif %}

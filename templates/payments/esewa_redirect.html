@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Redirecting to eSewa</title>
+  </head>
+  <body style="font-family:system-ui,sans-serif;display:grid;min-height:100vh;place-items:center;background:#f8fafc;color:#0f172a">
+    <main style="text-align:center;padding:2rem">
+      <h1>Redirecting to eSewa…</h1>
+    <p>Complete your Rs. {{ form_data.total_amount }} payment for {{ payment_label|default:"your Union plan" }}.</p>
+      <form id="esewa-form" method="post" action="{{ esewa_form_url }}">
+        {% for name, value in form_data.items %}
+          <input type="hidden" name="{{ name }}" value="{{ value }}" />
+        {% endfor %}
+        <noscript><button type="submit">Continue to eSewa</button></noscript>
+      </form>
+    </main>
+    <script>document.getElementById("esewa-form").submit();</script>
+  </body>
+</html>
